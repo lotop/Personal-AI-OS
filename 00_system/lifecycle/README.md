@@ -3,3 +3,7 @@
 > 状态：`WORKING`
 
 本目录定义资产状态、保留期限、Dry Run、归档、删除和恢复窗口。任何破坏性 GC 在正式批准和验证前保持关闭。
+
+- `ASSET_LIFECYCLE.md`：资产类别、成熟度和生命周期动作。
+- `states.toml`：状态词汇与 Promotion 路径。
+- `gc.toml`：默认关闭的 GC Candidate 配置。

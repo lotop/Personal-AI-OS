@@ -25,7 +25,7 @@
 - `AGENTS.md`：Agent 启动 Router Candidate
 - `DECISIONS.md`：已确认和候选决策索引
 - `SYSTEM.toml`：系统级机器可读元数据
-- `00_system/`：治理、安全、Mode、Memory 和 Lifecycle
+- `00_system/`：治理、安全、Mode、Memory、Conversation、Lifecycle、Skills 与 Multi-Agent Sync
 - `01_templates/`：逐项批准后的复用模板
 - `02_registry/`：Projects、Tasks、Agents、Skills、Runtimes 和 Hooks
 - `03_adapters/`：Codex、Gemini 等平台生成适配层

@@ -1,0 +1,19 @@
+schema_version = "0.1.0-working"
+artifact_class = "CONFIG"
+maturity_state = "WORKING"
+enabled = false
+dry_run_only = true
+destructive_delete = false
+
+[retention]
+temp_days = 7
+cache_days = 30
+logs_days = 30
+generated_unreferenced_days = 30
+
+[protection]
+classes = ["SOURCE", "RULE", "TEMPLATE", "CONFIG", "REGISTRY", "ARCHIVE"]
+maturity_states = ["APPROVED", "CANONICAL"]
+require_reference_scan = true
+require_backup = true
+require_founder_approval = true

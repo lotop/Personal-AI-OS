@@ -8,3 +8,6 @@
 - `CONFIG_FORMATS.md`：文件和配置格式
 - `CONCURRENCY_POLICY.md`：多任务并发与 Worktree
 - `HOOKS_POLICY.md`：Hooks 权限与生命周期
+- `CHANGE_CONTROL.md`：版本、迁移和发布变更控制
+- `CONFLICT_RESOLUTION.md`：冲突识别与决策升级
+- `SOURCE_PROTECTION.md`：Original Source 与派生产物保护
