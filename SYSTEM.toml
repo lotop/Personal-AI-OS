@@ -29,6 +29,8 @@ codex_adapter = "GENERATED_CANDIDATE"
 gemini_adapter = "GENERATED_CANDIDATE"
 deployment = "DRY_RUN_READY"
 release = "BLOCKED"
+local_git_recovery = "PASS"
+private_remote_recovery = "NOT_TESTED"
 
 [deployment_status]
 codex_project_config = "DEPLOYED_CANDIDATE"

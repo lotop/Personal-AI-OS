@@ -1,0 +1,58 @@
+schema_version = "0.1.0-working"
+artifact_class = "CONFIG"
+maturity_state = "WORKING"
+
+[[gates]]
+id = "G0"
+name = "Repository"
+mandatory = true
+
+[[gates]]
+id = "G1"
+name = "Inventory"
+mandatory = true
+
+[[gates]]
+id = "G2"
+name = "Schema"
+mandatory = true
+
+[[gates]]
+id = "G3"
+name = "Boundary"
+mandatory = true
+
+[[gates]]
+id = "G4"
+name = "Templates"
+mandatory = true
+
+[[gates]]
+id = "G5"
+name = "Project Factory"
+mandatory = true
+
+[[gates]]
+id = "G6"
+name = "Adapters"
+mandatory = true
+
+[[gates]]
+id = "G7"
+name = "Deployment"
+mandatory = true
+
+[[gates]]
+id = "G8"
+name = "Recovery"
+mandatory = true
+
+[[gates]]
+id = "G9"
+name = "Founder Approval"
+mandatory = true
+
+[[gates]]
+id = "G10"
+name = "Promotion"
+mandatory = true
