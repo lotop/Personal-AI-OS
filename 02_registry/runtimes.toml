@@ -8,7 +8,8 @@ availability = "INSTALLED"
 version = "0.151.0-alpha.7.1"
 verified_on = "2026-08-30"
 project_config = "DEPLOYED_CANDIDATE"
-runtime_smoke = "PARTIAL"
+runtime_smoke = "PASS"
+smoke_thread = "01a04f4a-dd10-7d00-b8cd-1234cb086258"
 issues = [
   "Codex Memory 数据库无法由 Doctor 打开",
   "旧会话索引存在缺失与陈旧记录",

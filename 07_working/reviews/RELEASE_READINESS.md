@@ -15,7 +15,7 @@
 | G4 Templates | `BLOCKED` | 核心模板尚未逐项批准 |
 | G5 Project Factory | `BLOCKED` | 没有 Approved Template Pack 正式验收 |
 | G6 Adapters | `PASS` | 生成一致性通过 |
-| G7 Deployment | `BLOCKED` | Gemini CLI 未安装；Codex Runtime Smoke 尚为 Partial |
+| G7 Deployment | `BLOCKED` | Codex Runtime Smoke 已通过；Gemini CLI 尚未安装 |
 | G8 Recovery | `PASS` | 本地干净克隆恢复通过 |
 | G9 Founder Approval | `BLOCKED` | 尚无 V1.1 Release Approval |
 | G10 Promotion | `BLOCKED` | 未建立 Release Tag |

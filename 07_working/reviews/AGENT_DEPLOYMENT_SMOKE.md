@@ -32,9 +32,11 @@
 - Repository Detection：通过，识别根目录和 `main`。
 - Config Parse：通过。
 - Auth 与 WebSocket：通过。
-- Runtime Smoke：`PARTIAL`。
+- Runtime Smoke：`PASS`。
+- 只读 Smoke Thread：`01a04f4a-dd10-7d00-b8cd-1234cb086258`。
+- Agent 返回：`Personal AI OS / 1.1 / NONE / WORKING`，与 `SYSTEM.toml` 一致。
 
-本机 Codex Doctor 同时报告 Memory 数据库无法打开、部分旧会话索引不一致。这些问题位于用户级 Codex Runtime，不是本项目配置生成错误；未经单独授权不移动或修复用户数据库。
+本机 Codex Doctor 同时报告 Memory 数据库无法打开、部分旧会话索引不一致。这些问题位于用户级 Codex Runtime，不是本项目配置生成错误，也未阻止项目只读 Smoke Test；未经单独授权不移动或修复用户数据库。
 
 ## Gemini CLI Runtime
 

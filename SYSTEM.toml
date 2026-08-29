@@ -34,7 +34,7 @@ private_remote_recovery = "NOT_TESTED"
 
 [deployment_status]
 codex_project_config = "DEPLOYED_CANDIDATE"
-codex_runtime_smoke = "PARTIAL"
+codex_runtime_smoke = "PASS"
 gemini_project_config = "DEPLOYED_CANDIDATE"
 gemini_runtime_smoke = "BLOCKED_RUNTIME_MISSING"
 hooks_enabled = false
