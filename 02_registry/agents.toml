@@ -1,0 +1,22 @@
+schema_version = "0.1.0-working"
+artifact_state = "WORKING"
+
+[[agents]]
+id = "codex"
+status = "CANDIDATE"
+role = "RUNTIME_AGENT"
+
+[[agents]]
+id = "chatgpt"
+status = "CANDIDATE"
+role = "INTERFACE_AGENT"
+
+[[agents]]
+id = "claude-code"
+status = "CANDIDATE"
+role = "RUNTIME_AGENT"
+
+[[agents]]
+id = "gemini-cli"
+status = "CANDIDATE"
+role = "RUNTIME_AGENT"

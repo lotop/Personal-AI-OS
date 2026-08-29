@@ -1,0 +1,10 @@
+schema_version = "0.1.0-working"
+artifact_state = "WORKING"
+
+[[projects]]
+id = "personal-ai-os"
+name = "Personal AI OS"
+kind = "CONTROL_PLANE"
+status = "WORKING"
+repository_ref = "self"
+business_project = false

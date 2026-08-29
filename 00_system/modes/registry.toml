@@ -1,0 +1,30 @@
+schema_version = "0.1.0-working"
+artifact_state = "WORKING"
+
+[[modes]]
+id = "chat"
+status = "CANDIDATE"
+
+[[modes]]
+id = "brainstorm"
+status = "CANDIDATE"
+
+[[modes]]
+id = "research"
+status = "CANDIDATE"
+
+[[modes]]
+id = "strategy"
+status = "CANDIDATE"
+
+[[modes]]
+id = "product"
+status = "CANDIDATE"
+
+[[modes]]
+id = "coding"
+status = "CANDIDATE"
+
+[[modes]]
+id = "review"
+status = "CANDIDATE"

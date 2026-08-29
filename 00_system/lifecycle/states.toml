@@ -1,0 +1,13 @@
+schema_version = "0.2.0-working"
+artifact_state = "WORKING"
+destructive_gc_enabled = false
+
+artifact_classes = ["SOURCE", "RULE", "TEMPLATE", "CONFIG", "REGISTRY", "GENERATED", "TEMP", "CACHE", "LOG", "ARCHIVE"]
+maturity_states = ["WORKING", "CANDIDATE", "APPROVED", "CANONICAL", "SUPERSEDED", "ARCHIVED"]
+promotion_path = ["WORKING", "CANDIDATE", "APPROVED", "CANONICAL"]
+
+[rules]
+source_is_immutable_reference = true
+generated_is_canonical_authority = false
+temp_enters_promotion = false
+founder_approval_required = true

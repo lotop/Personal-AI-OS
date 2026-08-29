@@ -1,0 +1,10 @@
+# Adapters
+
+> 状态：`WORKING`
+
+Adapter 将已批准的跨平台规则转换为目标平台原生配置。
+
+- Adapter 是 `GENERATED`，不是 Source of Truth。
+- 每个 Adapter 必须带 Source 版本、生成器版本和验证结果。
+- 不支持的能力必须显式标记为 `MANUAL`、`UNSUPPORTED` 或 `UNVERIFIED`。
+- 当前尚未生成或部署 Codex、Claude、Gemini 或 ChatGPT Adapter。

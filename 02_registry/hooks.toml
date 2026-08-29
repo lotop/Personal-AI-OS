@@ -1,0 +1,31 @@
+schema_version = "0.1.0-working"
+artifact_state = "WORKING"
+phase = 1
+
+[[hooks]]
+id = "session-start-context-check"
+event = "SessionStart"
+status = "CANDIDATE"
+enabled = false
+blocking = false
+
+[[hooks]]
+id = "pre-tool-safety-check"
+event = "PreToolUse"
+status = "CANDIDATE"
+enabled = false
+blocking = false
+
+[[hooks]]
+id = "stop-completion-check"
+event = "Stop"
+status = "CANDIDATE"
+enabled = false
+blocking = false
+
+[[hooks]]
+id = "session-end-close-marker"
+event = "SessionEnd"
+status = "CANDIDATE"
+enabled = false
+blocking = false

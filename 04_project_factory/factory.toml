@@ -1,0 +1,24 @@
+schema_version = "0.1.0-working"
+artifact_state = "WORKING"
+dry_run_default = true
+require_approved_template_pack = true
+default_branch = "main"
+
+primary_types = [
+  "BUSINESS_VENTURE",
+  "SOFTWARE_PRODUCT",
+  "RESEARCH_DECISION",
+  "OPERATIONS_PROGRAM",
+  "CONTENT_BRAND",
+]
+
+allowed_overlays = [
+  "software",
+  "data",
+  "ai",
+  "security",
+  "compliance",
+  "content",
+  "finance",
+  "vendor",
+]

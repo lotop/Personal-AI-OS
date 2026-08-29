@@ -1,0 +1,31 @@
+schema_version = "0.3.0-working"
+system_name = "Personal AI OS"
+target_version = "1.1"
+artifact_state = "WORKING"
+canonical_authority = "NONE"
+default_language = "zh-CN"
+default_structured_config = "toml"
+
+[repository]
+role = "candidate-canonical-repository"
+business_projects_embedded = false
+default_branch = "main"
+parallel_writes_require_worktree = true
+
+[promotion]
+automatic = false
+founder_approval_required = true
+
+[automation]
+hooks_phase = 1
+hooks_default_enabled = false
+destructive_gc_enabled = false
+automatic_deploy_enabled = false
+
+[implementation]
+physical_architecture = "WORKING"
+project_factory = "WORKING"
+codex_adapter = "NOT_STARTED"
+gemini_adapter = "NOT_STARTED"
+deployment = "PLANNED"
+release = "BLOCKED"

@@ -1,0 +1,16 @@
+.DS_Store
+.env
+.env.*
+!.env.example
+
+99_temp/**
+!99_temp/.gitkeep
+
+*.log
+*.tmp
+*.swp
+__pycache__/
+*.py[cod]
+
+.idea/
+.vscode/

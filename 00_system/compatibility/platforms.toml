@@ -1,0 +1,44 @@
+schema_version = "0.2.0-working"
+artifact_state = "WORKING"
+
+[[platforms]]
+id = "codex"
+status = "CANDIDATE"
+capability_audit = "CURRENT_PARTIAL"
+verified_on = "2026-08-30"
+context_file = "AGENTS.md"
+project_config = ".codex/config.toml"
+native_config_format = "toml"
+hooks = "NATIVE"
+skills = "NATIVE"
+evidence = [
+  "https://learn.chatgpt.com/docs/agent-configuration/agents-md",
+  "https://learn.chatgpt.com/docs/config-file/config-reference",
+  "https://learn.chatgpt.com/docs/hooks",
+]
+
+[[platforms]]
+id = "claude-code"
+status = "CANDIDATE"
+capability_audit = "PARTIAL"
+
+[[platforms]]
+id = "gemini-cli"
+status = "CANDIDATE"
+capability_audit = "CURRENT_PARTIAL"
+verified_on = "2026-08-30"
+context_file = "GEMINI.md"
+project_config = ".gemini/settings.json"
+native_config_format = "json"
+hooks = "NATIVE"
+skills = "NATIVE"
+evidence = [
+  "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
+  "https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/gemini-md.md",
+  "https://geminicli.com/docs/hooks/reference/",
+]
+
+[[platforms]]
+id = "chatgpt-project"
+status = "CANDIDATE"
+capability_audit = "PARTIAL"
