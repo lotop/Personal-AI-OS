@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "paos://schemas/adapter-manifest/0.1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "artifact_class",
+    "maturity_state",
+    "platform",
+    "generator",
+    "source_files",
+    "files"
+  ],
+  "properties": {
+    "schema_version": {"type": "string"},
+    "artifact_class": {"type": "string", "enum": ["GENERATED"]},
+    "maturity_state": {"type": "string", "enum": ["WORKING", "CANDIDATE", "APPROVED", "CANONICAL"]},
+    "platform": {"type": "string"},
+    "generator": {"type": "string"},
+    "source_files": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["source", "target", "format"],
+        "properties": {
+          "source": {"type": "string", "minLength": 1},
+          "target": {"type": "string", "minLength": 1},
+          "format": {"type": "string", "enum": ["toml", "json", "markdown"]}
+        }
+      },
+      "minItems": 1
+    }
+  }
+}

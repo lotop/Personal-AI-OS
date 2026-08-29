@@ -25,7 +25,14 @@ automatic_deploy_enabled = false
 [implementation]
 physical_architecture = "WORKING"
 project_factory = "WORKING"
-codex_adapter = "NOT_STARTED"
-gemini_adapter = "NOT_STARTED"
-deployment = "PLANNED"
+codex_adapter = "GENERATED_CANDIDATE"
+gemini_adapter = "GENERATED_CANDIDATE"
+deployment = "DRY_RUN_READY"
 release = "BLOCKED"
+
+[deployment_status]
+codex_project_config = "DEPLOYED_CANDIDATE"
+codex_runtime_smoke = "PARTIAL"
+gemini_project_config = "DEPLOYED_CANDIDATE"
+gemini_runtime_smoke = "BLOCKED_RUNTIME_MISSING"
+hooks_enabled = false

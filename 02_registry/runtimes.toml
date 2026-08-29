@@ -1,3 +1,23 @@
-schema_version = "0.1.0-working"
+schema_version = "0.2.0-working"
 artifact_state = "WORKING"
-runtimes = []
+
+[[runtimes]]
+id = "codex-local"
+platform = "codex"
+availability = "INSTALLED"
+version = "0.151.0-alpha.7.1"
+verified_on = "2026-08-30"
+project_config = "DEPLOYED_CANDIDATE"
+runtime_smoke = "PARTIAL"
+issues = [
+  "Codex Memory 数据库无法由 Doctor 打开",
+  "旧会话索引存在缺失与陈旧记录",
+]
+
+[[runtimes]]
+id = "gemini-cli-local"
+platform = "gemini-cli"
+availability = "NOT_INSTALLED"
+verified_on = "2026-08-30"
+project_config = "DEPLOYED_CANDIDATE"
+runtime_smoke = "BLOCKED_RUNTIME_MISSING"

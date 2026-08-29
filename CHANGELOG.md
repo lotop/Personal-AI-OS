@@ -12,6 +12,9 @@
 - 补建 `04_project_factory/` 与 `06_deployment/` Working 规范。
 - 建立默认 Dry Run、拒绝覆盖、限制路径并要求 Approved Template Pack 的 Project Factory 引擎及测试。
 - 依据官方资料更新 Codex 与 Gemini CLI 能力登记，并准备首个 Project AGENTS Template Candidate。
+- 新增 SYSTEM、Task Registry、Adapter Manifest 与 Template Pack Schema 及无依赖验证器。
+- 建立可重复生成的 Codex TOML、Gemini JSON Candidate Adapter 和默认 Dry Run 部署器。
+- 将 Codex 与 Gemini CLI Candidate 配置部署到项目级路径并完成幂等演练；记录 Runtime 可用性与外部阻塞。
 - 新增 Physical Architecture、V1.1 Consolidation Review 和 V1.0 Baseline Evidence Note。
 - 将资产类别与成熟度状态分离，修正 `SOURCE` 被当作 Promotion 状态的问题。
 - 将专业任务拆分为研究、本地产物、评审和实施进度，修正虚假完成状态。

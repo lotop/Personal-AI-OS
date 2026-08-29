@@ -1,0 +1,5 @@
+# GENERATED CANDIDATE. 修改源文件而不是本文件。
+# Source: 00_system/compatibility/adapter_profiles.toml
+
+project_doc_max_bytes = 65536
+project_root_markers = [".git", "SYSTEM.toml", "project.toml"]

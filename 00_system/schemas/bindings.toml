@@ -1,0 +1,23 @@
+schema_version = "0.1.0-working"
+artifact_class = "REGISTRY"
+maturity_state = "WORKING"
+
+[[bindings]]
+path = "SYSTEM.toml"
+format = "toml"
+schema = "system.schema.json"
+
+[[bindings]]
+path = "02_registry/tasks.toml"
+format = "toml"
+schema = "task-registry.schema.json"
+
+[[bindings]]
+path_glob = "03_adapters/*/manifest.toml"
+format = "toml"
+schema = "adapter-manifest.schema.json"
+
+[[bindings]]
+path_glob = "01_templates/*/template.toml"
+format = "toml"
+schema = "template-pack.schema.json"

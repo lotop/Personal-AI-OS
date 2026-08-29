@@ -11,6 +11,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+from schema_validation import validate_instance
+
 try:
     import tomllib
 except ModuleNotFoundError:  # Python 3.10 兼容
@@ -45,6 +47,8 @@ REQUIRED_FILES = [
     "DECISIONS.md",
     "CHANGELOG.md",
     "SYSTEM.toml",
+    ".codex/config.toml",
+    ".gemini/settings.json",
     "07_working/specs/PHYSICAL_ARCHITECTURE.md",
     "07_working/reviews/CONSOLIDATION_V1.1.md",
     "08_history/V1.0_BASELINE_NOTE.md",
@@ -104,6 +108,57 @@ def validate_structured_files(report: Report) -> dict[Path, dict]:
         except SyntaxError as exc:
             report.error(f"Python 语法失败: {path.relative_to(ROOT)}: {exc}")
     return parsed
+
+
+def validate_schema_bindings(parsed: dict[Path, dict], report: Report) -> None:
+    schema_root = ROOT / "00_system/schemas"
+    bindings = parsed.get(schema_root / "bindings.toml", {}).get("bindings", [])
+    for binding in bindings:
+        schema_path = schema_root / binding["schema"]
+        if not schema_path.is_file():
+            report.error(f"Schema 不存在: {binding['schema']}")
+            continue
+        schema = json.loads(schema_path.read_text(encoding="utf-8"))
+        if "path" in binding:
+            targets = [ROOT / binding["path"]]
+        else:
+            targets = sorted(ROOT.glob(binding["path_glob"]))
+        for target in targets:
+            if not target.is_file():
+                report.error(f"Schema 绑定目标不存在: {target.relative_to(ROOT)}")
+                continue
+            if binding["format"] == "toml":
+                instance = parsed.get(target, load_toml(target, report))
+            else:
+                instance = json.loads(target.read_text(encoding="utf-8"))
+            for error in validate_instance(instance, schema):
+                report.error(f"Schema 失败 {target.relative_to(ROOT)}: {error}")
+
+    adapter_schema = json.loads((schema_root / "adapter-manifest.schema.json").read_text())
+    for target in sorted((ROOT / "03_adapters").glob("*/manifest.toml")):
+        instance = parsed.get(target, load_toml(target, report))
+        for error in validate_instance(instance, adapter_schema):
+            report.error(f"Schema 失败 {target.relative_to(ROOT)}: {error}")
+
+
+def validate_deployed_adapters(parsed: dict[Path, dict], report: Report) -> None:
+    for manifest_path in sorted((ROOT / "03_adapters").glob("*/manifest.toml")):
+        manifest = parsed.get(manifest_path, load_toml(manifest_path, report))
+        for record in manifest.get("files", []):
+            source_rel = Path(record["source"])
+            target_rel = Path(record["target"])
+            if source_rel.is_absolute() or ".." in source_rel.parts:
+                report.error(f"Adapter source 越界: {manifest_path.relative_to(ROOT)}")
+                continue
+            if target_rel.is_absolute() or ".." in target_rel.parts:
+                report.error(f"Adapter target 越界: {manifest_path.relative_to(ROOT)}")
+                continue
+            source = manifest_path.parent / source_rel
+            target = ROOT / target_rel
+            if not target.is_file():
+                report.error(f"Adapter 尚未部署: {target_rel}")
+            elif source.read_bytes() != target.read_bytes():
+                report.error(f"已部署 Adapter 漂移: {target_rel}")
 
 
 def validate_unique_ids(parsed: dict[Path, dict], report: Report) -> None:
@@ -197,6 +252,8 @@ def main() -> int:
     report = Report()
     validate_required(report)
     parsed = validate_structured_files(report)
+    validate_schema_bindings(parsed, report)
+    validate_deployed_adapters(parsed, report)
     validate_unique_ids(parsed, report)
     validate_tasks(parsed, report)
     validate_lifecycle(parsed, report)

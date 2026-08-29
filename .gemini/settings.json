@@ -1,0 +1,11 @@
+{
+  "context": {
+    "fileName": [
+      "AGENTS.md"
+    ],
+    "loadFromIncludeDirectories": false,
+    "fileFiltering": {
+      "respectGitIgnore": true
+    }
+  }
+}
