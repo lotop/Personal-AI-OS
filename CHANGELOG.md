@@ -19,6 +19,7 @@
 - 完成本地 Git 干净克隆恢复演练，并加入机器可读 Release Gate 审计器与 Readiness Report。
 - 完成 Codex CLI 只读 Runtime Smoke，验证 Agent 能加载项目指令并返回正确系统元数据。
 - 验证 Gemini CLI `0.57.0` 与项目配置可加载；真实模型 Smoke 因缺少外发授权而保持阻塞，未发送项目内容。
+- 完成包含完整历史的离线 Git Bundle 校验与恢复演练。
 - 新增 Physical Architecture、V1.1 Consolidation Review 和 V1.0 Baseline Evidence Note。
 - 将资产类别与成熟度状态分离，修正 `SOURCE` 被当作 Promotion 状态的问题。
 - 将专业任务拆分为研究、本地产物、评审和实施进度，修正虚假完成状态。

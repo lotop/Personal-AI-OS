@@ -30,6 +30,7 @@ gemini_adapter = "GENERATED_CANDIDATE"
 deployment = "DRY_RUN_READY"
 release = "BLOCKED"
 local_git_recovery = "PASS"
+offline_bundle_recovery = "PASS"
 private_remote_recovery = "NOT_TESTED"
 
 [deployment_status]
