@@ -18,7 +18,9 @@ issues = [
 [[runtimes]]
 id = "gemini-cli-local"
 platform = "gemini-cli"
-availability = "NOT_INSTALLED"
+availability = "TRANSIENT_AVAILABLE"
+version = "0.57.0"
 verified_on = "2026-08-30"
 project_config = "DEPLOYED_CANDIDATE"
-runtime_smoke = "BLOCKED_RUNTIME_MISSING"
+config_load = "PASS"
+runtime_smoke = "BLOCKED_EXTERNAL_DATA_AUTHORIZATION"

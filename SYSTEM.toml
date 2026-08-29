@@ -36,5 +36,5 @@ private_remote_recovery = "NOT_TESTED"
 codex_project_config = "DEPLOYED_CANDIDATE"
 codex_runtime_smoke = "PASS"
 gemini_project_config = "DEPLOYED_CANDIDATE"
-gemini_runtime_smoke = "BLOCKED_RUNTIME_MISSING"
+gemini_runtime_smoke = "BLOCKED_EXTERNAL_DATA_AUTHORIZATION"
 hooks_enabled = false

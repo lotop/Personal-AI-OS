@@ -40,11 +40,14 @@
 
 ## Gemini CLI Runtime
 
-- CLI：本机未安装。
+- CLI：通过一次性官方包可用，版本 `0.57.0`；未执行全局安装。
 - Native JSON：解析通过。
 - 配置字段：依据当前官方 Configuration 文档生成。
-- Runtime Smoke：`BLOCKED_RUNTIME_MISSING`。
+- CLI 配置加载与帮助入口：通过。
+- Runtime Smoke：`BLOCKED_EXTERNAL_DATA_AUTHORIZATION`。
+
+真实模型 Smoke 会把项目指令和最小系统字段发送到 Google Gemini 服务。当前没有 Founder 对该外发行为的明确授权，因此安全审查在请求发出前阻止了执行；没有项目内容被发送。
 
 ## 结论
 
-项目已经具备 Codex 与 Gemini CLI 配置的生成、Dry Run、部署、幂等和回滚基础；尚不能宣称完成 Gemini CLI 实机加载，也不能将 Candidate Adapter 晋升为 Canonical。
+项目已经具备 Codex 与 Gemini CLI 配置的生成、Dry Run、部署、幂等和回滚基础；Codex Runtime Smoke 已通过，Gemini CLI 已加载配置但尚未获得外发授权，不能将 Candidate Adapter 晋升为 Canonical。
