@@ -37,8 +37,8 @@ codex_adapter = "GENERATED_WORKING"
 gemini_adapter = "GENERATED_WORKING"
 deployment = "DRY_RUN_READY"
 release = "WORKING"
-local_git_recovery = "REVALIDATION_REQUIRED"
-offline_bundle_recovery = "REVALIDATION_REQUIRED"
+local_git_recovery = "PASS_CANDIDATE"
+offline_bundle_recovery = "PASS_CANDIDATE"
 private_remote_recovery = "NOT_TESTED"
 
 [deployment_status]

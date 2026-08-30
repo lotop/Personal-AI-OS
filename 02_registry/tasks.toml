@@ -85,7 +85,7 @@ platform_ref = "6a931d8b-5658-83ea-a6ca-992c7839b9be"
 [[tasks]]
 id = "paos-10-v1-1-1-consistency"
 purpose = "V1.1.1 状态一致性、发布证据加固与 Handoff 收口"
-status = "REVIEW"
-validation = ["scope-confirmed", "branch-isolated", "audit-complete", "implementation-complete"]
+status = "DONE"
+validation = ["scope-confirmed", "branch-isolated", "audit-complete", "implementation-complete", "ci-pass", "e2e-pass", "recovery-pass", "handoff-complete"]
 platform = "codex"
 platform_ref = "codex/v1.1.1-consistency"
