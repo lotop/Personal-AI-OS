@@ -1,14 +1,14 @@
-# Personal AI OS V1.1.1 Release Candidate
+# Personal AI OS V1.1.1
 
-> Router 版本：`0.6-working`
+> Router 版本：`0.6-approved`
 >
-> 状态：`WORKING`
+> 状态：`APPROVED`
 >
-> 已批准基线：`v1.1.0`（`PAOS-REL-001`）
+> 已批准基线：`v1.1.1`（`PAOS-REL-002`）
 >
-> 当前修订：`v1.1.1` 候选，尚未 Tag 或 Promotion
+> 当前发布：`v1.1.1`，由本地 annotated tag 与 Release Evidence 绑定
 
-本文件是仓库根入口的 V1.1.1 Working Router。V1.1.0 已获批准；本轮修订在获得 Founder Release Approval 并绑定固定 Commit/Tag 前不具有新的 Canonical Authority。本文件只负责导航和最低限度安全边界，不承载全部治理正文。
+本文件是仓库根入口的 V1.1.1 Approved Router。V1.1.1 已由 Founder 批准；Canonical Authority 由 `PAOS-REL-002`、固定恢复证据与本地 annotated tag `v1.1.1` 共同证明。本文件只负责导航和最低限度安全边界，不承载全部治理正文。
 
 ## 系统定位
 

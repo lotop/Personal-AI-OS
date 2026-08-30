@@ -1,10 +1,10 @@
 # Decisions
 
-> 状态：`WORKING`
+> 状态：`APPROVED`
 >
-> 已批准基线：`v1.1.0`（`PAOS-REL-001`）
+> 已批准基线：`v1.1.1`（`PAOS-REL-002`）
 >
-> 当前修订：`v1.1.1` Working Candidate
+> 当前发布：`v1.1.1`
 
 正式 Decision Record 模板尚未确认。本索引先记录已经由 Founder 明确确认的决策事实。
 
@@ -82,9 +82,16 @@
 - 实施边界：本决定授权形成并提交 V1.1.1 Release Candidate；不构成 V1.1.1 Release Approval、Tag、Push、Merge 或 Canonical Promotion 授权。
 - 验收边界：M5 必须校验机器可读恢复证据与 Commit/Bundle/Tree Digest；M6 必须校验 Founder Approval、annotated Tag 与当前 HEAD 的精确绑定。
 
+### PAOS-REL-002｜Personal AI OS V1.1.1 正式发布批准
+
+- 状态：`APPROVED`
+- 决定：批准 Personal AI OS V1.1.1 作为当前 Canonical Control Plane 基线，纳入 Codex、Claude Code 与 Gemini Adapter、Project Factory Template Pack `1.1.0`、加固后的 M1–M6 Release Audit 与可校验恢复证据。
+- 授权范围：合并到本地 `main`，创建本地 annotated tag `v1.1.1`，并执行 Canonical Promotion；本次不授权 Push、远端发布或外部部署。
+- 运行时边界：Codex Runtime Smoke 为 PASS；Claude Code Config Load 为 PASS 但 Live Runtime 未授权；Gemini Config Load 为 CONDITIONAL PASS 且 Live Runtime 未授权。不得扩大解读。
+- 绑定规则：发布实现冻结 Commit 为 `e95cf5aee29bcc018454dcac08d5e04301ab482d`；正式 Release Commit 由 annotated tag `v1.1.1` 精确绑定。
+
 ## Candidate Decisions
 
-- `PAOS-REL-002`｜V1.1.1 正式发布批准（待 Founder 在最终验证后决定）。
 - 根 `AGENTS.md` 采用精简 Router，而不是完整 Policy Core。
 - Phase 1 Hooks 可以拒绝固定禁令，但不得代替用户批准操作。
 - `06_deployment/` 作为 Agent 部署、备份与恢复层。

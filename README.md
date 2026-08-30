@@ -1,6 +1,6 @@
-# Personal AI OS V1.1.1 Release Candidate
+# Personal AI OS V1.1.1
 
-> **当前状态**：`WORKING` | **目标版本**：`v1.1.1` | **已批准基线**：`v1.1.0`（`PAOS-REL-001`）
+> **当前状态**：`APPROVED` | **当前版本**：`v1.1.1` | **批准记录**：`PAOS-REL-002`
 > 
 > 本仓库是 **Personal AI OS** 的 **Canonical Control Plane（本地中央控制平面）**，用于统筹和治理跨设备、多 Agent（Codex、Claude Code 与 Gemini）的个人 AI 研发工作流与独立业务项目。
 
@@ -70,7 +70,7 @@ TODO ──> ACTIVE ──> REVIEW ──> DONE
 * 🚀 **全栈软件产品研发**：从脚手架初始化、模块设计、单测驱动（TDD）到复杂重构，保持代码风格与架构规范高度统一。
 * 💡 **产品探索与商业分析**：支持商业模式画布（BMC）、精益画布（Lean Canvas）、PRD 需求规格与竞品分析的标准化撰写与迭代。
 * 🔬 **深度研究与架构决策 (ADR)**：在面临复杂技术选型、数据库/框架重构时，通过严格的 `DECISIONS.md` 记录决策依据、替代方案与潜在风险。
-* 🤖 **跨 Agent 协同研发**：同时使用 Gemini（Antigravity/Gemini CLI）进行全局架构设计与审查，配合 Codex 进行高精度代码编写，统一上下文认知。
+* 🤖 **跨 Agent 协同研发**：通过统一 Canonical Rule 协调 Codex、Claude Code 与 Gemini；各平台能力与验证状态分别登记，不把 Config Load 等同于 Live Runtime。
 * 📚 **个人数字资产与知识积累**：跨年度、跨项目沉淀经过验证的最佳实践模板与技能包，告别项目碎片化。
 
 ---
