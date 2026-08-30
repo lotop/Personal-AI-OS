@@ -1,31 +1,31 @@
-# Recovery Drill｜V1.1.1 Candidate
+# Recovery Drill｜V1.1.2 Working Revision
 
 > 状态：`WORKING_EVIDENCE`
 >
 > 执行日期：`2026-08-31`
 >
-> Source Commit：`6d006739ac15e20f059b675606749abfa82bf2ea`
+> Source Commit：`b352d9031930f7227fe98852ae8e5b060351672d`
 >
 > Machine Evidence：`07_working/reviews/recovery_evidence.toml`
 
 ## 场景
 
-从冻结的 V1.1.1 Candidate Commit 创建不使用本地对象捷径的冷克隆，并创建只包含候选分支的离线 Git Bundle。两个恢复副本都必须精确恢复同一 Commit、通过本地 CI、通过 Adapter Check，并具有相同 Tree Digest。
+从冻结的 V1.1.2 Working Commit 创建不使用本地对象捷径的冷克隆，并创建只包含本地 `main` 的离线 Git Bundle。两个恢复副本都必须精确恢复同一 Commit、通过本地 CI、通过 Adapter Check，并具有相同 Tree Digest。
 
 ## 冷克隆结果
 
-- 命令：`git clone --no-local --branch codex/claude-code-support`。
-- 恢复 Commit：`6d006739ac15e20f059b675606749abfa82bf2ea`。
+- 命令：`git clone --no-local --branch main`。
+- 恢复 Commit：`b352d9031930f7227fe98852ae8e5b060351672d`。
 - Local Offline CI：`PASS`。
 - Adapter Generator `--check`：`ADAPTERS_OK`。
 - `git fsck --full`：退出码 `0`。
 
 ## 离线 Bundle 结果
 
-- Bundle Head：`6d006739ac15e20f059b675606749abfa82bf2ea`。
-- Bundle SHA-256：`cf6269bcf6283df14b865ed3a18ae87a85066107e1da42da7335fa142bd6f17b`。
+- Bundle Head：`b352d9031930f7227fe98852ae8e5b060351672d`。
+- Bundle SHA-256：`b8ced3b58ec33c70c6553627210cde9bd1ce9d9efea6f431260e643aae4bdbd0`。
 - `git bundle verify`：退出码 `0`。
-- Bundle 恢复 Commit：`6d006739ac15e20f059b675606749abfa82bf2ea`。
+- Bundle 恢复 Commit：`b352d9031930f7227fe98852ae8e5b060351672d`。
 - Local Offline CI：`PASS`。
 - Adapter Generator `--check`：`ADAPTERS_OK`。
 - `git fsck --full`：退出码 `0`。
@@ -33,7 +33,7 @@
 ## 内容一致性
 
 - Source/Cold Clone/Bundle Clone Commit：精确一致。
-- Tree SHA-256：`f85643421f406f16e34b24ff62e5e7b705c9f5ad41a00e4bc24abe664401c743`。
+- Tree SHA-256：`493d74d018145c61f8d6e3f30d35361c89aa00a1c54e6705c082cc1740295ad2`。
 - Machine Evidence 与本报告 Commit、Bundle SHA、Tree SHA：一致。
 
 结论：`PASS`
