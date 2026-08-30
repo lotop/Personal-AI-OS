@@ -38,8 +38,8 @@ claude_code_adapter = "GENERATED_WORKING"
 gemini_adapter = "GENERATED_WORKING"
 deployment = "APPROVED_LOCAL"
 release = "WORKING_V1.1.2"
-local_git_recovery = "PASS"
-offline_bundle_recovery = "PASS"
+local_git_recovery = "PASS_BASELINE_V1.1.1"
+offline_bundle_recovery = "PASS_BASELINE_V1.1.1"
 private_remote_recovery = "NOT_TESTED"
 
 [deployment_status]
