@@ -29,6 +29,20 @@ verified_on = "2026-08-30"
 evidence_refs = ["AGENT_DEPLOYMENT_SMOKE.md", "official:gemini-context"]
 
 [[capability_evidence]]
+id = "project-context-discovery"
+platform = "claude-code"
+support_level = "ADAPTER"
+version = "2.1.251"
+supported_by_docs = true
+configured = true
+config_loaded = true
+runtime_verified = false
+external_data_required = false
+blocked_reason = "LIVE_RUNTIME_NOT_AUTHORIZED"
+verified_on = "2026-08-31"
+evidence_refs = ["official:claude-code-memory", "CLAUDE_CODE_DEPLOYMENT.md", "claude-doctor-2.1.251"]
+
+[[capability_evidence]]
 id = "project-config"
 platform = "codex"
 support_level = "NATIVE"
@@ -54,6 +68,20 @@ external_data_required = false
 blocked_reason = "RUNTIME_NOT_AUTHORIZED"
 verified_on = "2026-08-30"
 evidence_refs = ["AGENT_DEPLOYMENT_SMOKE.md", "official:gemini-configuration"]
+
+[[capability_evidence]]
+id = "project-config"
+platform = "claude-code"
+support_level = "NATIVE"
+version = "2.1.251"
+supported_by_docs = true
+configured = true
+config_loaded = true
+runtime_verified = false
+external_data_required = false
+blocked_reason = "LIVE_RUNTIME_NOT_AUTHORIZED"
+verified_on = "2026-08-31"
+evidence_refs = ["official:claude-code-settings", "CLAUDE_CODE_DEPLOYMENT.md", "claude-doctor-2.1.251"]
 
 [[capability_evidence]]
 id = "hooks"
@@ -84,6 +112,19 @@ verified_on = "2026-08-30"
 evidence_refs = ["official:gemini-hooks"]
 
 [[capability_evidence]]
+id = "hooks"
+platform = "claude-code"
+support_level = "NATIVE"
+supported_by_docs = true
+configured = false
+config_loaded = false
+runtime_verified = false
+external_data_required = false
+blocked_reason = "PHASE1_DISABLED"
+verified_on = "2026-08-31"
+evidence_refs = ["official:claude-code-hooks"]
+
+[[capability_evidence]]
 id = "live-runtime"
 platform = "codex"
 support_level = "NATIVE"
@@ -109,3 +150,17 @@ external_data_required = true
 blocked_reason = "BLOCKED_EXTERNAL_DATA_AUTHORIZATION"
 verified_on = "2026-08-30"
 evidence_refs = ["AGENT_DEPLOYMENT_SMOKE.md"]
+
+[[capability_evidence]]
+id = "live-runtime"
+platform = "claude-code"
+support_level = "NATIVE"
+version = "2.1.251"
+supported_by_docs = true
+configured = true
+config_loaded = true
+runtime_verified = false
+external_data_required = true
+blocked_reason = "BLOCKED_EXTERNAL_DATA_AUTHORIZATION"
+verified_on = "2026-08-31"
+evidence_refs = ["CLAUDE_CODE_DEPLOYMENT.md", "official:claude-code-how-it-works"]

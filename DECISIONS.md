@@ -59,6 +59,13 @@
 - 决定：批准 `01_templates/project-base-pack`（版本 `1.0.0`）作为 Personal AI OS V1.1 的官方首个已批准模板包。
 - 依据：通过 `04_project_factory/create_project.py` 正式 E2E 实例化验收，生成物完整性与 SHA-256 均符合 Schema 定义。
 
+### PAOS-TMPL-002｜Claude Code Template Pack 纳入批准
+
+- 状态：`APPROVED`
+- 决定：批准 `01_templates/project-base-pack` 升级至版本 `1.1.0`，纳入薄层 `CLAUDE.md` Adapter 与项目级 `.claude/settings.json`；`AGENTS.md` 继续作为统一项目规则入口。
+- 边界：不得将 Claude Auto Memory、Conversation、`.claude/rules/`、Hooks、Skills、Subagents 或 MCP 配置自动升级为 Canonical；外部数据发送仍需独立授权。
+- 依据：Founder 已明确确认 Claude Code 纳入 V1.1.1，并授权执行；正式 Factory E2E 与 Claude Code 隔离 Config Load 均须通过。
+
 ### PAOS-REL-001｜Personal AI OS V1.1 正式发布批准
 
 - 状态：`APPROVED`

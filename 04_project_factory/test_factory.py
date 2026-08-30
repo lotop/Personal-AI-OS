@@ -128,8 +128,8 @@ class ProjectFactoryTest(unittest.TestCase):
             self.assertFalse(target.exists())
             self.assertEqual(list(root.glob(".failed-project.paos-staging-*")), [])
 
-    def test_repository_candidate_pack_dry_run_and_apply(self) -> None:
-        pack = Path(__file__).resolve().parents[1] / "07_working/candidates/project-base-pack"
+    def test_repository_approved_pack_dry_run_and_apply(self) -> None:
+        pack = Path(__file__).resolve().parents[1] / "01_templates/project-base-pack"
         with tempfile.TemporaryDirectory() as raw:
             target = Path(raw) / "candidate-project"
             command = [
@@ -142,7 +142,6 @@ class ProjectFactoryTest(unittest.TestCase):
                 "--owner", "Founder",
                 "--primary-type", "SOFTWARE_PRODUCT",
                 "--overlay", "ai",
-                "--provisional",
             ]
             dry_run = subprocess.run(command, text=True, capture_output=True, check=False)
             self.assertEqual(dry_run.returncode, 0, dry_run.stderr)
@@ -152,10 +151,21 @@ class ProjectFactoryTest(unittest.TestCase):
                 command + ["--apply", "--git"], text=True, capture_output=True, check=False
             )
             self.assertEqual(apply_run.returncode, 0, apply_run.stderr)
-            for relative in ("AGENTS.md", "PROJECT.md", "project.toml", "TASKS.md", "SESSION_CLOSE.md"):
+            for relative in (
+                "AGENTS.md",
+                "CLAUDE.md",
+                ".claude/settings.json",
+                "PROJECT.md",
+                "project.toml",
+                "TASKS.md",
+                "SESSION_CLOSE.md",
+            ):
                 self.assertTrue((target / relative).is_file(), relative)
             self.assertTrue((target / ".git").is_dir())
             self.assertNotIn("{{", (target / "AGENTS.md").read_text(encoding="utf-8"))
+            self.assertTrue(
+                (target / "CLAUDE.md").read_text(encoding="utf-8").startswith("@AGENTS.md")
+            )
 
 
 if __name__ == "__main__":

@@ -81,15 +81,43 @@ def adapter_deployment_gate(root: Path = ROOT) -> Gate:
     generated = run(root, PYTHON, "05_harness/generate_adapters.py", "--check")
     if generated.returncode != 0:
         return Gate("M4", "Adapter & Deployment", "FAIL", "Adapter generation drift")
+
+    required_platforms = {"codex", "claude-code", "gemini-cli"}
+    manifests: dict[str, dict] = {}
+    for manifest_path in sorted((root / "03_adapters").glob("*/manifest.toml")):
+        manifest = tomllib.loads(manifest_path.read_text(encoding="utf-8"))
+        manifests[manifest["platform"]] = manifest
+        for record in manifest.get("files", []):
+            source = manifest_path.parent / record["source"]
+            target = root / record["target"]
+            if not source.is_file() or not target.is_file() or source.read_bytes() != target.read_bytes():
+                return Gate(
+                    "M4",
+                    "Adapter & Deployment",
+                    "FAIL",
+                    f"{manifest['platform']} Adapter 未部署或发生漂移: {record['target']}",
+                )
+    missing = sorted(required_platforms - manifests.keys())
+    if missing:
+        return Gate("M4", "Adapter & Deployment", "FAIL", "缺少 Adapter: " + ", ".join(missing))
+
     data = tomllib.loads((root / "02_registry/runtimes.toml").read_text(encoding="utf-8"))
     records = {item["platform"]: item for item in data.get("runtimes", [])}
     codex = records.get("codex", {})
+    claude = records.get("claude-code", {})
     gemini = records.get("gemini-cli", {})
     if codex.get("runtime_smoke") != "PASS":
         return Gate("M4", "Adapter & Deployment", "BLOCKED", "Codex Runtime Smoke 尚未 PASS")
+    if claude.get("config_load") != "PASS":
+        return Gate("M4", "Adapter & Deployment", "BLOCKED", "Claude Code Config Load 尚未 PASS")
     if gemini.get("config_load") != "PASS":
         return Gate("M4", "Adapter & Deployment", "BLOCKED", "Gemini Conditional Config Load 尚未 PASS")
-    return Gate("M4", "Adapter & Deployment", "PASS", "Codex PASS; Gemini CONDITIONAL config PASS")
+    return Gate(
+        "M4",
+        "Adapter & Deployment",
+        "PASS",
+        "Codex runtime PASS; Claude Code config PASS; Gemini CONDITIONAL config PASS",
+    )
 
 
 def commit_tree_digest(root: Path, commit: str) -> str:

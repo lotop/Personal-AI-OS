@@ -11,7 +11,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from release_audit import approval_gate, audit, commit_tree_digest, recovery_gate
+from release_audit import adapter_deployment_gate, approval_gate, audit, commit_tree_digest, recovery_gate
 
 
 class ReleaseAuditTest(unittest.TestCase):
@@ -30,6 +30,11 @@ class ReleaseAuditTest(unittest.TestCase):
         gate = {item.id: item for item in audit()}["M4"]
         if gate.status == "PASS":
             self.assertIn("CONDITIONAL", gate.evidence)
+
+    def test_claude_config_load_is_verified(self) -> None:
+        gate = adapter_deployment_gate()
+        self.assertEqual(gate.status, "PASS")
+        self.assertIn("Claude Code config PASS", gate.evidence)
 
     def init_repo(self, root: Path) -> str:
         subprocess.run(["git", "init", "-b", "main"], cwd=root, check=True, capture_output=True)

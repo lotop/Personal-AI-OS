@@ -89,3 +89,11 @@ status = "DONE"
 validation = ["scope-confirmed", "branch-isolated", "audit-complete", "implementation-complete", "ci-pass", "e2e-pass", "recovery-pass", "handoff-complete"]
 platform = "codex"
 platform_ref = "codex/v1.1.1-consistency"
+
+[[tasks]]
+id = "paos-11-claude-code-support"
+purpose = "Claude Code 项目入口、Working Adapter、Factory Candidate 与离线验证"
+status = "DONE"
+validation = ["scope-confirmed", "official-docs-verified", "branch-isolated", "implementation-complete", "adapter-check-pass", "ci-pass", "candidate-e2e-pass"]
+platform = "codex"
+platform_ref = "codex/claude-code-support"

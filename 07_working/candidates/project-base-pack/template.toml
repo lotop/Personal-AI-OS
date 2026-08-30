@@ -1,5 +1,5 @@
 pack_id = "paos-project-base"
-version = "0.2.0-working"
+version = "0.3.0-working"
 artifact_state = "WORKING"
 owner = "paos-04-factory"
 canonical_authority = "NONE"
@@ -8,6 +8,16 @@ canonical_authority = "NONE"
 source = "AGENTS.md.tmpl"
 destination = "AGENTS.md"
 render = true
+
+[[files]]
+source = "CLAUDE.md.tmpl"
+destination = "CLAUDE.md"
+render = true
+
+[[files]]
+source = "claude-settings.json.tmpl"
+destination = ".claude/settings.json"
+render = false
 
 [[files]]
 source = "PROJECT.md.tmpl"

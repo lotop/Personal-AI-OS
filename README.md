@@ -2,7 +2,7 @@
 
 > **当前状态**：`WORKING` | **目标版本**：`v1.1.1` | **已批准基线**：`v1.1.0`（`PAOS-REL-001`）
 > 
-> 本仓库是 **Personal AI OS** 的 **Canonical Control Plane（本地中央控制平面）**，用于统筹和治理跨设备、多 Agent（Codex & Gemini）的个人 AI 研发工作流与独立业务项目。
+> 本仓库是 **Personal AI OS** 的 **Canonical Control Plane（本地中央控制平面）**，用于统筹和治理跨设备、多 Agent（Codex、Claude Code 与 Gemini）的个人 AI 研发工作流与独立业务项目。
 
 ---
 
@@ -38,7 +38,7 @@ flowchart TD
     subgraph BusinessProject["独立业务项目 (如 ~/Projects/my-app)"]
         ProjDoc["PROJECT.md / DECISIONS.md"]
         Tasks["tasks/ (Task Card 任务卡)"]
-        Adapters[".codex/ & .gemini/ 适配配置"]
+        Adapters[".codex/、.claude/ & .gemini/ 适配配置"]
         Src["src/ (业务代码与测试)"]
     end
 
@@ -52,7 +52,7 @@ flowchart TD
 * **执行平面（Execution Plane）**：具体的业务项目以独立仓库形式存在于外部目录，仅保留轻量级项目级路由（`AGENTS.md`）和配置（`.codex/`、`.gemini/`），保持干净与专注。
 
 ### 2. 单向生成机制 (Unidirectional Adapter Synthesis)
-人工维护结构化的标准配置与 Markdown 规则，经由生成器（`05_harness/generate_adapters.py`）单向编译输出到各个 Agent 平台的原生格式（如 `.codex/config.toml` 与 `.gemini/settings.json`）。禁止反向手改平台配置，避免产生配置漂移。
+人工维护结构化的标准配置与 Markdown 规则，经由生成器（`05_harness/generate_adapters.py`）单向编译输出到各个 Agent 平台的原生格式（如 `.codex/config.toml`、`CLAUDE.md`、`.claude/settings.json` 与 `.gemini/settings.json`）。禁止反向手改平台配置，避免产生配置漂移。
 
 ### 3. 任务卡驱动的状态机 (Task-Card Driven State Machine)
 任务以 Task Card（任务卡）为最小交付单元，使用一个主状态和独立验证证据：
@@ -82,7 +82,7 @@ TODO ──> ACTIVE ──> REVIEW ──> DONE
 | :--- | :--- | :--- |
 | **Markdown (`.md`)** | 人类与 Agent 共同阅读的非结构化知识 | 治理规范、架构决策（`DECISIONS.md`）、项目目标（`PROJECT.md`）、任务卡（`TASK-*.md`） |
 | **TOML (`.toml`)** | 人工维护的 Canonical 结构化配置 | 系统元数据（`SYSTEM.toml`）、注册表（`02_registry/`）、工厂配置（`factory.toml`） |
-| **JSON (`.json`)** | 平台原生配置文件与机器生成数据 | Agent 平台配置（`.gemini/settings.json`）、脚手架初始化元数据（`.paos-init.json`） |
+| **JSON (`.json`)** | 平台原生配置文件与机器生成数据 | Agent 平台配置（`.claude/settings.json`、`.gemini/settings.json`）、脚手架初始化元数据（`.paos-init.json`） |
 | **JSONL (`.jsonl`)** | 追加式审计与事件日志 | 运行时事件流、会话转录与审计跟踪记录 |
 
 ### 2. 运行环境与零外部依赖设计
@@ -102,11 +102,14 @@ python3 05_harness/ci_gate.py --profile local-offline
 python3 05_harness/ci_gate.py --profile release-readiness
 ```
 
-### 2. 部署 Codex 与 Gemini 适配器
+### 2. 部署 Codex、Claude Code 与 Gemini 适配器
 在当前仓库根目录下执行同步部署：
 ```bash
 # 部署 Codex 适配配置 (.codex/config.toml)
 python3 06_deployment/deploy_adapter.py --manifest 03_adapters/codex/manifest.toml --target . --apply
+
+# 部署 Claude Code 适配配置 (CLAUDE.md 与 .claude/settings.json)
+python3 06_deployment/deploy_adapter.py --manifest 03_adapters/claude-code/manifest.toml --target . --apply
 
 # 部署 Gemini 适配配置 (.gemini/settings.json)
 python3 06_deployment/deploy_adapter.py --manifest 03_adapters/gemini-cli/manifest.toml --target . --apply
@@ -133,11 +136,12 @@ python3 06_deployment/deploy_adapter.py --manifest 03_adapters/gemini-cli/manife
 
 ---
 
-## 💡 双 Agent 协同最佳实践
+## 💡 多 Agent 协同最佳实践
 
 | 角色 | 推荐 Agent | 核心职责 |
 | :--- | :--- | :--- |
 | **总控与架构师** | **Gemini / Antigravity** | 制定项目目标（`PROJECT.md`）、拆解具体任务卡（`tasks/TASK-xxx.md`）、把控只读/只改文件范围（Read/Write Set）、代码审查与架构决策（`DECISIONS.md`）。 |
+| **研究与审查协作者** | **Claude Code** | 通过 `CLAUDE.md` 导入同一 `AGENTS.md` Router，在相同 Task Card、权限和 Source-of-Truth 边界下进行实现、分析或审查。 |
 | **工程师与执行者** | **Codex** | 严格围绕单张 Task Card 进行代码编写、单测实现（TDD）与局部重构，确保小步交付。 |
 
 ---
@@ -147,6 +151,7 @@ python3 06_deployment/deploy_adapter.py --manifest 03_adapters/gemini-cli/manife
 ```text
 Personal-AI-OS/
 ├── AGENTS.md               # Agent 统一启动与规则路由器
+├── CLAUDE.md               # Claude Code 原生入口，导入 AGENTS.md
 ├── PROJECT.md              # 本控制平面的目标与范围
 ├── DECISIONS.md            # 系统级架构决策记录
 ├── SYSTEM.toml             # 机器可读的元数据描述
@@ -154,7 +159,7 @@ Personal-AI-OS/
 ├── 00_system/              # 【核心规则源】治理、安全、Mode、Memory 与多 Agent 同步
 ├── 01_templates/           # 【模板库】经过严格审批的基础项目包（project-base-pack 等）
 ├── 02_registry/            # 【注册表】Projects、Agents、Skills 与 Hooks 状态登记
-├── 03_adapters/            # 【适配层】Codex 与 Gemini 原生配置生成源
+├── 03_adapters/            # 【适配层】Codex、Claude Code 与 Gemini 原生配置生成物
 ├── 04_project_factory/     # 【项目工厂】独立业务项目创建引擎与验证
 ├── 05_harness/             # 【验证机制】CI 门禁检查、离线自检与验收工具
 ├── 06_deployment/          # 【部署工具】适配器原子部署、备份与恢复脚本
@@ -168,7 +173,6 @@ Personal-AI-OS/
 
 ## 🔒 核心治理原则
 
-1. **单向生成**：`00_system/` 是规则的唯一事实来源；`.codex`、`.gemini` 等平台配置由适配器生成，严禁手动逆向修改。
+1. **单向生成**：`00_system/` 是规则的唯一事实来源；`.codex`、`.claude`、`.gemini` 等平台配置由适配器生成，严禁手动逆向修改。
 2. **零静默覆盖**：所有文件写入均支持 Dry Run 预检与带备份的原子替换。
 3. **Hooks 审慎开启**：Phase 1 阶段自动化 Hook 默认关闭，避免未经授权的自动化操作。
-

@@ -24,3 +24,15 @@ project_config = "DEPLOYED_WORKING"
 config_load = "PASS"
 runtime_smoke = "NOT_RUN"
 blocked_reasons = ["CLI_NOT_INSTALLED", "BLOCKED_EXTERNAL_DATA_AUTHORIZATION"]
+
+[[runtimes]]
+id = "claude-code-local"
+platform = "claude-code"
+availability = "TRANSIENT_AVAILABLE"
+version = "2.1.251"
+verified_on = "2026-08-31"
+project_config = "DEPLOYED_WORKING"
+config_load = "PASS"
+runtime_smoke = "NOT_RUN"
+config_evidence = "官方 npm 包 claude doctor exit=0；项目 settings 无错误；隔离配置目录避免读取用户凭据"
+blocked_reasons = ["BLOCKED_EXTERNAL_DATA_AUTHORIZATION"]

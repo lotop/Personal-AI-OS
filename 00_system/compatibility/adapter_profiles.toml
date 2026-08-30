@@ -11,6 +11,21 @@ target = ".codex/config.toml"
 project_doc_max_bytes = 65536
 project_root_markers = [".git", "SYSTEM.toml", "project.toml"]
 
+[claude_code]
+platform = "claude-code"
+native_format = "markdown+json"
+context_target = "CLAUDE.md"
+settings_target = ".claude/settings.json"
+
+[claude_code.context]
+imports = ["AGENTS.md"]
+
+[claude_code.settings]
+schema = "https://json.schemastore.org/claude-code-settings.json"
+
+[claude_code.settings.permissions]
+deny = ["Read(./.env)", "Read(./.env.*)"]
+
 [gemini_cli]
 platform = "gemini-cli"
 native_format = "json"
