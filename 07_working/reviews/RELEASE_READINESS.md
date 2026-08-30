@@ -47,7 +47,7 @@
 | R7c Gemini Config | `PASS` | Config load only |
 | R7d Gemini Live | `BLOCKED_EXTERNAL_DATA_AUTHORIZATION` | 未发送项目内容 |
 | R8 V1.0 Disposition | `BLOCKED_FOUNDER_DECISION` | 原件不可得 |
-| R9 Recovery | `PASS_SCOPED` | Clean clone + offline bundle only |
+| R9 Recovery | `STALE` | 历史 Clean Clone/Bundle 仍有效，但需对冻结 Release Commit 重跑 |
 | R10 Local Security | `PASS_SCOPED` | Secret pattern、权限与外发策略 |
 | R11 Test Assurance | `PASS_SCOPED` | 本地 22 项测试；仍有后续扩展项 |
 | R12 Release Approval | `BLOCKED_FOUNDER_DECISION` | 尚未冻结 release commit |

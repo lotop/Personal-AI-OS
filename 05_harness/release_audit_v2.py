@@ -109,6 +109,19 @@ def decision_gate(gate_id: str, name: str, decision_id: str, missing: str) -> Ga
     return Gate(gate_id, name, "BLOCKED_FOUNDER_DECISION", missing)
 
 
+def recovery_gate() -> Gate:
+    path = ROOT / "07_working/reviews/RECOVERY_DRILL.md"
+    if not path.is_file() or "结论：`PASS`" not in path.read_text(encoding="utf-8"):
+        return Gate("R9", "Repository Recovery", "BLOCKED", "缺少 Recovery evidence")
+    text = path.read_text(encoding="utf-8")
+    marker = "> Source Commit：`"
+    source = text.split(marker, 1)[1].split("`", 1)[0] if marker in text else ""
+    head = run("git", "rev-parse", "HEAD").stdout.strip()
+    if source != head:
+        return Gate("R9", "Repository Recovery", "STALE", f"evidence_commit={source or 'missing'} current={head}")
+    return Gate("R9", "Repository Recovery", "PASS", str(path.relative_to(ROOT)))
+
+
 def promotion_gate() -> Gate:
     tags = run("git", "tag", "--list", "v1.1*")
     if tags.stdout.strip():
@@ -140,7 +153,7 @@ def audit() -> list[Gate]:
         runtime_gate("R7c", "Gemini Config Load", "gemini-cli", "config_load"),
         runtime_gate("R7d", "Gemini Live Runtime", "gemini-cli", "runtime_smoke"),
         decision_gate("R8", "V1.0 Baseline Disposition", "PAOS-BASELINE-001", "V1.0 原件不可得，尚无 disposition"),
-        evidence_gate("R9", "Repository Recovery", "07_working/reviews/RECOVERY_DRILL.md", "结论：`PASS`", "缺少 Repository Recovery evidence"),
+        recovery_gate(),
         command_gate("R10", "Local Security Controls", [PYTHON, "05_harness/validate_repository.py"]),
         Gate("R11", "Test Assurance", "PASS" if tests_pass else "FAIL", "4 suites; includes factory/deployment rollback and tree determinism"),
         decision_gate("R12", "Founder Release Approval", "PAOS-REL-001", "缺少固定 commit 的 V1.1 Release Approval"),

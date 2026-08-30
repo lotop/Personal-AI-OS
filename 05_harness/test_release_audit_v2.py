@@ -32,6 +32,11 @@ class ReleaseAuditV2Test(unittest.TestCase):
         self.assertNotEqual(gates["R5a"].name, gates["R5b"].name)
         self.assertNotEqual(gates["R7c"].name, gates["R7d"].name)
 
+    def test_stale_recovery_is_not_pass(self) -> None:
+        gates = {gate.id: gate for gate in audit()}
+        if gates["R9"].status == "STALE":
+            self.assertIn("current=", gates["R9"].evidence)
+
 
 if __name__ == "__main__":
     unittest.main()
