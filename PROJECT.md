@@ -1,8 +1,8 @@
 # Personal AI OS V1.1
 
-> 状态：`WORKING`
+> 状态：`APPROVED_FOR_RELEASE`
 >
-> Canonical Authority：`NONE`
+> Approval Reference：`PAOS-REL-001`
 
 ## Objective
 

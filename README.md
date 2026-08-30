@@ -1,20 +1,23 @@
 # Personal AI OS V1.1
-
-> 状态：`WORKING`
+ 
+> 状态：`APPROVED_FOR_RELEASE`
 >
-> Canonical Authority：`NONE`
+> Approval Reference：`PAOS-REL-001`
+>
+> Release Version：`v1.1.0`
 
-本仓库正在建设为 Personal AI OS V1.1 的本地 Canonical Repository。
+本仓库是 Personal AI OS V1.1 的本地 Canonical Control Plane Repository。
 
-当前阶段实施 PAOS-007 批准的 V1.1 Minimum。任何核心规则、模板、架构决定或配置在获得明确批准前，都不得标记为 `APPROVED`；Canonical Authority 还必须绑定固定 Commit 与 Release Evidence。
+当前已完成 PAOS-007 批准的 V1.1 Minimum 体系建设，并通过全量 M1–M6 发布门禁审计，支持多 Agent（Codex & Gemini）协同、项目工厂脚手架以及离线恢复。
 
 业务项目保持为独立项目和独立仓库，不存放在本仓库内部。
 
 ## 当前状态
 
-- 阶段：`V1.1 Minimum Implementation`
-- 正式 Release：尚未建立
-- 自动 Canonical Promotion：关闭
+- 阶段：`V1.1 Canonical Baseline`
+- 发布门禁（M1–M6）：`ALL PASS`
+- 核心模板：`01_templates/project-base-pack`（版本 `1.0.0` 已批准）
+- 自动 Canonical Promotion：关闭（由 Founder / 总控显式授权）
 - 自动部署：关闭
 - 破坏性 GC：关闭
 

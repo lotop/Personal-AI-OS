@@ -13,4 +13,5 @@ Project Factory 负责从已批准模板创建独立业务项目，并完成登�
 - `create_project.py`：默认 Dry Run 的项目创建引擎。
 - `test_factory.py`：路径、变量和 Manifest 安全边界测试。
 
-核心项目模板尚未逐项批准，因此当前引擎会拒绝使用 Working Template Pack 进行正式创建；只能显式标记为 `PROVISIONAL` 进行演练。
+核心基础模板包 `01_templates/project-base-pack` 已正式获得批准（PAOS-TMPL-001），支持正式创建（非 provisional）；未批准的 Working Pack 仍需显式使用 `--provisional` 仅供临时演练。
+
