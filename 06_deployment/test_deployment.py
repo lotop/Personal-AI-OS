@@ -21,7 +21,7 @@ class DeploymentTest(unittest.TestCase):
         (adapter / "settings.json").write_text('{"enabled": false}\n', encoding="utf-8")
         (adapter / "manifest.toml").write_text(
             'schema_version = "0.1"\nartifact_class = "GENERATED"\n'
-            'maturity_state = "CANDIDATE"\nplatform = "test"\n'
+            'maturity_state = "WORKING"\nplatform = "test"\n'
             'generator = "test"\nsource_files = ["source"]\n'
             '[[files]]\nsource = "settings.json"\ntarget = ".agent/settings.json"\nformat = "json"\n',
             encoding="utf-8",
@@ -64,7 +64,7 @@ class DeploymentTest(unittest.TestCase):
             (adapter / "two.json").write_text('{}\n', encoding="utf-8")
             (adapter / "manifest.toml").write_text(
                 'schema_version = "0.1"\nartifact_class = "GENERATED"\n'
-                'maturity_state = "CANDIDATE"\nplatform = "test"\n'
+                'maturity_state = "WORKING"\nplatform = "test"\n'
                 'generator = "test"\nsource_files = ["source"]\n'
                 '[[files]]\nsource = "one.json"\ntarget = ".agent/one.json"\nformat = "json"\n'
                 '[[files]]\nsource = "two.json"\ntarget = ".agent/two.json"\nformat = "json"\n',

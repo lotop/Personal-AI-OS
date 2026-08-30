@@ -25,7 +25,7 @@
 
 ## Current Phase
 
-`Physical Architecture + Implementation Spec`
+`V1.1 Minimum Implementation`
 
 ## Success Criteria
 

@@ -13,8 +13,11 @@ try:
 except ModuleNotFoundError:
     try:
         import tomli as tomllib  # type: ignore[no-redef]
-    except ModuleNotFoundError as exc:
-        raise SystemExit("需要 Python 3.11+ 或安装 tomli") from exc
+    except ModuleNotFoundError:
+        try:
+            import pip._vendor.tomli as tomllib  # type: ignore[no-redef,import-not-found]
+        except ModuleNotFoundError as exc:
+            raise SystemExit("需要 Python 3.11+ 或安装 tomli") from exc
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -31,7 +34,7 @@ def render_manifest(platform: str, source: str, target: str, format_name: str) -
     return (
         'schema_version = "0.1.0-working"\n'
         'artifact_class = "GENERATED"\n'
-        'maturity_state = "CANDIDATE"\n'
+        'maturity_state = "WORKING"\n'
         f"platform = {toml_string(platform)}\n"
         f"generator = {toml_string(GENERATOR)}\n"
         'source_files = ["AGENTS.md", "00_system/compatibility/adapter_profiles.toml"]\n\n'

@@ -12,7 +12,7 @@
 
 ## 流程
 
-`Conversation/Source → Extract → Classify → Deduplicate → Verify → Candidate → Approve → Publish → Review/Expire`
+`Conversation/Source → Select → Verify → Working → Approve/Discard → Review/Archive`
 
 ## 入库条件
 
@@ -24,18 +24,17 @@
 - 不含 Secret、无关敏感信息或大段可重新获取的 Source。
 - 与现有 Memory 无未处理冲突。
 
-## Claim Contract
+## 最小记录
 
-每条可持久化 Claim 必须单独记录：
+进入长期 Memory 的记录至少包含：
 
-- `claim_id`、`claim_type = FACT | PREFERENCE | DECISION | INFERENCE`。
-- `memory_layer = L1 | L2 | L3`。
-- L2 必须有 `project_id`；L3 必须有 `session_id`。
-- `source_revision`、`source_locator`、`source_sha256`、`source_author`、`observed_at`、`extractor_version`。
-- `governance_status`、`validity_status`、`lifecycle_status` 三条独立状态轴。
-- `review_at` 或明确的复核条件；时效性事实不得无限期有效。
+- 类型：`FACT | PREFERENCE | DECISION | INFERENCE`。
+- 层级：L1 或 L2；L2 必须有 `project_id`。L3 属于 Working Notes，不进入长期 Memory Registry。
+- 来源定位与观察时间；只有在来源内容可能变化或需要完整性证明时才记录 Revision/Hash。
+- 状态：`WORKING | APPROVED | ARCHIVED`。
+- 时效性事实的复核时间或复核条件。
 
-`confidence` 只描述不确定程度，不能代替 Claim Type、来源或验证状态。
+`confidence`、`extractor_version`、撤回链等字段按风险选用，不作为每条记录的强制负担。
 
 ## 隔离规则
 
@@ -45,13 +44,13 @@
 
 ## 更新规则
 
-- 新信息默认形成 Candidate，不直接覆盖现有条目。
+- 新信息默认形成 Working，不直接覆盖现有 Approved 条目。
 - 稳定偏好变化时保留 Superseded 关系和生效日期。
 - 项目状态信息必须设置复核条件或过期时间，避免陈旧状态伪装为事实。
 - Conversation Summary 只是提取输入，不自动等同于 Memory。
 
 ## Session Close 输出
 
-Session Close 只提取：Completed、Decisions、Open Questions、Risks、Next Actions、Memory Candidates、Files 与 Validation Evidence。无长期价值的过程推理不进入 Memory。
+发生适用的 Session Close 时，只提取：Completed、Decisions、Open Questions、Risks、Next Actions、Memory Candidates、Files 与 Validation Evidence。无长期价值的过程推理不进入 Memory。
 
-每个 Close 还必须有 `close_id`、`close_sequence`、`session_id`、`source_set_sha256`、`close_status` 和 `extractor_version`；重复执行必须能识别同一 Source Set，不重复创建 Memory Claim。
+只有自动化批量抽取或审计场景才要求 `source_set_sha256`、`extractor_version` 和幂等键；人工 Session Close 不强制维护这些字段。

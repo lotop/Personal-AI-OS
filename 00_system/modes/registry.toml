@@ -3,55 +3,16 @@ artifact_state = "WORKING"
 
 [[modes]]
 id = "chat"
-status = "CANDIDATE"
 default_write = "NONE"
 task_card_required = false
 
 [[modes]]
 id = "work"
-status = "CANDIDATE"
-default_write = "TASK_WRITE_SET"
-task_card_required = true
-
-[[modes]]
-id = "planning"
-status = "CANDIDATE"
-default_write = "WORKING_ONLY"
-task_card_required = true
-
-[[modes]]
-id = "brainstorm"
-status = "CANDIDATE"
-default_write = "WORKING_ONLY"
-task_card_required = true
-
-[[modes]]
-id = "research"
-status = "CANDIDATE"
-default_write = "WORKING_ONLY"
-task_card_required = true
-
-[[modes]]
-id = "strategy"
-status = "CANDIDATE"
-default_write = "WORKING_OR_CANDIDATE"
-task_card_required = true
-
-[[modes]]
-id = "product"
-status = "CANDIDATE"
-default_write = "WORKING_OR_CANDIDATE"
-task_card_required = true
-
-[[modes]]
-id = "coding"
-status = "CANDIDATE"
 default_write = "TASK_WRITE_SET"
 task_card_required = true
 
 [[modes]]
 id = "review"
-status = "CANDIDATE"
 default_write = "NONE"
 task_card_required = true
 
@@ -60,4 +21,4 @@ load_order = ["GLOBAL", "MODE", "PROJECT", "TASK", "RELEVANT_KNOWLEDGE"]
 manifest_first = true
 load_archive_by_default = false
 load_other_projects_by_default = false
-max_supporting_modes = 1
+persist_mode_history = false

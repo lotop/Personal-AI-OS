@@ -14,7 +14,7 @@
   "properties": {
     "schema_version": {"type": "string"},
     "artifact_class": {"type": "string", "enum": ["GENERATED"]},
-    "maturity_state": {"type": "string", "enum": ["WORKING", "CANDIDATE", "APPROVED", "CANONICAL"]},
+    "maturity_state": {"type": "string", "enum": ["WORKING", "APPROVED", "ARCHIVED"]},
     "platform": {"type": "string"},
     "generator": {"type": "string"},
     "source_files": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},

@@ -16,7 +16,7 @@ LOCAL_CHECKS = [
     ("repository", [PYTHON, "05_harness/validate_repository.py"]),
     ("factory", [PYTHON, "04_project_factory/test_factory.py"]),
     ("schema", [PYTHON, "05_harness/test_schema_validation.py"]),
-    ("release-audit-v2", [PYTHON, "05_harness/test_release_audit_v2.py"]),
+    ("release-audit", [PYTHON, "05_harness/test_release_audit.py"]),
     ("deployment", [PYTHON, "06_deployment/test_deployment.py"]),
     ("tree-digest", [PYTHON, "05_harness/test_tree_digest.py"]),
     ("adapters", [PYTHON, "05_harness/generate_adapters.py", "--check"]),
@@ -41,7 +41,7 @@ def build_report(profile: str) -> tuple[dict, int]:
     if profile == "release-readiness":
         release = run_check(
             "release-readiness",
-            [PYTHON, "05_harness/release_audit_v2.py", "--require-release-ready"],
+            [PYTHON, "05_harness/release_audit.py", "--require-release-ready"],
         )
         checks.append(release)
         if release["status"] != "PASS":

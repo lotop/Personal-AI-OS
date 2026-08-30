@@ -34,7 +34,7 @@ class ProjectFactoryTest(unittest.TestCase):
             pack.mkdir()
             (pack / "PROJECT.md").write_text("# {{PROJECT_NAME}}\n", encoding="utf-8")
             (pack / "template.toml").write_text(
-                'pack_id = "test"\nversion = "0.1"\nartifact_state = "CANDIDATE"\n'
+                'pack_id = "test"\nversion = "0.1"\nartifact_state = "WORKING"\n'
                 'owner = "test"\ncanonical_authority = "NONE"\n'
                 '[[files]]\nsource = "PROJECT.md"\ndestination = "PROJECT.md"\nrender = true\n',
                 encoding="utf-8",
@@ -51,7 +51,7 @@ class ProjectFactoryTest(unittest.TestCase):
             (pack / "PROJECT.md").write_text("# Demo\n", encoding="utf-8")
             (pack / "UNDECLARED.md").write_text("unexpected\n", encoding="utf-8")
             (pack / "template.toml").write_text(
-                'pack_id = "test"\nversion = "0.1"\nartifact_state = "CANDIDATE"\n'
+                'pack_id = "test"\nversion = "0.1"\nartifact_state = "WORKING"\n'
                 'owner = "test"\ncanonical_authority = "NONE"\n'
                 '[[files]]\nsource = "PROJECT.md"\ndestination = "PROJECT.md"\n',
                 encoding="utf-8",
@@ -82,7 +82,7 @@ class ProjectFactoryTest(unittest.TestCase):
             pack.mkdir()
             (pack / "PROJECT.md").write_text("# {{PROJECT_NAME}}\n", encoding="utf-8")
             (pack / "template.toml").write_text(
-                'pack_id = "test"\nversion = "0.1"\nartifact_state = "CANDIDATE"\n'
+                'pack_id = "test"\nversion = "0.1"\nartifact_state = "WORKING"\n'
                 'owner = "test"\ncanonical_authority = "NONE"\n'
                 '[[files]]\nsource = "PROJECT.md"\ndestination = "PROJECT.md"\nrender = true\n',
                 encoding="utf-8",

@@ -1,12 +1,12 @@
 # Personal AI OS V1.1
 
-> 模板版本：`0.4-candidate`
+> 模板版本：`0.5-working`
 >
-> 状态：`CANDIDATE`
+> 状态：`WORKING`
 >
 > Canonical Authority：`NONE`
 
-本文件是仓库根入口的候选版本，尚未批准。它负责导航和最低限度的安全边界，不承载全部治理正文。
+本文件是仓库根入口的 Working 版本，尚未批准。它负责导航和最低限度的安全边界，不承载全部治理正文。
 
 ## 系统定位
 
@@ -23,7 +23,7 @@
 - 部署、备份与恢复规范位于 `06_deployment/`。
 - `07_working/`、`99_temp/`、Conversation、Cache 和 Logs 不是正式事实来源。
 
-未经明确批准，不得将任何 `WORKING` 或 `CANDIDATE` 内容晋升为 `APPROVED` 或 `CANONICAL`。
+未经明确批准，不得将任何 `WORKING` 内容标记为 `APPROVED`；Canonical Authority 还必须绑定固定 Commit 与 Release Evidence。
 
 ## 最小充分上下文
 
@@ -51,7 +51,7 @@
 
 ## 信息状态
 
-必须分别记录资产类别与成熟度。资产类别包括 `SOURCE`、`RULE`、`TEMPLATE`、`CONFIG`、`REGISTRY`、`GENERATED`、`TEMP`、`CACHE`、`LOG`、`ARCHIVE`；成熟度包括 `WORKING`、`CANDIDATE`、`APPROVED`、`CANONICAL`、`SUPERSEDED`、`ARCHIVED`。
+必须分别记录资产类别与状态。资产类别包括 `SOURCE`、`RULE`、`TEMPLATE`、`CONFIG`、`REGISTRY`、`GENERATED`、`TEMP`、`CACHE`、`LOG`、`ARCHIVE`；V1.1 Minimum 状态只使用 `WORKING`、`APPROVED`、`ARCHIVED`。
 
 Conversation 只能作为历史或证据，不能直接等同于 Memory、Decision 或 Project Knowledge。
 
@@ -68,7 +68,7 @@ Adapter 必须从已批准的 Source 生成，并标明来源、版本和生成�
 
 ## Hooks
 
-Hooks 只能执行已批准并登记的规则。Phase 1 默认关闭，只允许检查、提醒、产生 Candidate 和最小审计。
+Hooks 只能执行已批准并登记的规则。Phase 1 默认关闭，只允许检查、提醒、产生 Working 建议和最小审计。
 
 Hooks 不得自动批准、Promotion、commit、merge、push、deploy、publish、delete 或执行破坏性清理。Hook 必须声明触发事件、权限、副作用、幂等策略、超时和失败策略。
 
@@ -76,11 +76,7 @@ Hooks 不得自动批准、Promotion、commit、merge、push、deploy、publish�
 
 ## Harness
 
-共同最小流程候选为：
-
-`Understand → Plan → Execute → Validate → Review → Handoff → Cleanup`
-
-在宣布完成前，必须提供验证证据，更新必要的 Decisions/Knowledge，完成适用 Handoff，并处理 Working、Temp、Cache 和 Logs。
+复杂任务至少完成范围确认、实施、验证和交付。在宣布完成前，必须提供验证证据，更新必要的 Decisions/Knowledge；只有真实交接时才要求 Handoff，Cleanup 按资产风险执行。
 
 ## 安全与恢复
 

@@ -1,7 +1,7 @@
 # Compatibility
 
 - `platforms.toml`：平台身份、原生文件和审计状态。
-- `adapter_profiles.toml`：生成 Candidate Adapter 的平台配置 Source。
+- `adapter_profiles.toml`：生成 Working Adapter 的平台配置 Source。
 - `capabilities.toml`：逐平台、逐能力区分文档支持、已配置、Config Load、Runtime Verified 与授权阻塞。
 
 禁止把 `supported_by_docs`、`configured` 或 `config_loaded` 单独解释为 `runtime_verified`。

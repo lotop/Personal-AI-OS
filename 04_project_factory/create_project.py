@@ -19,8 +19,11 @@ try:
 except ModuleNotFoundError:
     try:
         import tomli as tomllib  # type: ignore[no-redef]
-    except ModuleNotFoundError as exc:
-        raise SystemExit("需要 Python 3.11+ 或安装 tomli") from exc
+    except ModuleNotFoundError:
+        try:
+            import pip._vendor.tomli as tomllib  # type: ignore[no-redef,import-not-found]
+        except ModuleNotFoundError as exc:
+            raise SystemExit("需要 Python 3.11+ 或安装 tomli") from exc
 
 
 OS_ROOT = Path(__file__).resolve().parents[1]
@@ -64,7 +67,7 @@ def load_plan(pack: Path, target: Path, variables: dict[str, str]) -> tuple[dict
         if not manifest.get(field):
             raise ValueError(f"Template Pack 缺少字段: {field}")
     state = manifest["artifact_state"]
-    if state not in {"CANDIDATE", "APPROVED"}:
+    if state not in {"WORKING", "APPROVED"}:
         raise ValueError(f"Template Pack 状态非法: {state}")
     if state == "APPROVED" and not manifest.get("approval_reference"):
         raise ValueError("APPROVED Template Pack 缺少 approval_reference")
@@ -178,7 +181,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--primary-type", required=True)
     parser.add_argument("--overlay", action="append", default=[])
     parser.add_argument("--apply", action="store_true", help="实际创建；默认只输出 Dry Run")
-    parser.add_argument("--provisional", action="store_true", help="允许 Candidate Pack 进行临时演练")
+    parser.add_argument("--provisional", action="store_true", help="允许 Working Pack 进行临时演练")
     parser.add_argument("--git", action="store_true", help="创建后初始化 Git main 分支")
     return parser.parse_args()
 

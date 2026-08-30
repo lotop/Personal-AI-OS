@@ -1,6 +1,6 @@
 schema_version = "0.1.0-working"
 artifact_class = "GENERATED"
-maturity_state = "CANDIDATE"
+maturity_state = "WORKING"
 platform = "codex"
 generator = "05_harness/generate_adapters.py@0.1"
 source_files = ["AGENTS.md", "00_system/compatibility/adapter_profiles.toml"]

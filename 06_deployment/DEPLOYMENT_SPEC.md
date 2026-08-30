@@ -25,4 +25,4 @@
 - `SMOKE_TESTED`：目标 Agent 已加载并通过最小测试。
 - `ROLLED_BACK`：已恢复到部署前状态。
 
-当前状态：Codex 与 Gemini CLI 项目级 Candidate Config 已部署；Codex Runtime Smoke 为 `PARTIAL`，Gemini Runtime Smoke 因本机未安装 CLI 而阻塞。
+当前状态：Codex 与 Gemini CLI 项目级 Working Config 已部署；Codex Runtime Smoke 为 `PASS`，Gemini Config Load 为 `PASS`，Gemini Live Runtime 作为 Conditional 能力等待外部数据授权。

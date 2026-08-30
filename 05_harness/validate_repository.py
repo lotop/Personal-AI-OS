@@ -18,8 +18,11 @@ try:
 except ModuleNotFoundError:  # Python 3.10 兼容
     try:
         import tomli as tomllib  # type: ignore[no-redef]
-    except ModuleNotFoundError as exc:
-        raise SystemExit("需要 Python 3.11+ 或安装 tomli") from exc
+    except ModuleNotFoundError:
+        try:
+            import pip._vendor.tomli as tomllib  # type: ignore[no-redef,import-not-found]
+        except ModuleNotFoundError as exc:
+            raise SystemExit("需要 Python 3.11+ 或安装 tomli") from exc
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -199,19 +202,13 @@ def validate_tasks(parsed: dict[Path, dict], report: Report) -> None:
     relative = "02_registry/tasks.toml"
     data = parsed.get(ROOT / relative, {})
     allowed_statuses = set(data.get("allowed_statuses", []))
-    allowed_progress = set(data.get("allowed_progress", []))
     for task in data.get("tasks", []):
         task_id = task.get("id", "<unknown>")
         if task.get("status") not in allowed_statuses:
             report.error(f"{task_id} 的 status 非法")
-        for field in (
-            "research_status",
-            "local_artifact_status",
-            "review_status",
-            "implementation_status",
-        ):
-            if task.get(field) not in allowed_progress:
-                report.error(f"{task_id} 缺少或非法字段 {field}")
+        validation = task.get("validation", [])
+        if not isinstance(validation, list) or len(validation) != len(set(validation)):
+            report.error(f"{task_id} 的 validation 必须是无重复项列表")
 
 
 def validate_lifecycle(parsed: dict[Path, dict], report: Report) -> None:
@@ -222,12 +219,11 @@ def validate_lifecycle(parsed: dict[Path, dict], report: Report) -> None:
         report.error("SOURCE 必须属于 artifact_classes")
     if "SOURCE" in maturity:
         report.error("SOURCE 不得属于 maturity_states")
-    if not {"WORKING", "CANDIDATE", "APPROVED", "CANONICAL"}.issubset(maturity):
-        report.error("maturity_states 缺少 Promotion 核心状态")
-    required_axes = {"origin_classes", "governance_states", "lifecycle_states", "materialization_classes"}
-    missing_axes = sorted(required_axes - data.keys())
-    if missing_axes:
-        report.error(f"正交状态模型缺少: {', '.join(missing_axes)}")
+    if maturity != {"WORKING", "APPROVED", "ARCHIVED"}:
+        report.error("maturity_states 必须等于 V1.1 Minimum 状态集合")
+    legacy_axes = {"origin_classes", "governance_states", "lifecycle_states", "materialization_classes"}
+    if legacy_axes & data.keys():
+        report.error("V1.1 Minimum 不再维护四维资产状态")
 
 
 def validate_template_packs(parsed: dict[Path, dict], report: Report) -> None:
@@ -237,7 +233,7 @@ def validate_template_packs(parsed: dict[Path, dict], report: Report) -> None:
             state = data.get("artifact_state")
             if base.name == "01_templates" and (state != "APPROVED" or not data.get("approval_reference")):
                 report.error(f"正式 Template Pack 缺少可验证批准: {manifest_path.relative_to(ROOT)}")
-            if base.name == "candidates" and state not in {"CANDIDATE", "WORKING"}:
+            if base.name == "candidates" and state != "WORKING":
                 report.error(f"Working 区 Template Pack 状态越权: {manifest_path.relative_to(ROOT)}")
             records = data.get("files", [])
             sources = [record.get("source") for record in records]

@@ -25,13 +25,13 @@
 |---|---|---|---|
 | Repository | 两轮独立审计已返回 | Physical Architecture 已落地 | `WORKING_COMPLETE` |
 | Governance | 两轮独立审计已返回 | 状态分离、审批与外部数据策略已补强 | `WORKING_COMPLETE` |
-| Modes | 首轮候选已形成，续审未返回 | Mode Registry 与 Contract 已落地 | `PARTIAL_REVIEW` |
+| Modes | 已按 Founder 决策收敛 | `CHAT / WORK / REVIEW` 最小行为边界 | `WORKING_SIMPLIFIED` |
 | Project Factory | 两轮独立审计已返回 | 事务化 Factory、Candidate Pack、Provisional E2E | `WORKING_COMPLETE` |
-| Memory | 两轮独立审计已返回 | Claim、Session Close、GC 合同已补强 | `WORKING_COMPLETE` |
+| Memory | 已按 Founder 决策收敛 | 最小记录与条件式 Session Close | `WORKING_SIMPLIFIED` |
 | Adapters | 首轮候选已形成 | Codex/Gemini 生成、部署与本地检查完成 | `WORKING_COMPLETE` |
 | Harness | 两轮独立审计已返回 | Validator、Schema、Release V2 与负向测试已增强 | `WORKING_COMPLETE` |
 | Deployment | 两轮独立审计已返回 | Git-only Recovery 通过，完整 DR 明确阻塞 | `PARTIAL_EXTERNAL` |
-| Release | 两轮独立审计已返回 | R0–R12 / P1–P2 模型已实现 | `BLOCKED_FOUNDER` |
+| Release | 已按 Founder 决策收敛 | M1–M6 Minimum Gate | `BLOCKED_FOUNDER` |
 
 ## 关键差异与缺口
 
@@ -46,10 +46,10 @@
 
 - 聊天输出先进入 `WORKING`，附来源任务 ID。
 - 总控执行冲突检查、字段统一和路径映射。
-- 重要模板单独进入 `CANDIDATE` 并逐项讨论。
+- 重要模板在 `07_working/candidates/` 中以 `WORKING` 状态逐项讨论。
 - Founder Approval 留下 Decision Record 后才能进入 `APPROVED`。
 - 通过验证、版本固定且可回滚后才执行 `CANONICAL` Promotion。
 
 ## 当前结论
 
-V1.1 已具备可运行的 Working 控制平面、Candidate Project Factory、Agent Adapter、验证器与限缩恢复证据。下一阶段不再是补骨架，而是 Founder 逐项确认 Template Pack、状态模型、Gemini Tier、V1.0 disposition 和基础设施范围，然后执行 Formal E2E 与冻结 Release Commit。
+V1.1 已具备可运行的 Working 控制平面、Provisional Project Factory、Agent Adapter、验证器与限缩恢复证据。状态与 Mode 模型、Gemini Conditional Tier 已由 PAOS-007 收敛；下一阶段是 Template Pack 审批、Formal E2E、冻结 Commit 后重跑恢复，以及最终 Release Approval。

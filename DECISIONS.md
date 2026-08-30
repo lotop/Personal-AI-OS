@@ -38,9 +38,21 @@
 - 状态：`APPROVED`
 - 决定：Project Factory 使用顶层 `04_project_factory/`，负责新项目创建、初始化和验收。
 
+### PAOS-007｜V1.1 Minimum 简化
+
+- 状态：`APPROVED`
+- 决定：V1.1 以个人控制平面的最低可运行闭环为目标，保留安全、Git、项目隔离、Template、Factory、验证、部署与恢复核心；简化 Mode、资产状态、任务进度、Release Gate 与 Session Close/Handoff。
+- 实施边界：本决定授权形成 `WORKING` 实现，不构成 Template Approval、Release Approval、Canonical Promotion、Tag、Push 或部署授权。
+- 具体约束：
+  - Mode 只保留 `CHAT / WORK / REVIEW` 三种行为边界；研究、策略、产品和编码作为任务标签或 Skill。
+  - 资产最小状态为 `WORKING / APPROVED / ARCHIVED`；Canonical Authority 由批准记录、固定 Commit 与 Release Tag 共同证明，不要求每个文件维护四维状态。
+  - 任务只保留一个主状态与验证证据，不再维护四个并行进度字段。
+  - Release Readiness 收敛为六个 Gate；Promotion 是批准后的动作，不是发布前 Gate。
+  - Session Close 与 Handoff 仅在交接、跨环境、长暂停、Blocked 或形成长期结论时要求。
+  - 旧模型保留为历史证据并标记 `SUPERSEDED`，不再作为当前运行入口。
+
 ## Candidate Decisions
 
 - 根 `AGENTS.md` 采用精简 Router，而不是完整 Policy Core。
 - Phase 1 Hooks 可以拒绝固定禁令，但不得代替用户批准操作。
-- 七阶段 Harness 作为所有复杂任务的共同最小协议。
 - `06_deployment/` 作为 Agent 部署、备份与恢复层。

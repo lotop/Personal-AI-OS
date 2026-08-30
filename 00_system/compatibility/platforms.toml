@@ -3,7 +3,6 @@ artifact_state = "WORKING"
 
 [[platforms]]
 id = "codex"
-status = "CANDIDATE"
 capability_audit = "CURRENT_PARTIAL"
 verified_on = "2026-08-30"
 context_file = "AGENTS.md"
@@ -19,12 +18,10 @@ evidence = [
 
 [[platforms]]
 id = "claude-code"
-status = "CANDIDATE"
 capability_audit = "PARTIAL"
 
 [[platforms]]
 id = "gemini-cli"
-status = "CANDIDATE"
 capability_audit = "CURRENT_PARTIAL"
 verified_on = "2026-08-30"
 context_file = "GEMINI.md"
@@ -40,5 +37,4 @@ evidence = [
 
 [[platforms]]
 id = "chatgpt-project"
-status = "CANDIDATE"
 capability_audit = "PARTIAL"

@@ -6,7 +6,6 @@ maturity_state = "WORKING"
 platform = "codex"
 native_format = "toml"
 target = ".codex/config.toml"
-status = "CANDIDATE"
 
 [codex.settings]
 project_doc_max_bytes = 65536
@@ -16,7 +15,6 @@ project_root_markers = [".git", "SYSTEM.toml", "project.toml"]
 platform = "gemini-cli"
 native_format = "json"
 target = ".gemini/settings.json"
-status = "CANDIDATE"
 
 [gemini_cli.context]
 fileName = ["AGENTS.md"]

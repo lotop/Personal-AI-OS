@@ -1,19 +1,14 @@
-# V1.1 Release Gates
+# V1.1 Minimum Release Gates
 
 > 状态：`WORKING`
 
 | Gate | 准入条件 | 必需证据 |
 |---|---|---|
-| G0 Repository | 唯一仓库、干净 Commit、可定位版本 | Git Commit、Repo Identity |
-| G1 Inventory | 发布文件全部登记 | Artifact/Registry Report |
-| G2 Schema | 强制 Schema 与格式通过 | Validator Output |
-| G3 Boundary | 无 Source/Generated/Canonical 越界 | Provenance Review |
-| G4 Templates | 核心模板逐项批准 | Decision Records |
-| G5 Factory | 能创建并验证独立项目 | Factory E2E Evidence |
-| G6 Adapters | Required Agent Adapter 生成一致 | Generator Check |
-| G7 Deployment | Dry Run、部署、幂等与回滚通过 | Deployment Evidence |
-| G8 Recovery | 干净恢复演练成功 | Recovery Report |
-| G9 Approval | Founder 批准发布范围与例外 | Release Decision |
-| G10 Promotion | 指定 Commit、Tag 与 Manifest 一致 | Release Tag/Manifest |
+| M1 Repository | 唯一仓库、固定 Commit、干净工作区 | Git HEAD |
+| M2 Validation | Schema、边界、安全与本地测试通过 | `ci_gate.py` 输出 |
+| M3 Template & Factory | Template 已批准且 Formal E2E 通过 | Approval + Factory Evidence |
+| M4 Adapter & Deployment | Adapter 无漂移；Codex Smoke 通过；Gemini Conditional Config 通过 | Runtime Registry |
+| M5 Recovery | 对冻结 Commit 的恢复演练通过 | Recovery Report |
+| M6 Founder Release Approval | Founder 对固定 Commit 和范围作出明确批准 | Release Decision |
 
-所有 Mandatory Gate 必须 `PASS`；`WARN` 需要带 Owner、期限和 Founder Approval 的 Waiver。存在 `FAIL` 或 `BLOCKED` 时不得宣布 V1.1 Release。
+六个 Gate 全部 `PASS` 才达到 Release Readiness。Tag、Canonical Promotion 与发布后验证是 M6 之后的授权动作，不计作发布前 Gate，也不会由审计脚本自动执行。

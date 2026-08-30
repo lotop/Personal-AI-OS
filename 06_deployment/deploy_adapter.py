@@ -17,8 +17,11 @@ try:
 except ModuleNotFoundError:
     try:
         import tomli as tomllib  # type: ignore[no-redef]
-    except ModuleNotFoundError as exc:
-        raise SystemExit("需要 Python 3.11+ 或安装 tomli") from exc
+    except ModuleNotFoundError:
+        try:
+            import pip._vendor.tomli as tomllib  # type: ignore[no-redef,import-not-found]
+        except ModuleNotFoundError as exc:
+            raise SystemExit("需要 Python 3.11+ 或安装 tomli") from exc
 
 
 @dataclass(frozen=True)
@@ -51,7 +54,7 @@ def build_plan(manifest_path: Path, target_root: Path) -> tuple[dict, list[Deplo
     manifest_path = manifest_path.resolve()
     adapter_root = manifest_path.parent
     manifest = tomllib.loads(manifest_path.read_text(encoding="utf-8"))
-    if manifest.get("maturity_state") not in {"CANDIDATE", "APPROVED", "CANONICAL"}:
+    if manifest.get("maturity_state") not in {"WORKING", "APPROVED"}:
         raise ValueError("Adapter maturity_state 不允许部署演练")
 
     plan: list[DeploymentItem] = []

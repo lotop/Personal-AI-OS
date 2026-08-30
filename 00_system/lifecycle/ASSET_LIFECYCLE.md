@@ -5,15 +5,15 @@
 ## 两个独立维度
 
 - Artifact Class：描述资产是什么，例如 Source、Rule、Template、Generated、Temp、Cache、Log。
-- Maturity State：描述正式程度，例如 Working、Candidate、Approved、Canonical、Superseded、Archived。
+- State：V1.1 Minimum 只使用 `WORKING`、`APPROVED`、`ARCHIVED`。
 
-Source 保持 Source；从 Source 派生的规则或知识进入 Maturity 流程。Generated 永远记录生成来源，不反向成为 Canonical Authority。
+Source 保持 Source；从 Source 派生的规则或知识可由 Working 进入 Approved。Generated 永远记录生成来源，不反向成为 Canonical Authority。Canonical Authority 由批准记录、固定 Commit 与 Release Tag 共同证明，不逐文件维护额外状态轴。
 
 ## 生命周期动作
 
 - `CREATE`：记录 Owner、Class、State、来源和版本。
-- `PROMOTE`：验证后从 Working/Candidate 进入 Approved/Canonical。
-- `SUPERSEDE`：新版本替代旧版本但保留追溯。
+- `APPROVE`：经验证和明确批准后从 Working 进入 Approved。
+- `REPLACE`：新版本替代旧版本；旧版本进入 Archive 并保留追溯。
 - `ARCHIVE`：退出默认上下文加载，仍可恢复。
 - `GC_CANDIDATE`：达到保留期，只生成 Dry Run 清单。
 - `DELETE`：仅对批准范围执行，并保留删除与恢复记录。

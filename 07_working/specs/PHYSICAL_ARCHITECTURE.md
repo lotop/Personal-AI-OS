@@ -93,4 +93,4 @@ Personal-AI-OS/
 - 首个 Project Base Template Pack 已形成可执行 Candidate 并通过 Provisional E2E，但尚未 Founder Approval。
 - Codex/Gemini Candidate Adapter 已生成并部署；Codex Live Runtime 通过，Gemini 仅 Config Load 通过，Live Runtime 等待外部数据授权。
 - 本地 Clean Clone 与 Offline Git Bundle 恢复已验证；Private Remote、外部资产、Credential 与完整 Host Recovery 尚未验证。
-- Release Readiness 已拆分为 R0–R12 与批准后的 P1–P2，当前保持 Blocked。
+- Release Readiness 已按 PAOS-007 收敛为 M1–M6；旧 R0–R12/P1–P2 模型已归档，当前因 Template、恢复证据刷新与 Release Approval 保持 Blocked。

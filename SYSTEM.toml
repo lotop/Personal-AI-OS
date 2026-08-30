@@ -1,4 +1,4 @@
-schema_version = "0.3.0-working"
+schema_version = "0.4.0-working"
 system_name = "Personal AI OS"
 target_version = "1.1"
 artifact_state = "WORKING"
@@ -25,8 +25,8 @@ automatic_deploy_enabled = false
 [implementation]
 physical_architecture = "WORKING"
 project_factory = "WORKING"
-codex_adapter = "GENERATED_CANDIDATE"
-gemini_adapter = "GENERATED_CANDIDATE"
+codex_adapter = "GENERATED_WORKING"
+gemini_adapter = "GENERATED_WORKING"
 deployment = "DRY_RUN_READY"
 release = "BLOCKED"
 local_git_recovery = "PASS"
@@ -34,8 +34,8 @@ offline_bundle_recovery = "PASS"
 private_remote_recovery = "NOT_TESTED"
 
 [deployment_status]
-codex_project_config = "DEPLOYED_CANDIDATE"
+codex_project_config = "DEPLOYED_WORKING"
 codex_runtime_smoke = "PASS"
-gemini_project_config = "DEPLOYED_CANDIDATE"
+gemini_project_config = "DEPLOYED_WORKING"
 gemini_runtime_smoke = "BLOCKED_EXTERNAL_DATA_AUTHORIZATION"
 hooks_enabled = false

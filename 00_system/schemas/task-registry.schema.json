@@ -1,13 +1,12 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "paos://schemas/task-registry/0.2",
+  "$id": "paos://schemas/task-registry/0.3",
   "type": "object",
-  "required": ["schema_version", "artifact_state", "allowed_statuses", "allowed_progress", "tasks"],
+  "required": ["schema_version", "artifact_state", "allowed_statuses", "tasks"],
   "properties": {
     "schema_version": {"type": "string"},
-    "artifact_state": {"type": "string", "enum": ["WORKING", "CANDIDATE", "APPROVED", "CANONICAL"]},
+    "artifact_state": {"type": "string", "enum": ["WORKING", "APPROVED", "ARCHIVED"]},
     "allowed_statuses": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
-    "allowed_progress": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
     "tasks": {
       "type": "array",
       "items": {
@@ -16,21 +15,14 @@
           "id",
           "purpose",
           "status",
-          "research_status",
-          "local_artifact_status",
-          "review_status",
-          "implementation_status",
           "platform",
           "platform_ref"
         ],
         "properties": {
           "id": {"type": "string", "pattern": "^paos-[0-9]{2}-[a-z0-9-]+$"},
           "purpose": {"type": "string", "minLength": 1},
-          "status": {"type": "string"},
-          "research_status": {"type": "string"},
-          "local_artifact_status": {"type": "string"},
-          "review_status": {"type": "string"},
-          "implementation_status": {"type": "string"},
+          "status": {"type": "string", "enum": ["TODO", "ACTIVE", "BLOCKED", "REVIEW", "DONE"]},
+          "validation": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
           "platform": {"type": "string"},
           "platform_ref": {"type": "string", "minLength": 1}
         }

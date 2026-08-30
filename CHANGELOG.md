@@ -2,9 +2,15 @@
 
 ## Unreleased
 
+- Founder 批准 PAOS-007，实施 V1.1 Minimum 简化；该批准不构成 Template/Release Approval 或 Promotion 授权。
+- Mode 收敛为 `CHAT / WORK / REVIEW`，资产状态收敛为 `WORKING / APPROVED / ARCHIVED`。
+- Task Registry 改为单一主状态加验证证据；Session Close/Handoff 改为条件触发。
+- Release Readiness 从多层 Gate 收敛为 M1–M6，旧 V2 模型标记为历史快照。
+- 固定 Python 3.11 推荐环境，并让 Apple Python 可使用 pip vendored tomli 运行统一本地验证。
+
 - 初始化 Personal AI OS V1.1 本地 Working Repository。
 - 补齐根级项目元数据与目录入口。
-- 将根 `AGENTS.md` 升级为 `0.3-candidate`。
+- 将根 `AGENTS.md` 升级为 `0.5-working`。
 - 记录已确认的 PAOS-001 至 PAOS-004。
 - 建立 Governance、Security、Modes、Memory、Lifecycle、Compatibility、Registry、Adapters 与 Harness 的 Working 骨架。
 - 将总控与九个专业任务登记为可追溯的 Task Records。

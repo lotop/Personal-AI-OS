@@ -1,14 +1,14 @@
-# Project AGENTS Template Candidate
+# Project AGENTS Template Working Review
 
-> 模板状态：`CANDIDATE`
+> 模板状态：`WORKING`
 >
-> 模板版本：`0.1-candidate`
+> 模板版本：`0.2-working`
 >
 > Canonical Authority：`NONE`
 >
 > Owner：`paos-04-factory`
 
-> 可执行 Candidate Pack：`07_working/candidates/project-base-pack/`
+> 可执行 Working Pack：`07_working/candidates/project-base-pack/`
 
 ## 模板说明
 
@@ -78,9 +78,7 @@ Conversation、AI 总结和 Generated 文件不得自动成为项目事实。
 
 ## 完成协议
 
-复杂任务遵循：
-
-`Understand → Plan → Execute → Validate → Review → Handoff → Cleanup`
+复杂任务至少完成范围确认、实施、验证和交付。只有发生真实交接时才要求 Handoff；Cleanup 按资产风险执行。
 
 宣布完成时必须分别说明：已修改、已验证、已提交、已部署、尚未完成和需要决策的事项。未经验证不得声称部署或恢复成功。
 
@@ -92,9 +90,9 @@ Conversation、AI 总结和 Generated 文件不得自动成为项目事实。
 
 - 是否保留 `Non-goals` 为每张 Task Card 必填字段。
 - 是否将 `Permissions` 设为所有复杂任务的必填字段。
-- `knowledge/` 是否只允许 Approved，还是允许 Candidate 子层。
-- Session Close 与 Handoff 是否必须在每个复杂任务结束时生成文件。
+- `knowledge/` 是否只允许 Approved，还是允许 Working 子层。
+- Session Close 与 Handoff 已按 PAOS-007 改为条件触发。
 
 ## 当前实现说明
 
-本文件保留为逐项讨论入口；可执行模板位于 Candidate Pack 中。两者均未获 Founder Approval，不得移动到 `01_templates/` 或用于正式项目创建。
+本文件保留为逐项讨论入口；可执行模板位于 Working Review 路径中。两者均未获 Template Approval，不得移动到 `01_templates/` 或用于正式项目创建。

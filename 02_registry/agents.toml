@@ -3,20 +3,20 @@ artifact_state = "WORKING"
 
 [[agents]]
 id = "codex"
-status = "CANDIDATE"
+availability = "DECLARED"
 role = "RUNTIME_AGENT"
 
 [[agents]]
 id = "chatgpt"
-status = "CANDIDATE"
+availability = "DECLARED"
 role = "INTERFACE_AGENT"
 
 [[agents]]
 id = "claude-code"
-status = "CANDIDATE"
+availability = "DECLARED"
 role = "RUNTIME_AGENT"
 
 [[agents]]
 id = "gemini-cli"
-status = "CANDIDATE"
+availability = "DECLARED"
 role = "RUNTIME_AGENT"

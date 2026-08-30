@@ -14,18 +14,20 @@
 
 ## Session Close 触发
 
-- 完成复杂任务。
-- 切换 Agent、任务、Worktree 或设备。
+仅在以下任一情况发生时要求 Session Close：
+
+- 切换 Agent、任务 Owner、Worktree 或设备。
 - 进入 Blocked、等待审批或长时间暂停。
-- 即将压缩上下文或归档 Conversation。
+- 即将压缩上下文或归档 Conversation，且存在未沉淀的重要结论。
+- 形成需要进入 Decision、Project Knowledge 或长期 Memory 的结论。
+
+普通短答、连续工作中的阶段更新和无持久结论的任务不要求 Close 文件。
 
 ## 必需内容
 
-- Close ID、Session ID、Close Sequence、Close Status。
-- Source Set SHA-256 与 Extractor Version。
 - Objective 与实际 Scope。
 - Completed 与未完成事项。
-- Decisions 和 Decision Candidates。
+- Decisions 与待确认事项。
 - Files、Commit、Branch 与 Worktree。
 - Validation Evidence。
 - Risks、Blockers 与 Next Actions。
@@ -33,4 +35,4 @@
 
 Session Close 是 Handoff 输入，不自动成为 Decision、Memory 或 Canonical Project State。
 
-同一 Session 可以有多个增量 Close；`close_sequence` 必须单调递增。相同 `source_set_sha256` 的重复 Close 应返回幂等结果，不得重复写入 Memory Candidate。
+自动化批量 Close 可以增加 Close ID、Sequence、Source Set SHA-256 与 Extractor Version；这些字段不作为人工 Close 的强制要求。

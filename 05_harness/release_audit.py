@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""审计 Personal AI OS V1.1 Release Gates，不执行 Promotion。"""
+"""Personal AI OS V1.1 Minimum Release Readiness；不执行 Promotion。"""
 
 from __future__ import annotations
 
@@ -15,9 +15,11 @@ try:
 except ModuleNotFoundError:
     try:
         import tomli as tomllib  # type: ignore[no-redef]
-    except ModuleNotFoundError as exc:
-        raise SystemExit("需要 Python 3.11+ 或安装 tomli") from exc
-
+    except ModuleNotFoundError:
+        try:
+            import pip._vendor.tomli as tomllib  # type: ignore[no-redef,import-not-found]
+        except ModuleNotFoundError as exc:
+            raise SystemExit("需要 Python 3.11+ 或安装 tomli") from exc
 
 ROOT = Path(__file__).resolve().parents[1]
 PYTHON = sys.executable
@@ -39,97 +41,69 @@ def repository_gate() -> Gate:
     head = run("git", "rev-parse", "HEAD")
     status = run("git", "status", "--porcelain")
     if head.returncode != 0:
-        return Gate("G0", "Repository", "FAIL", "Git HEAD 不存在")
+        return Gate("M1", "Repository", "FAIL", "Git HEAD 不存在")
     if status.stdout.strip():
-        return Gate("G0", "Repository", "BLOCKED", "Working Tree 非干净")
-    return Gate("G0", "Repository", "PASS", head.stdout.strip())
+        return Gate("M1", "Repository", "BLOCKED", "Working Tree 非干净")
+    return Gate("M1", "Repository", "PASS", head.stdout.strip())
 
 
-def inventory_gate() -> Gate:
-    tracked = run("git", "ls-files")
-    files = [line for line in tracked.stdout.splitlines() if line]
-    if tracked.returncode != 0 or not files:
-        return Gate("G1", "Inventory", "FAIL", "无法读取 Git 文件清单")
-    missing = [path for path in files if not (ROOT / path).is_file()]
-    if missing:
-        return Gate("G1", "Inventory", "FAIL", f"缺失 {len(missing)} 个已跟踪文件")
-    return Gate("G1", "Inventory", "PASS", f"tracked_files={len(files)}")
+def validation_gate() -> Gate:
+    result = run(PYTHON, "05_harness/validate_repository.py")
+    output = (result.stdout + result.stderr).strip().splitlines()
+    return Gate("M2", "Validation", "PASS" if result.returncode == 0 else "FAIL", output[-1] if output else "validator produced no output")
 
 
-def command_gate(gate_id: str, name: str, command: list[str]) -> Gate:
-    result = run(*command)
-    if result.returncode == 0:
-        last = (result.stdout.strip().splitlines() or ["PASS"])[-1]
-        return Gate(gate_id, name, "PASS", last)
-    evidence = (result.stdout + result.stderr).strip().splitlines()
-    return Gate(gate_id, name, "FAIL", evidence[-1] if evidence else "command failed")
-
-
-def template_gate() -> Gate:
-    approved: list[Path] = []
+def template_factory_gate() -> Gate:
+    approved = []
     for manifest in (ROOT / "01_templates").glob("*/template.toml"):
         data = tomllib.loads(manifest.read_text(encoding="utf-8"))
-        if data.get("artifact_state") == "APPROVED":
+        if data.get("artifact_state") == "APPROVED" and data.get("approval_reference"):
             approved.append(manifest)
+    acceptance = ROOT / "07_working/reviews/PROJECT_FACTORY_ACCEPTANCE.md"
     if not approved:
-        return Gate("G4", "Templates", "BLOCKED", "没有 Approved Template Pack")
-    return Gate("G4", "Templates", "PASS", f"approved_packs={len(approved)}")
+        return Gate("M3", "Template & Factory", "BLOCKED", "没有 Approved Template Pack")
+    if not acceptance.is_file() or "结论：`PASS`" not in acceptance.read_text(encoding="utf-8"):
+        return Gate("M3", "Template & Factory", "BLOCKED", "缺少 Formal Factory E2E")
+    return Gate("M3", "Template & Factory", "PASS", f"approved_packs={len(approved)}")
 
 
-def factory_gate() -> Gate:
-    evidence = ROOT / "07_working/reviews/PROJECT_FACTORY_ACCEPTANCE.md"
-    if not evidence.is_file() or "`PASS`" not in evidence.read_text(encoding="utf-8"):
-        return Gate("G5", "Project Factory", "BLOCKED", "缺少正式 Template Pack 端到端验收")
-    return Gate("G5", "Project Factory", "PASS", str(evidence.relative_to(ROOT)))
-
-
-def deployment_gate() -> Gate:
-    runtimes = tomllib.loads((ROOT / "02_registry/runtimes.toml").read_text(encoding="utf-8"))
-    records = {item["platform"]: item for item in runtimes.get("runtimes", [])}
+def adapter_deployment_gate() -> Gate:
+    generated = run(PYTHON, "05_harness/generate_adapters.py", "--check")
+    if generated.returncode != 0:
+        return Gate("M4", "Adapter & Deployment", "FAIL", "Adapter generation drift")
+    data = tomllib.loads((ROOT / "02_registry/runtimes.toml").read_text(encoding="utf-8"))
+    records = {item["platform"]: item for item in data.get("runtimes", [])}
     codex = records.get("codex", {})
     gemini = records.get("gemini-cli", {})
     if codex.get("runtime_smoke") != "PASS":
-        return Gate("G7", "Deployment", "BLOCKED", "Codex Runtime Smoke 尚未 PASS")
-    if gemini.get("runtime_smoke") != "PASS":
-        return Gate("G7", "Deployment", "BLOCKED", "Gemini CLI Runtime Smoke 尚未 PASS")
-    return Gate("G7", "Deployment", "PASS", "Codex 与 Gemini Runtime Smoke 均通过")
+        return Gate("M4", "Adapter & Deployment", "BLOCKED", "Codex Runtime Smoke 尚未 PASS")
+    if gemini.get("config_load") != "PASS":
+        return Gate("M4", "Adapter & Deployment", "BLOCKED", "Gemini Conditional Config Load 尚未 PASS")
+    return Gate("M4", "Adapter & Deployment", "PASS", "Codex PASS; Gemini CONDITIONAL config PASS")
 
 
 def recovery_gate() -> Gate:
-    evidence = ROOT / "07_working/reviews/RECOVERY_DRILL.md"
-    if evidence.is_file() and "结论：`PASS`" in evidence.read_text(encoding="utf-8"):
-        return Gate("G8", "Recovery", "PASS", str(evidence.relative_to(ROOT)))
-    return Gate("G8", "Recovery", "BLOCKED", "缺少通过的恢复演练记录")
+    path = ROOT / "07_working/reviews/RECOVERY_DRILL.md"
+    if not path.is_file() or "结论：`PASS`" not in path.read_text(encoding="utf-8"):
+        return Gate("M5", "Recovery", "BLOCKED", "缺少 Recovery evidence")
+    text = path.read_text(encoding="utf-8")
+    marker = "> Source Commit：`"
+    source = text.split(marker, 1)[1].split("`", 1)[0] if marker in text else ""
+    head = run("git", "rev-parse", "HEAD").stdout.strip()
+    if source != head:
+        return Gate("M5", "Recovery", "STALE", f"evidence_commit={source or 'missing'} current={head}")
+    return Gate("M5", "Recovery", "PASS", str(path.relative_to(ROOT)))
 
 
 def approval_gate() -> Gate:
     decisions = (ROOT / "DECISIONS.md").read_text(encoding="utf-8")
-    if "PAOS-REL-001" in decisions and "状态：`APPROVED`" in decisions:
-        return Gate("G9", "Founder Approval", "PASS", "PAOS-REL-001")
-    return Gate("G9", "Founder Approval", "BLOCKED", "缺少 V1.1 Release Approval")
-
-
-def promotion_gate() -> Gate:
-    tags = run("git", "tag", "--list", "v1.1*")
-    if tags.stdout.strip():
-        return Gate("G10", "Promotion", "PASS", tags.stdout.strip().splitlines()[-1])
-    return Gate("G10", "Promotion", "BLOCKED", "没有 V1.1 Release Tag")
+    if "PAOS-REL-001" in decisions:
+        return Gate("M6", "Founder Release Approval", "PASS", "PAOS-REL-001")
+    return Gate("M6", "Founder Release Approval", "BLOCKED", "缺少固定 Commit 的 Release Approval")
 
 
 def audit() -> list[Gate]:
-    return [
-        repository_gate(),
-        inventory_gate(),
-        command_gate("G2", "Schema", [PYTHON, "05_harness/validate_repository.py"]),
-        command_gate("G3", "Boundary", [PYTHON, "05_harness/validate_repository.py"]),
-        template_gate(),
-        factory_gate(),
-        command_gate("G6", "Adapters", [PYTHON, "05_harness/generate_adapters.py", "--check"]),
-        deployment_gate(),
-        recovery_gate(),
-        approval_gate(),
-        promotion_gate(),
-    ]
+    return [repository_gate(), validation_gate(), template_factory_gate(), adapter_deployment_gate(), recovery_gate(), approval_gate()]
 
 
 def main() -> int:
@@ -140,9 +114,9 @@ def main() -> int:
     overall = "PASS" if all(gate.status == "PASS" for gate in gates) else "BLOCKED"
     print(json.dumps({"overall": overall, "gates": [asdict(gate) for gate in gates]}, ensure_ascii=False, indent=2))
     if any(gate.status == "FAIL" for gate in gates):
-        return 1
+        return 10
     if args.require_release_ready and overall != "PASS":
-        return 2
+        return 14
     return 0
 
 

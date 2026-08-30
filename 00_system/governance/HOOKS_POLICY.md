@@ -4,7 +4,7 @@
 
 Phase 1 Hooks 默认 `enabled = false`。
 
-允许：检查、提醒、生成 Candidate、最小审计、输出验证报告。
+允许：检查、提醒、生成 Working 建议、最小审计、输出验证报告。
 
 禁止：自动批准、Canonical Promotion、commit、merge、push、deploy、publish、delete 和破坏性清理。
 

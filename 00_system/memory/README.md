@@ -2,7 +2,7 @@
 
 > 状态：`WORKING`
 
-候选流程：`Conversation → Extraction → Classification → Candidate → Approval → Canonical`。
+最小流程：`Conversation/Source → Select → Verify → Working → Approve/Discard → Archive`。
 
 - L1 Personal Memory：跨项目稳定偏好和长期目标，保持精简。
 - L2 Project Memory：项目架构、决定、状态和关键上下文。

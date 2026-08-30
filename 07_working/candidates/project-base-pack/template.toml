@@ -1,6 +1,6 @@
 pack_id = "paos-project-base"
-version = "0.1.0-candidate"
-artifact_state = "CANDIDATE"
+version = "0.2.0-working"
+artifact_state = "WORKING"
 owner = "paos-04-factory"
 canonical_authority = "NONE"
 
