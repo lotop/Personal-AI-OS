@@ -4,7 +4,7 @@
 >
 > 执行日期：`2026-08-31`
 >
-> Source Commit：`bb214ce836cbded58d94d1db8d68ac4cf360f0b6`
+> Source Commit：`e95cf5aee29bcc018454dcac08d5e04301ab482d`
 >
 > Machine Evidence：`07_working/reviews/recovery_evidence.toml`
 
@@ -14,18 +14,18 @@
 
 ## 冷克隆结果
 
-- 命令：`git clone --no-local --branch codex/v1.1.1-consistency`。
-- 恢复 Commit：`bb214ce836cbded58d94d1db8d68ac4cf360f0b6`。
+- 命令：`git clone --no-local --branch codex/claude-code-support`。
+- 恢复 Commit：`e95cf5aee29bcc018454dcac08d5e04301ab482d`。
 - Local Offline CI：`PASS`。
 - Adapter Generator `--check`：`ADAPTERS_OK`。
 - `git fsck --full`：退出码 `0`。
 
 ## 离线 Bundle 结果
 
-- Bundle Head：`bb214ce836cbded58d94d1db8d68ac4cf360f0b6`。
-- Bundle SHA-256：`3d2c01e86fb255dd7c4dc69ba43dddbc499bebd58432839d7380483c93600207`。
+- Bundle Head：`e95cf5aee29bcc018454dcac08d5e04301ab482d`。
+- Bundle SHA-256：`d344631624f57b2e7a642eb88caf707f08cda69b43816b4f602748b86ac4644d`。
 - `git bundle verify`：退出码 `0`。
-- Bundle 恢复 Commit：`bb214ce836cbded58d94d1db8d68ac4cf360f0b6`。
+- Bundle 恢复 Commit：`e95cf5aee29bcc018454dcac08d5e04301ab482d`。
 - Local Offline CI：`PASS`。
 - Adapter Generator `--check`：`ADAPTERS_OK`。
 - `git fsck --full`：退出码 `0`。
@@ -33,7 +33,7 @@
 ## 内容一致性
 
 - Source/Cold Clone/Bundle Clone Commit：精确一致。
-- Tree SHA-256：`65ae0134fb00103eb3e7324a7237a5fac53255b2be67bf3c97d1aaadada645df`。
+- Tree SHA-256：`08d1baa9f234a040a372cb18a8a95002373ba3470c82a4fe2194d47ccf499c5e`。
 - Machine Evidence 与本报告 Commit、Bundle SHA、Tree SHA：一致。
 
 结论：`PASS`
