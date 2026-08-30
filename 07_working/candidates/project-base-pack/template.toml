@@ -1,0 +1,65 @@
+pack_id = "paos-project-base"
+version = "0.1.0-candidate"
+artifact_state = "CANDIDATE"
+owner = "paos-04-factory"
+canonical_authority = "NONE"
+
+[[files]]
+source = "AGENTS.md.tmpl"
+destination = "AGENTS.md"
+render = true
+
+[[files]]
+source = "PROJECT.md.tmpl"
+destination = "PROJECT.md"
+render = true
+
+[[files]]
+source = "project.toml.tmpl"
+destination = "project.toml"
+render = true
+
+[[files]]
+source = "DECISIONS.md.tmpl"
+destination = "DECISIONS.md"
+render = true
+
+[[files]]
+source = "TASKS.md.tmpl"
+destination = "TASKS.md"
+render = true
+
+[[files]]
+source = "SESSION_CLOSE.md.tmpl"
+destination = "SESSION_CLOSE.md"
+render = true
+
+[[files]]
+source = "HANDOFF.md.tmpl"
+destination = "HANDOFF.md"
+render = true
+
+[[files]]
+source = "empty.keep"
+destination = "sources/.gitkeep"
+render = false
+
+[[files]]
+source = "empty.keep"
+destination = "knowledge/.gitkeep"
+render = false
+
+[[files]]
+source = "empty.keep"
+destination = "working/.gitkeep"
+render = false
+
+[[files]]
+source = "empty.keep"
+destination = "archive/.gitkeep"
+render = false
+
+[[files]]
+source = "empty.keep"
+destination = "tmp/.gitkeep"
+render = false

@@ -57,6 +57,9 @@ def validate_instance(instance: Any, schema: dict[str, Any], path: str = "$") ->
             if key not in instance:
                 errors.append(f"{path}: 缺少必填字段 {key}")
         properties = schema.get("properties", {})
+        if schema.get("additionalProperties") is False:
+            for key in instance.keys() - properties.keys():
+                errors.append(f"{path}: 不允许未知字段 {key}")
         for key, child_schema in properties.items():
             if key in instance:
                 errors.extend(validate_instance(instance[key], child_schema, f"{path}.{key}"))

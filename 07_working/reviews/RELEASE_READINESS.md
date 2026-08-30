@@ -4,7 +4,9 @@
 >
 > 审计日期：`2026-08-30`
 
-## 当前 Gate
+## Legacy G0–G10 Snapshot
+
+以下表格保留为重构前历史快照，不再代表当前 Gate 模型。
 
 | Gate | 状态 | 说明 |
 |---|---|---|
@@ -23,3 +25,31 @@
 ## 结论
 
 当前总体状态：`BLOCKED`。系统已经具备继续实施与 Candidate 部署的质量基础，但不得宣布 V1.1 Release 或 Canonical Promotion。
+
+## 当前 R0–R12 Readiness
+
+当前机器入口：`05_harness/release_audit_v2.py`。
+
+| Gate | 状态 | 限定范围 |
+|---|---|---|
+| R0 Review Pack | `PASS` | Founder Review Pack 已生成 |
+| R1 Repository | `PASS_AFTER_COMMIT` | 当前修改提交并保持 clean 后复核 |
+| R2 Inventory | `PASS_SCOPED` | Git tracked inventory |
+| R3 Schema | `PASS` | 含 Candidate Pack Schema binding |
+| R4 Invariants | `PASS_SCOPED` | 当前已实现不变量，不声称覆盖完整 |
+| R5a Template Structure | `PASS` | Candidate Pack 结构与登记完整 |
+| R5b Template Approval | `BLOCKED` | 等待 Founder Approval |
+| R6a Factory Safety | `PASS` | 含事务回滚负向测试 |
+| R6b Provisional E2E | `PASS` | 仅 Candidate/Provisional |
+| R6c Formal E2E | `BLOCKED` | 依赖 R5b |
+| R7a Adapter Generation | `PASS` | Byte consistency |
+| R7b Codex Live | `PASS` | Readonly runtime smoke |
+| R7c Gemini Config | `PASS` | Config load only |
+| R7d Gemini Live | `BLOCKED_EXTERNAL_DATA_AUTHORIZATION` | 未发送项目内容 |
+| R8 V1.0 Disposition | `BLOCKED_FOUNDER_DECISION` | 原件不可得 |
+| R9 Recovery | `PASS_SCOPED` | Clean clone + offline bundle only |
+| R10 Local Security | `PASS_SCOPED` | Secret pattern、权限与外发策略 |
+| R11 Test Assurance | `PASS_SCOPED` | 本地 22 项测试；仍有后续扩展项 |
+| R12 Release Approval | `BLOCKED_FOUNDER_DECISION` | 尚未冻结 release commit |
+
+`P1 Tag/Canonical Promotion` 与 `P2 Post-promotion Verification` 是 R12 之后的执行阶段，当前分别为 `NOT_AUTHORIZED` 和 `NOT_STARTED`，不再被错误计作发布前 readiness blocker。

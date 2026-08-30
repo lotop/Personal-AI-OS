@@ -1,0 +1,91 @@
+schema_version = "0.2.0-working"
+artifact_class = "CONFIG"
+maturity_state = "WORKING"
+readiness_script = "release_audit_v2.py"
+promotion_requires = "R12"
+
+[[gates]]
+id = "R0"
+name = "Release Scope & Review Pack"
+
+[[gates]]
+id = "R1"
+name = "Repository Identity"
+
+[[gates]]
+id = "R2"
+name = "Inventory & Provenance"
+
+[[gates]]
+id = "R3"
+name = "Schema Syntax & Binding"
+
+[[gates]]
+id = "R4"
+name = "Cross-file Invariants & Boundary"
+
+[[gates]]
+id = "R5a"
+name = "Template Structural Readiness"
+
+[[gates]]
+id = "R5b"
+name = "Template Founder Approval"
+
+[[gates]]
+id = "R6a"
+name = "Factory Engine Safety"
+
+[[gates]]
+id = "R6b"
+name = "Factory Provisional E2E"
+
+[[gates]]
+id = "R6c"
+name = "Factory Formal E2E"
+
+[[gates]]
+id = "R7a"
+name = "Adapter Generation"
+
+[[gates]]
+id = "R7b"
+name = "Codex Live Runtime"
+
+[[gates]]
+id = "R7c"
+name = "Gemini Config Load"
+
+[[gates]]
+id = "R7d"
+name = "Gemini Live Runtime"
+
+[[gates]]
+id = "R8"
+name = "V1.0 Baseline Disposition"
+
+[[gates]]
+id = "R9"
+name = "Repository Recovery"
+
+[[gates]]
+id = "R10"
+name = "Local Security Controls"
+
+[[gates]]
+id = "R11"
+name = "Test Assurance"
+
+[[gates]]
+id = "R12"
+name = "Founder Release Approval"
+
+[[promotion_steps]]
+id = "P1"
+name = "Tag & Canonical Promotion"
+mandatory_for_readiness = false
+
+[[promotion_steps]]
+id = "P2"
+name = "Post-promotion Verification"
+mandatory_for_readiness = false

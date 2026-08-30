@@ -6,9 +6,11 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import shutil
 import re
 import subprocess
 import sys
+import uuid
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -58,12 +60,24 @@ def load_plan(pack: Path, target: Path, variables: dict[str, str]) -> tuple[dict
     if not manifest_path.is_file():
         raise ValueError("Template Pack 缺少 template.toml")
     manifest = tomllib.loads(manifest_path.read_text(encoding="utf-8"))
+    for field in ("pack_id", "version", "artifact_state", "owner", "canonical_authority"):
+        if not manifest.get(field):
+            raise ValueError(f"Template Pack 缺少字段: {field}")
+    state = manifest["artifact_state"]
+    if state not in {"CANDIDATE", "APPROVED"}:
+        raise ValueError(f"Template Pack 状态非法: {state}")
+    if state == "APPROVED" and not manifest.get("approval_reference"):
+        raise ValueError("APPROVED Template Pack 缺少 approval_reference")
+    render_variables = dict(variables)
+    render_variables["TEMPLATE_VERSION"] = str(manifest.get("version", ""))
     files: list[PlannedFile] = []
     destinations: set[Path] = set()
     for record in manifest.get("files", []):
         source_rel = confined_relative(record["source"], "source")
         destination_rel = confined_relative(record["destination"], "destination")
         source = (pack / source_rel).resolve()
+        if (pack / source_rel).is_symlink():
+            raise ValueError(f"模板来源不得是符号链接: {source_rel}")
         if pack.resolve() not in source.parents or not source.is_file():
             raise ValueError(f"模板来源不存在或越界: {source_rel}")
         destination = target / destination_rel
@@ -72,10 +86,19 @@ def load_plan(pack: Path, target: Path, variables: dict[str, str]) -> tuple[dict
         destinations.add(destination_rel)
         content = source.read_text(encoding="utf-8")
         if record.get("render", True):
-            content = render(content, variables)
+            content = render(content, render_variables)
         files.append(PlannedFile(source, destination, content))
     if not files:
         raise ValueError("Template Pack 没有文件记录")
+    declared = {item.source.resolve() for item in files}
+    actual = {
+        path.resolve()
+        for path in pack.rglob("*")
+        if path.is_file() and path.name != "template.toml"
+    }
+    if declared != actual:
+        extras = sorted(str(path.relative_to(pack.resolve())) for path in actual - declared)
+        raise ValueError(f"Template Pack 存在未登记文件: {', '.join(extras)}")
     return manifest, files
 
 
@@ -83,8 +106,11 @@ def validate_target(target: Path) -> None:
     resolved = target.resolve()
     if resolved == OS_ROOT or OS_ROOT in resolved.parents:
         raise ValueError("业务项目不得创建在 Personal AI OS 仓库内部")
-    if target.exists() and any(target.iterdir()):
-        raise ValueError("目标目录已经存在且非空")
+    if target.exists():
+        raise ValueError("目标路径已经存在；Factory 不执行隐式合并")
+    for parent in (resolved.parent, *resolved.parents):
+        if (parent / ".git").exists():
+            raise ValueError(f"业务项目不得嵌套在现有 Git Repository 内: {parent}")
 
 
 def build_manifest(
@@ -116,21 +142,30 @@ def build_manifest(
 
 
 def write_project(target: Path, files: list[PlannedFile], manifest: dict, init_git: bool) -> None:
-    target.mkdir(parents=True, exist_ok=True)
-    for item in files:
-        item.destination.parent.mkdir(parents=True, exist_ok=True)
-        if item.destination.exists():
-            raise ValueError(f"拒绝覆盖: {item.destination}")
-        item.destination.write_text(item.content, encoding="utf-8")
-    (target / ".paos-init.json").write_text(
-        json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
-    )
-    if init_git:
-        result = subprocess.run(
-            ["git", "init", "-b", "main"], cwd=target, text=True, capture_output=True
+    validate_target(target)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    staging = target.parent / f".{target.name}.paos-staging-{uuid.uuid4().hex}"
+    try:
+        staging.mkdir()
+        for item in files:
+            relative = item.destination.relative_to(target)
+            destination = staging / relative
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            destination.write_text(item.content, encoding="utf-8")
+        (staging / ".paos-init.json").write_text(
+            json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
         )
-        if result.returncode != 0:
-            raise ValueError(f"Git 初始化失败: {result.stderr.strip()}")
+        if init_git:
+            result = subprocess.run(
+                ["git", "init", "-b", "main"], cwd=staging, text=True, capture_output=True
+            )
+            if result.returncode != 0:
+                raise ValueError(f"Git 初始化失败: {result.stderr.strip()}")
+        staging.replace(target)
+    except Exception:
+        if staging.exists():
+            shutil.rmtree(staging)
+        raise
 
 
 def parse_args() -> argparse.Namespace:

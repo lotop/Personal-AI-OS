@@ -21,3 +21,8 @@ schema = "adapter-manifest.schema.json"
 path_glob = "01_templates/*/template.toml"
 format = "toml"
 schema = "template-pack.schema.json"
+
+[[bindings]]
+path_glob = "07_working/candidates/*/template.toml"
+format = "toml"
+schema = "template-pack.schema.json"

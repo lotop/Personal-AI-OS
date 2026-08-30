@@ -1,0 +1,56 @@
+# {{PROJECT_NAME}}
+
+> Project ID：`{{PROJECT_ID}}`
+>
+> Owner：`{{OWNER}}`
+>
+> Template Version：`{{TEMPLATE_VERSION}}`
+>
+> 实例状态：`PROVISIONAL`（经项目 Owner 验收后方可调整）
+
+## 项目入口
+
+本仓库是 `{{PROJECT_NAME}}` 的独立项目仓库。项目目标、范围和成功标准以 `PROJECT.md` 为准，机器可读元数据以 `project.toml` 为准。
+
+处理非简单任务前，按最小充分原则读取：
+
+1. 本文件及项目级已批准规则。
+2. `PROJECT.md`、`project.toml` 和适用 Decisions。
+3. `TASKS.md` 中的当前 Task Card。
+4. 与任务直接相关的 Source、Knowledge 和文件。
+
+不得默认加载全部历史、归档、其他项目或无关资料。
+
+## Source of Truth 与生命周期
+
+- `sources/`：原始输入，只读，不静默改写。
+- `knowledge/`：项目批准后的长期知识。
+- `working/`：Working/Candidate 产物，不具有 Canonical Authority。
+- `archive/`：已替代但需追溯的材料。
+- `tmp/`：临时运行资产，可按批准的 GC 规则清理。
+
+Conversation、AI 总结和 Generated 文件不得自动成为项目事实。
+
+## Task Card
+
+复杂任务必须在 `TASKS.md` 声明 Objective、Scope、Non-goals、Read Set、Write Set、Dependencies、Expected Output、Acceptance Criteria、Owner 和 Permissions。并行任务的 Write Set 不得重叠。
+
+## 权限与安全
+
+- 使用完成任务所需的最小权限。
+- 不读取、输出或提交真实 Secret。
+- 不静默覆盖 Source、Approved 或 Canonical 内容。
+- 删除、部署、外部发布、外部数据传输、权限升级和破坏性清理需要明确授权。
+- Generated Adapter 必须可追溯到批准的 Source 和生成器版本。
+
+## 完成协议
+
+复杂任务遵循：
+
+`Understand → Plan → Execute → Validate → Review → Handoff → Cleanup`
+
+宣布完成时分别说明：已修改、已验证、已提交、已部署、尚未完成和需要决策。未经验证不得声称部署或恢复成功。
+
+## 冲突处理
+
+当用户当前指令、项目规则、Task Card 和 Agent 默认行为冲突时，不静默选择。影响目标、权限、Source of Truth 或正式交付物的冲突必须交给 Project Owner 决定。

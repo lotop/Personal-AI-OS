@@ -6,8 +6,16 @@ artifact_classes = ["SOURCE", "RULE", "TEMPLATE", "CONFIG", "REGISTRY", "GENERAT
 maturity_states = ["WORKING", "CANDIDATE", "APPROVED", "CANONICAL", "SUPERSEDED", "ARCHIVED"]
 promotion_path = ["WORKING", "CANDIDATE", "APPROVED", "CANONICAL"]
 
+# V1.1 Candidate 正交状态模型；旧字段暂时保留兼容，禁止继续新增单一 status 语义。
+origin_classes = ["ORIGINAL_SOURCE", "EXTERNAL_REFERENCE", "DERIVED_RECONSTRUCTION", "HUMAN_AUTHORED"]
+governance_states = ["WORKING", "CANDIDATE", "APPROVED", "CANONICAL"]
+lifecycle_states = ["ACTIVE", "SUPERSEDED", "ARCHIVED", "QUARANTINED", "SOFT_DELETED", "PURGED"]
+materialization_classes = ["HUMAN_MAINTAINED", "GENERATED", "TEMP", "CACHE", "LOG"]
+
 [rules]
 source_is_immutable_reference = true
 generated_is_canonical_authority = false
 temp_enters_promotion = false
 founder_approval_required = true
+original_source_is_promoted = false
+generated_can_be_canonical_authority = false

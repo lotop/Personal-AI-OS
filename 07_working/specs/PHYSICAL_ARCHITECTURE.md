@@ -90,6 +90,7 @@ Personal-AI-OS/
 ## 当前未完成项
 
 - V1.0 原始文件未取得，正式 Diff 尚不可证明。
-- 核心模板尚未逐项批准。
-- Codex/Gemini Adapter 尚未生成和部署。
-- 私有远端、备份和恢复演练尚未验证。
+- 首个 Project Base Template Pack 已形成可执行 Candidate 并通过 Provisional E2E，但尚未 Founder Approval。
+- Codex/Gemini Candidate Adapter 已生成并部署；Codex Live Runtime 通过，Gemini 仅 Config Load 通过，Live Runtime 等待外部数据授权。
+- 本地 Clean Clone 与 Offline Git Bundle 恢复已验证；Private Remote、外部资产、Credential 与完整 Host Recovery 尚未验证。
+- Release Readiness 已拆分为 R0–R12 与批准后的 P1–P2，当前保持 Blocked。

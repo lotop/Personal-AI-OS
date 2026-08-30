@@ -7,6 +7,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
@@ -53,6 +54,39 @@ class DeploymentTest(unittest.TestCase):
             backup = root / "backup"
             apply_plan(plan, backup)
             self.assertTrue((backup / ".agent/settings.json").is_file())
+
+    def test_partial_failure_rolls_back_created_files(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            adapter = root / "adapter"
+            adapter.mkdir()
+            (adapter / "one.json").write_text('{}\n', encoding="utf-8")
+            (adapter / "two.json").write_text('{}\n', encoding="utf-8")
+            (adapter / "manifest.toml").write_text(
+                'schema_version = "0.1"\nartifact_class = "GENERATED"\n'
+                'maturity_state = "CANDIDATE"\nplatform = "test"\n'
+                'generator = "test"\nsource_files = ["source"]\n'
+                '[[files]]\nsource = "one.json"\ntarget = ".agent/one.json"\nformat = "json"\n'
+                '[[files]]\nsource = "two.json"\ntarget = ".agent/two.json"\nformat = "json"\n',
+                encoding="utf-8",
+            )
+            target = root / "target"
+            _, plan = build_plan(adapter / "manifest.toml", target)
+            calls = 0
+
+            def fail_second(staged: Path, destination: Path) -> None:
+                nonlocal calls
+                calls += 1
+                if calls == 2:
+                    raise OSError("injected failure")
+                staged.replace(destination)
+
+            with patch("deploy_adapter.atomic_replace", side_effect=fail_second):
+                with self.assertRaises(OSError):
+                    apply_plan(plan, None)
+            self.assertFalse((target / ".agent/one.json").exists())
+            self.assertFalse((target / ".agent/two.json").exists())
+            self.assertEqual(list(target.rglob("*.paos-stage-*")), [])
 
 
 if __name__ == "__main__":

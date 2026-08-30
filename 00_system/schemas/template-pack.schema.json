@@ -2,15 +2,20 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "paos://schemas/template-pack/0.1",
   "type": "object",
-  "required": ["pack_id", "version", "artifact_state", "files"],
+  "additionalProperties": false,
+  "required": ["pack_id", "version", "artifact_state", "owner", "canonical_authority", "files"],
   "properties": {
     "pack_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]+$"},
     "version": {"type": "string", "minLength": 1},
     "artifact_state": {"type": "string", "enum": ["CANDIDATE", "APPROVED"]},
+    "owner": {"type": "string", "minLength": 1},
+    "canonical_authority": {"type": "string", "enum": ["NONE", "FOUNDER_APPROVAL"]},
+    "approval_reference": {"type": "string", "minLength": 1},
     "files": {
       "type": "array",
       "items": {
         "type": "object",
+        "additionalProperties": false,
         "required": ["source", "destination"],
         "properties": {
           "source": {"type": "string", "minLength": 1},

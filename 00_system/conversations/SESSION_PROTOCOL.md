@@ -21,6 +21,8 @@
 
 ## 必需内容
 
+- Close ID、Session ID、Close Sequence、Close Status。
+- Source Set SHA-256 与 Extractor Version。
 - Objective 与实际 Scope。
 - Completed 与未完成事项。
 - Decisions 和 Decision Candidates。
@@ -30,3 +32,5 @@
 - Memory Candidates 与不应进入 Memory 的过程信息。
 
 Session Close 是 Handoff 输入，不自动成为 Decision、Memory 或 Canonical Project State。
+
+同一 Session 可以有多个增量 Close；`close_sequence` 必须单调递增。相同 `source_set_sha256` 的重复 Close 应返回幂等结果，不得重复写入 Memory Candidate。

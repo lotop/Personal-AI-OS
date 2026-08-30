@@ -33,3 +33,17 @@ class SchemaValidationTest(unittest.TestCase):
         }
         self.assertEqual(validate_instance(["A", "B"], schema), [])
         self.assertTrue(validate_instance(["A", "A"], schema))
+
+    def test_reject_unknown_property_when_closed(self) -> None:
+        schema = {
+            "type": "object",
+            "properties": {"id": {"type": "string"}},
+            "additionalProperties": False,
+        }
+        self.assertEqual(validate_instance({"id": "demo"}, schema), [])
+        errors = validate_instance({"id": "demo", "typo": True}, schema)
+        self.assertTrue(any("未知字段 typo" in error for error in errors))
+
+
+if __name__ == "__main__":
+    unittest.main()

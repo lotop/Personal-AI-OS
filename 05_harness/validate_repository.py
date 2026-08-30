@@ -55,6 +55,9 @@ REQUIRED_FILES = [
     "04_project_factory/FACTORY_SPEC.md",
     "06_deployment/CODEX_DEPLOYMENT.md",
     "06_deployment/GEMINI_DEPLOYMENT.md",
+    "00_system/security/EXTERNAL_DATA_POLICY.md",
+    "07_working/reviews/FOUNDER_REVIEW_PACK.md",
+    "07_working/reviews/PROJECT_FACTORY_PROVISIONAL_ACCEPTANCE.md",
 ]
 
 SECRET_PATTERNS = [
@@ -209,6 +212,33 @@ def validate_lifecycle(parsed: dict[Path, dict], report: Report) -> None:
         report.error("SOURCE 不得属于 maturity_states")
     if not {"WORKING", "CANDIDATE", "APPROVED", "CANONICAL"}.issubset(maturity):
         report.error("maturity_states 缺少 Promotion 核心状态")
+    required_axes = {"origin_classes", "governance_states", "lifecycle_states", "materialization_classes"}
+    missing_axes = sorted(required_axes - data.keys())
+    if missing_axes:
+        report.error(f"正交状态模型缺少: {', '.join(missing_axes)}")
+
+
+def validate_template_packs(parsed: dict[Path, dict], report: Report) -> None:
+    for base in (ROOT / "01_templates", ROOT / "07_working/candidates"):
+        for manifest_path in sorted(base.glob("*/template.toml")):
+            data = parsed.get(manifest_path, load_toml(manifest_path, report))
+            state = data.get("artifact_state")
+            if base.name == "01_templates" and (state != "APPROVED" or not data.get("approval_reference")):
+                report.error(f"正式 Template Pack 缺少可验证批准: {manifest_path.relative_to(ROOT)}")
+            if base.name == "candidates" and state not in {"CANDIDATE", "WORKING"}:
+                report.error(f"Working 区 Template Pack 状态越权: {manifest_path.relative_to(ROOT)}")
+            records = data.get("files", [])
+            sources = [record.get("source") for record in records]
+            destinations = [record.get("destination") for record in records]
+            if len(destinations) != len(set(destinations)):
+                report.error(f"Template Pack 目标路径重复: {manifest_path.relative_to(ROOT)}")
+            actual = {str(path.relative_to(manifest_path.parent)) for path in manifest_path.parent.rglob("*") if path.is_file() and path.name != "template.toml"}
+            undeclared = sorted(actual - set(sources))
+            if undeclared:
+                report.error(f"Template Pack 存在未登记文件: {manifest_path.relative_to(ROOT)}: {', '.join(undeclared)}")
+            for source in sources:
+                if not source or not (manifest_path.parent / source).is_file():
+                    report.error(f"Template Pack 来源缺失: {manifest_path.relative_to(ROOT)}: {source}")
 
 
 def validate_secrets(report: Report) -> None:
@@ -257,6 +287,7 @@ def main() -> int:
     validate_unique_ids(parsed, report)
     validate_tasks(parsed, report)
     validate_lifecycle(parsed, report)
+    validate_template_packs(parsed, report)
     validate_secrets(report)
     validate_git(report)
 

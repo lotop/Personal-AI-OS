@@ -24,6 +24,25 @@
 - 不含 Secret、无关敏感信息或大段可重新获取的 Source。
 - 与现有 Memory 无未处理冲突。
 
+## Claim Contract
+
+每条可持久化 Claim 必须单独记录：
+
+- `claim_id`、`claim_type = FACT | PREFERENCE | DECISION | INFERENCE`。
+- `memory_layer = L1 | L2 | L3`。
+- L2 必须有 `project_id`；L3 必须有 `session_id`。
+- `source_revision`、`source_locator`、`source_sha256`、`source_author`、`observed_at`、`extractor_version`。
+- `governance_status`、`validity_status`、`lifecycle_status` 三条独立状态轴。
+- `review_at` 或明确的复核条件；时效性事实不得无限期有效。
+
+`confidence` 只描述不确定程度，不能代替 Claim Type、来源或验证状态。
+
+## 隔离规则
+
+- 跨项目读取默认 `SCOPE_DENIED`，不得在找不到 Project Memory 时 fallback 到其他项目。
+- L1 只能保存跨项目稳定且已确认的偏好/原则，不保存业务项目事实。
+- 更正、撤回、争议和过期保留 supersedes/retracted_by 证据；过期不自动删除。
+
 ## 更新规则
 
 - 新信息默认形成 Candidate，不直接覆盖现有条目。
@@ -34,3 +53,5 @@
 ## Session Close 输出
 
 Session Close 只提取：Completed、Decisions、Open Questions、Risks、Next Actions、Memory Candidates、Files 与 Validation Evidence。无长期价值的过程推理不进入 Memory。
+
+每个 Close 还必须有 `close_id`、`close_sequence`、`session_id`、`source_set_sha256`、`close_status` 和 `extractor_version`；重复执行必须能识别同一 Source Set，不重复创建 Memory Claim。

@@ -8,6 +8,7 @@ import hashlib
 import json
 import shutil
 import sys
+import uuid
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -58,6 +59,8 @@ def build_plan(manifest_path: Path, target_root: Path) -> tuple[dict, list[Deplo
         source_rel = confined(record["source"], "source")
         target_rel = confined(record["target"], "target")
         source = (adapter_root / source_rel).resolve()
+        if (adapter_root / source_rel).is_symlink():
+            raise ValueError(f"Adapter source 不得是符号链接: {source_rel}")
         if adapter_root not in source.parents or not source.is_file():
             raise ValueError(f"Adapter source 不存在或越界: {source_rel}")
         validate_native(source, record["format"])
@@ -76,20 +79,46 @@ def build_plan(manifest_path: Path, target_root: Path) -> tuple[dict, list[Deplo
     return manifest, plan
 
 
+def atomic_replace(staged: Path, target: Path) -> None:
+    staged.replace(target)
+
+
 def apply_plan(plan: list[DeploymentItem], backup_root: Path | None) -> None:
     replacements = [item for item in plan if item.action == "REPLACE"]
     if replacements and backup_root is None:
         raise ValueError("覆盖现有文件前必须提供 --backup-dir")
-    for item in plan:
-        if item.action == "UNCHANGED":
-            continue
-        if item.action == "REPLACE":
+    changed = [item for item in plan if item.action != "UNCHANGED"]
+    staged: dict[Path, Path] = {}
+    applied: list[DeploymentItem] = []
+    try:
+        for item in replacements:
             assert backup_root is not None
             backup = backup_root.resolve() / item.relative_target
             backup.parent.mkdir(parents=True, exist_ok=True)
+            if backup.exists():
+                raise ValueError(f"Backup 已存在，拒绝覆盖: {backup}")
             shutil.copy2(item.target, backup)
-        item.target.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(item.source, item.target)
+        for item in changed:
+            item.target.parent.mkdir(parents=True, exist_ok=True)
+            stage = item.target.parent / f".{item.target.name}.paos-stage-{uuid.uuid4().hex}"
+            shutil.copy2(item.source, stage)
+            staged[item.target] = stage
+        for item in changed:
+            atomic_replace(staged[item.target], item.target)
+            applied.append(item)
+    except Exception:
+        for item in reversed(applied):
+            if item.action == "CREATE":
+                item.target.unlink(missing_ok=True)
+            else:
+                assert backup_root is not None
+                backup = backup_root.resolve() / item.relative_target
+                if backup.is_file():
+                    shutil.copy2(backup, item.target)
+        raise
+    finally:
+        for stage in staged.values():
+            stage.unlink(missing_ok=True)
 
 
 def serialize(manifest: dict, target_root: Path, plan: list[DeploymentItem]) -> dict:

@@ -8,6 +8,8 @@
 >
 > Owner：`paos-04-factory`
 
+> 可执行 Candidate Pack：`07_working/candidates/project-base-pack/`
+
 ## 模板说明
 
 - 解决的问题：为 Codex 等能读取 `AGENTS.md` 的 Agent 提供项目级最小 Router、安全边界和完成协议。
@@ -92,3 +94,7 @@ Conversation、AI 总结和 Generated 文件不得自动成为项目事实。
 - 是否将 `Permissions` 设为所有复杂任务的必填字段。
 - `knowledge/` 是否只允许 Approved，还是允许 Candidate 子层。
 - Session Close 与 Handoff 是否必须在每个复杂任务结束时生成文件。
+
+## 当前实现说明
+
+本文件保留为逐项讨论入口；可执行模板位于 Candidate Pack 中。两者均未获 Founder Approval，不得移动到 `01_templates/` 或用于正式项目创建。

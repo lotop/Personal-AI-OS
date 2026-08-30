@@ -4,6 +4,10 @@ maturity_state = "WORKING"
 enabled = false
 dry_run_only = true
 destructive_delete = false
+require_immutable_plan = true
+plan_ttl_hours = 24
+revalidate_before_execute = true
+quarantine_excluded_from_scan = true
 
 [retention]
 temp_days = 7

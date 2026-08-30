@@ -1,5 +1,7 @@
 # Harness
 
+Release Readiness 新模型使用 `release_audit_v2.py` 与 `release_gates_v2.toml`。旧版 `release_audit.py` 暂时保留作历史兼容，不再用于新的 Founder Review Pack；新版验证通过并获得迁移确认后再移除旧入口。
+
 > 状态：`WORKING`
 
 Harness 负责让任务可靠完成，不负责定义项目事实。
