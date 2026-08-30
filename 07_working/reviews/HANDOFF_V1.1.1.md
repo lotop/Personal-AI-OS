@@ -8,7 +8,7 @@
 
 - Task ID：`paos-10-v1-1-1-consistency`
 - Agent / Runtime：`Codex / codex-cli 0.151.0-alpha.7.2`
-- Base Commit：`f67ce69b90288aed00a84999cadaa7aa15a8bdc1`
+- Base Commit：`bb214ce836cbded58d94d1db8d68ac4cf360f0b6`
 - Branch：`codex/v1.1.1-consistency`
 - Write Set：入口文档、System/Registry、项目创建 Skill、Release Audit、Recovery Evidence 与 Handoff。
 - Completed：状态统一、README 状态机修正、Skill 注册与去重、Runtime 更新、M5/M6 加固、26 项测试、E2E、冷克隆和 Bundle 恢复。
