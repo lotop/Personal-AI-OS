@@ -5,8 +5,8 @@ allowed_statuses = ["TODO", "ACTIVE", "BLOCKED", "REVIEW", "DONE"]
 [[tasks]]
 id = "paos-00-control"
 purpose = "总控、架构决策、模板审批与 Canonical Promotion"
-status = "ACTIVE"
-validation = ["research-complete", "implementation-partial", "review-partial"]
+status = "DONE"
+validation = ["research-complete", "implementation-complete", "review-complete", "release-v1.1.0"]
 platform = "codex"
 platform_ref = "01a04e95-596a-7422-8d52-70bea694c2d5"
 
@@ -21,16 +21,16 @@ platform_ref = "6a931d6b-c630-83ea-9864-11b49633c1a9"
 [[tasks]]
 id = "paos-02-governance"
 purpose = "Global Config、Governance 与 Security"
-status = "ACTIVE"
-validation = ["research-complete", "artifact-complete", "review-complete", "implementation-partial"]
+status = "DONE"
+validation = ["research-complete", "artifact-complete", "review-complete", "implementation-complete", "release-v1.1.0"]
 platform = "chatgpt-project"
 platform_ref = "6a931d73-c3f4-83ea-9512-5b505d002927"
 
 [[tasks]]
 id = "paos-03-modes"
 purpose = "Mode System 与 Context Loading"
-status = "ACTIVE"
-validation = ["research-complete", "artifact-complete", "review-partial", "implementation-partial"]
+status = "DONE"
+validation = ["research-complete", "artifact-complete", "review-complete", "implementation-complete", "release-v1.1.0"]
 platform = "chatgpt-project"
 platform_ref = "6a931d6f-fdf4-83ea-bcb8-35fcbb6ba486"
 
@@ -81,3 +81,11 @@ status = "DONE"
 validation = ["research-complete", "artifact-complete", "review-complete", "implementation-complete"]
 platform = "chatgpt-project"
 platform_ref = "6a931d8b-5658-83ea-a6ca-992c7839b9be"
+
+[[tasks]]
+id = "paos-10-v1-1-1-consistency"
+purpose = "V1.1.1 状态一致性、发布证据加固与 Handoff 收口"
+status = "REVIEW"
+validation = ["scope-confirmed", "branch-isolated", "audit-complete", "implementation-complete"]
+platform = "codex"
+platform_ref = "codex/v1.1.1-consistency"

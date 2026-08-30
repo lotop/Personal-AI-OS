@@ -16,7 +16,7 @@
   "properties": {
     "schema_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+-working$"},
     "system_name": {"type": "string", "minLength": 1},
-    "target_version": {"type": "string", "enum": ["1.1"]},
+    "target_version": {"type": "string", "enum": ["1.1", "1.1.1"]},
     "artifact_state": {"type": "string", "enum": ["WORKING", "APPROVED", "ARCHIVED"]},
     "canonical_authority": {"type": "string", "enum": ["NONE", "FOUNDER_APPROVED"]},
     "repository": {
@@ -31,6 +31,18 @@
     },
     "promotion": {"type": "object"},
     "automation": {"type": "object"},
-    "implementation": {"type": "object"}
+    "implementation": {"type": "object"},
+    "approved_baseline": {
+      "type": "object",
+      "required": ["version", "artifact_state", "canonical_authority", "approval_reference", "git_tag", "git_commit"],
+      "properties": {
+        "version": {"type": "string"},
+        "artifact_state": {"type": "string", "enum": ["APPROVED"]},
+        "canonical_authority": {"type": "string", "enum": ["FOUNDER_APPROVED"]},
+        "approval_reference": {"type": "string", "minLength": 1},
+        "git_tag": {"type": "string", "minLength": 1},
+        "git_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"}
+      }
+    }
   }
 }

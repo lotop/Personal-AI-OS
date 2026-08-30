@@ -5,22 +5,22 @@ artifact_state = "WORKING"
 id = "codex-local"
 platform = "codex"
 availability = "INSTALLED"
-version = "0.151.0-alpha.7.1"
-verified_on = "2026-08-30"
+version = "0.151.0-alpha.7.2"
+verified_on = "2026-08-31"
 project_config = "DEPLOYED_WORKING"
 runtime_smoke = "PASS"
-smoke_thread = "01a04f4a-dd10-7d00-b8cd-1234cb086258"
+smoke_evidence = "当前 V1.1.1 Codex 任务成功加载项目 AGENTS.md 并执行本地工具"
 issues = [
-  "Codex Memory 数据库无法由 Doctor 打开",
-  "旧会话索引存在缺失与陈旧记录",
+  "本轮未复查用户级 Codex Memory 数据库与旧会话索引",
 ]
 
 [[runtimes]]
 id = "gemini-cli-local"
 platform = "gemini-cli"
-availability = "TRANSIENT_AVAILABLE"
+availability = "NOT_INSTALLED"
 version = "0.57.0"
-verified_on = "2026-08-30"
+verified_on = "2026-08-31"
 project_config = "DEPLOYED_WORKING"
 config_load = "PASS"
-runtime_smoke = "BLOCKED_EXTERNAL_DATA_AUTHORIZATION"
+runtime_smoke = "NOT_RUN"
+blocked_reasons = ["CLI_NOT_INSTALLED", "BLOCKED_EXTERNAL_DATA_AUTHORIZATION"]

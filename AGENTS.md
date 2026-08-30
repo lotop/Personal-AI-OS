@@ -1,12 +1,14 @@
-# Personal AI OS V1.1
+# Personal AI OS V1.1.1 Release Candidate
 
-> 模板版本：`0.5-working`
+> Router 版本：`0.6-working`
 >
 > 状态：`WORKING`
 >
-> Canonical Authority：`NONE`
+> 已批准基线：`v1.1.0`（`PAOS-REL-001`）
+>
+> 当前修订：`v1.1.1` 候选，尚未 Tag 或 Promotion
 
-本文件是仓库根入口的 Working 版本，尚未批准。它负责导航和最低限度的安全边界，不承载全部治理正文。
+本文件是仓库根入口的 V1.1.1 Working Router。V1.1.0 已获批准；本轮修订在获得 Founder Release Approval 并绑定固定 Commit/Tag 前不具有新的 Canonical Authority。本文件只负责导航和最低限度安全边界，不承载全部治理正文。
 
 ## 系统定位
 

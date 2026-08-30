@@ -2,7 +2,7 @@
 name: create-paos-project
 description: >-
   一键创建符合 Personal AI OS 规范的独立业务项目。
-  自动配置 Codex 与 Gemini 双 Agent 适配器、初始化 Git 仓库、生成项目级 AGENTS.md、PROJECT.md、DECISIONS.md 和首张 Task Card。
+  通过 Approved Template Pack 初始化 Git 仓库、生成项目治理文件和任务模板，并部署 Codex 与 Gemini Adapter。
   当用户想要新建项目、脚手架初始化或提到“创建项目”时使用。
 ---
 
@@ -14,7 +14,7 @@ description: >-
 
 ## 1. 触发与参数收集
 
-当用户激活本 Skill 时，首先检查是否已提供以下核心参数。若未提供，以交互方式向用户确认：
+当用户激活本 Skill 时，首先检查是否已提供以下核心参数。只询问无法安全推断的缺失项：
 
 1. **项目名称 (`name`)**：人类可读的名称（例如：`智能文档分析器` 或 `smart-doc-analyzer`）。
 2. **项目标识 (`project-id`)**：2-63 位小写字母、数字或短横线连字符（例如：`smart-doc-analyzer`）。
@@ -55,11 +55,11 @@ python3 /Users/lotop/Personal-AI-OS/04_project_factory/create_project.py \
   --git
 ```
 
-向用户展示生成的项目清单（Plan Manifest）。
+向用户展示生成的项目清单（Plan Manifest）。Dry Run 不创建目标项目。
 
 ### 步骤 B：正式创建项目（Apply）
 
-用户确认后，附加 `--apply` 参数执行正式创建：
+用户确认目标路径和创建计划后，附加 `--apply` 参数执行正式创建：
 
 ```bash
 python3 /Users/lotop/Personal-AI-OS/04_project_factory/create_project.py \
@@ -76,7 +76,7 @@ python3 /Users/lotop/Personal-AI-OS/04_project_factory/create_project.py \
 
 ### 步骤 C：部署双 Agent 适配器（Codex + Gemini）
 
-为新建项目注入最新的平台适配器配置：
+为新建项目注入当前仓库生成并校验过的平台适配器配置。部署仅限目标项目，不表示外部发布：
 
 ```bash
 # 部署 Codex 适配器
@@ -101,4 +101,5 @@ python3 /Users/lotop/Personal-AI-OS/06_deployment/deploy_adapter.py \
    - `<TARGET_PATH>/.codex/config.toml`
    - `<TARGET_PATH>/.gemini/settings.json`
    - `<TARGET_PATH>/.git`
-2. 输出清晰的完成报告，附上进入新项目的操作指引（例如 `cd <TARGET_PATH>`）以及首张任务卡。
+2. 检查 `.paos-init.json` 中的 Template 版本和逐文件 SHA-256。
+3. 分别报告已创建、已验证、已部署到目标项目和尚未完成的事项。

@@ -1,6 +1,6 @@
-# Personal AI OS V1.1
+# Personal AI OS V1.1.1 Release Candidate
 
-> **系统状态**：`APPROVED_FOR_RELEASE` | **版本**：`v1.1.0` | **批准凭证**：`PAOS-REL-001`
+> **当前状态**：`WORKING` | **目标版本**：`v1.1.1` | **已批准基线**：`v1.1.0`（`PAOS-REL-001`）
 > 
 > 本仓库是 **Personal AI OS** 的 **Canonical Control Plane（本地中央控制平面）**，用于统筹和治理跨设备、多 Agent（Codex & Gemini）的个人 AI 研发工作流与独立业务项目。
 
@@ -55,11 +55,13 @@ flowchart TD
 人工维护结构化的标准配置与 Markdown 规则，经由生成器（`05_harness/generate_adapters.py`）单向编译输出到各个 Agent 平台的原生格式（如 `.codex/config.toml` 与 `.gemini/settings.json`）。禁止反向手改平台配置，避免产生配置漂移。
 
 ### 3. 任务卡驱动的状态机 (Task-Card Driven State Machine)
-任务以 Task Card（任务卡）为最小交付单元，具备严格的生命周期状态流转：
+任务以 Task Card（任务卡）为最小交付单元，使用一个主状态和独立验证证据：
 ```
-PLANNED ──> WORKING ──> VALIDATED ──> APPROVED ──> ARCHIVED
+TODO ──> ACTIVE ──> REVIEW ──> DONE
+           │
+           └──> BLOCKED
 ```
-每张任务卡显式约束 `Read Set`（只读范围）与 `Write Set`（只改范围），从根本上消除多任务/多 Agent 协作时的写冲突与意外越界。
+`validation` 记录验证证据，不再作为并行状态轴。每张任务卡显式约束 `Read Set`（只读范围）与 `Write Set`（只改范围），降低多任务、多 Agent 协作时的写冲突与意外越界。
 
 ---
 
@@ -93,8 +95,11 @@ PLANNED ──> WORKING ──> VALIDATED ──> APPROVED ──> ARCHIVED
 
 ### 1. 环境准备与系统自检
 ```bash
-# 运行离线全量门禁检查，确保 M1–M6 全部显示 PASS
+# 运行本地离线检查；它不等同于 Release Readiness
 python3 05_harness/ci_gate.py --profile local-offline
+
+# 检查 M1–M6；未获得 v1.1.1 Tag/Approval 时 M6 应保持 BLOCKED
+python3 05_harness/ci_gate.py --profile release-readiness
 ```
 
 ### 2. 部署 Codex 与 Gemini 适配器
@@ -166,5 +171,4 @@ Personal-AI-OS/
 1. **单向生成**：`00_system/` 是规则的唯一事实来源；`.codex`、`.gemini` 等平台配置由适配器生成，严禁手动逆向修改。
 2. **零静默覆盖**：所有文件写入均支持 Dry Run 预检与带备份的原子替换。
 3. **Hooks 审慎开启**：Phase 1 阶段自动化 Hook 默认关闭，避免未经授权的自动化操作。
-
 

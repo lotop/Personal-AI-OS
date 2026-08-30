@@ -1,11 +1,18 @@
 schema_version = "0.4.0-working"
 system_name = "Personal AI OS"
-target_version = "1.1"
+target_version = "1.1.1"
+artifact_state = "WORKING"
+canonical_authority = "NONE"
+default_language = "zh-CN"
+default_structured_config = "toml"
+
+[approved_baseline]
+version = "1.1.0"
 artifact_state = "APPROVED"
 canonical_authority = "FOUNDER_APPROVED"
 approval_reference = "PAOS-REL-001"
-default_language = "zh-CN"
-default_structured_config = "toml"
+git_tag = "v1.1.0"
+git_commit = "845beb2d7e8354edaa56b9791a9646fbd8e9023c"
 
 [repository]
 role = "canonical-control-plane-repository"
@@ -26,17 +33,17 @@ automatic_deploy_enabled = false
 [implementation]
 physical_architecture = "APPROVED"
 project_factory = "APPROVED"
-codex_adapter = "GENERATED_APPROVED"
-gemini_adapter = "GENERATED_APPROVED"
+codex_adapter = "GENERATED_WORKING"
+gemini_adapter = "GENERATED_WORKING"
 deployment = "DRY_RUN_READY"
-release = "PASS"
-local_git_recovery = "PASS"
-offline_bundle_recovery = "PASS"
+release = "WORKING"
+local_git_recovery = "REVALIDATION_REQUIRED"
+offline_bundle_recovery = "REVALIDATION_REQUIRED"
 private_remote_recovery = "NOT_TESTED"
 
 [deployment_status]
 codex_project_config = "DEPLOYED_WORKING"
-codex_runtime_smoke = "PASS"
+codex_runtime_smoke = "PASS_CURRENT_TASK"
 gemini_project_config = "DEPLOYED_WORKING"
-gemini_runtime_smoke = "BLOCKED_EXTERNAL_DATA_AUTHORIZATION"
+gemini_runtime_smoke = "NOT_INSTALLED_AND_EXTERNAL_DATA_NOT_AUTHORIZED"
 hooks_enabled = false

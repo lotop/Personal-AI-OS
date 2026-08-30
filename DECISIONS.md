@@ -2,7 +2,9 @@
 
 > 状态：`WORKING`
 >
-> Canonical Authority：`NONE`
+> 已批准基线：`v1.1.0`（`PAOS-REL-001`）
+>
+> 当前修订：`v1.1.1` Working Candidate
 
 正式 Decision Record 模板尚未确认。本索引先记录已经由 Founder 明确确认的决策事实。
 
@@ -66,9 +68,16 @@
   - Gemini 在 V1.1 维持 CONDITIONAL（配置加载支持，不阻塞发布）；
   - 核心基础设施聚焦于本地 Git Canonical Repository 与离线恢复 Bundle 闭环。
 
+### PAOS-008｜V1.1.1 一致性与证据加固实施
+
+- 状态：`APPROVED`
+- 决定：在独立分支实施 V1.1.1 状态一致性、Registry/Skill 收口、Release Audit 加固、当前 Commit 恢复演练和新版 Handoff。
+- 实施边界：本决定授权形成并提交 V1.1.1 Release Candidate；不构成 V1.1.1 Release Approval、Tag、Push、Merge 或 Canonical Promotion 授权。
+- 验收边界：M5 必须校验机器可读恢复证据与 Commit/Bundle/Tree Digest；M6 必须校验 Founder Approval、annotated Tag 与当前 HEAD 的精确绑定。
+
 ## Candidate Decisions
 
+- `PAOS-REL-002`｜V1.1.1 正式发布批准（待 Founder 在最终验证后决定）。
 - 根 `AGENTS.md` 采用精简 Router，而不是完整 Policy Core。
 - Phase 1 Hooks 可以拒绝固定禁令，但不得代替用户批准操作。
 - `06_deployment/` 作为 Agent 部署、备份与恢复层。
-
