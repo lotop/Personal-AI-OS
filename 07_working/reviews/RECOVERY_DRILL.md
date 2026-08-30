@@ -4,7 +4,7 @@
 >
 > 执行日期：`2026-08-30`
 >
-> Source Commit：`d63692183fad92a94a634e5892483bf8529e9ea3`
+> Source Commit：`8b1d4079d6efe01426d165bb8d5e7429be9fce5b`
 
 ## 场景
 
