@@ -105,3 +105,28 @@ status = "DONE"
 validation = ["scope-confirmed", "direct-main-authorized", "status-drift-fixed", "working-templates-created", "registry-schemas-pass", "work-log-date-gate-pass", "temp-cleanup-pass", "ci-pass", "no-push"]
 platform = "codex"
 platform_ref = "main"
+
+[[tasks]]
+id = "paos-13-session-manager-and-dashboard"
+purpose = "会话生命周期技能 (paos-session-manager) 封装与独立可视化任务看板建设"
+status = "ACTIVE"
+validation = ["skill-created", "dashboard-created", "ci-pass"]
+platform = "gemini"
+platform_ref = "current-session"
+
+[[tasks]]
+id = "paos-14-v1-1-2-release-approval"
+purpose = "申请 PAOS-REL-003 正式发布批准与本地 Tag 打标"
+status = "TODO"
+validation = ["founder-approval", "tag-v1.1.2"]
+platform = "codex"
+platform_ref = "pending"
+
+[[tasks]]
+id = "paos-15-clean-distribution-pack"
+purpose = "制作对外开源纯净发行版 (Clean Distribution Pack)"
+status = "BLOCKED"
+validation = ["export-script-verified", "founder-authorized"]
+platform = "claude"
+platform_ref = "waiting-approval"
+

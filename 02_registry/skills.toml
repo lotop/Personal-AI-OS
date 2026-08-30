@@ -7,3 +7,11 @@ path = ".agents/skills/create-paos-project/SKILL.md"
 artifact_state = "WORKING"
 owner = "paos-10-v1-1-1-consistency"
 description = "使用 Approved Project Base Pack 创建独立 PAOS 项目并部署 Codex/Gemini Adapter"
+
+[[skills]]
+id = "paos-session-manager"
+path = ".agents/skills/paos-session-manager/SKILL.md"
+artifact_state = "WORKING"
+owner = "paos-12-v1-1-2-revision"
+description = "自动化管理 Personal AI OS 会话生命周期、窗口标准化命名与 Session Close 知识沉淀"
+
