@@ -15,6 +15,7 @@
 - **Task ID**: `paos-00-control`、`paos-09-release`
 - **Current Runtime**: `Antigravity IDE (Gemini 3.7 Flash)`
 - **Target Runtime**: `Codex`
+- **Base Commit**: `9a656a7755150bd901900d5b494bc8980a165f7c`
 - **Release Status**: `V1.1_RELEASE_READY` (M1–M6 全部 PASS)
 
 ---
@@ -32,7 +33,9 @@
 
 ---
 
-## 3. 后续维护与协同建议 (Future Maintenance)
+## 3. 验收结论与后续操作
 
-1. **版本 Tag 绑定**：已满足 `v1.1.0` 发布门禁，可在当前 Commit 打上正式版本 Tag。
-2. **多 Agent 协同流**：后续在 Codex 端或 Antigravity 端开展新功能开发时，请继续遵循 [CONCURRENCY_POLICY.md](file:///Users/lotop/Personal-AI-OS/00_system/governance/CONCURRENCY_POLICY.md) 和 [MULTI_AGENT_SYNC.md](file:///Users/lotop/Personal-AI-OS/00_system/sync/MULTI_AGENT_SYNC.md)。
+- **审计命令**：`python3 05_harness/release_audit.py --require-release-ready`（退出码 `0`，全体 PASS）。
+- **CI 门禁**：`python3 05_harness/ci_gate.py`（7 项核心检查全绿）。
+- **单元测试**：23 / 23 项全绿。
+- **后续动作**：可随时打上 `v1.1.0` 正式 Release Tag 并合并到主分支；后续多 Agent（Codex / Antigravity）在此基线之上开展项目生产与治理。
