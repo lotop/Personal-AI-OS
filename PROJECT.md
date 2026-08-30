@@ -1,8 +1,10 @@
-# Personal AI OS V1.1
+# Personal AI OS V1.1.1 Release Candidate
 
-> 状态：`APPROVED_FOR_RELEASE`
+> 状态：`WORKING`
 >
-> Approval Reference：`PAOS-REL-001`
+> 已批准基线：`v1.1.0`（`PAOS-REL-001`）
+>
+> 当前目标：`v1.1.1`
 
 ## Objective
 
@@ -25,7 +27,7 @@
 
 ## Current Phase
 
-`V1.1 Minimum Implementation`
+`V1.1.1 Consistency & Evidence Hardening`
 
 ## Success Criteria
 

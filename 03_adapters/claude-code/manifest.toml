@@ -1,11 +1,16 @@
 schema_version = "0.1.0-working"
 artifact_class = "GENERATED"
 maturity_state = "WORKING"
-platform = "codex"
+platform = "claude-code"
 generator = "05_harness/generate_adapters.py@0.2"
 source_files = ["AGENTS.md", "00_system/compatibility/adapter_profiles.toml"]
 
 [[files]]
-source = "config.toml"
-target = ".codex/config.toml"
-format = "toml"
+source = "CLAUDE.md"
+target = "CLAUDE.md"
+format = "markdown"
+
+[[files]]
+source = "settings.json"
+target = ".claude/settings.json"
+format = "json"

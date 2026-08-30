@@ -1,6 +1,10 @@
 # Multi-Agent Handoff Document｜Antigravity to Codex
 
-> 状态：`APPROVED_FOR_RELEASE`
+> 状态：`ARCHIVED`
+>
+> 适用基线：`v1.1.0` 发布前历史交接
+>
+> Replacement：`HANDOFF_V1.1.1.md`（完成 V1.1.1 验证后生成）
 >
 > 任务上下文：`PAOS-00 (Control Plane) & PAOS-09 (Release Audit)`
 >
@@ -39,3 +43,5 @@
 - **CI 门禁**：`python3 05_harness/ci_gate.py`（7 项核心检查全绿）。
 - **单元测试**：23 / 23 项全绿。
 - **后续动作**：可随时打上 `v1.1.0` 正式 Release Tag 并合并到主分支；后续多 Agent（Codex / Antigravity）在此基线之上开展项目生产与治理。
+
+> 历史状态说明：上述 Tag 与主分支合并已于 2026-08-30 完成；本文件不再代表当前 `main` 或 V1.1.1 Candidate 状态。

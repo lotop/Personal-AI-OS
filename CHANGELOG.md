@@ -1,5 +1,15 @@
 # Changelog
 
+## V1.1.1 Release Candidate（Working）
+
+- 明确区分已批准的 `v1.1.0` 基线与尚未 Tag 的 `v1.1.1` Working Candidate。
+- 统一根入口、System、Project、Registry、Runtime 与 Skill 状态。
+- 修正 README 中与 Task Registry 不一致的状态机说明。
+- 移除重复 Skill 文件，将 `create-paos-project` 正式登记到 Skills Registry。
+- 加固 M5：校验恢复 Commit、Bundle Commit、Bundle SHA-256、Tree Digest 与恢复后变更白名单。
+- 加固 M6：要求 V1.1.1 Founder Approval、annotated Tag 和当前 HEAD 精确绑定。
+- 旧 Gemini/Antigravity Handoff 保留为历史证据，V1.1.1 使用新 Handoff。
+
 ## Unreleased
 
 - Founder 批准 PAOS-007，实施 V1.1 Minimum 简化；该批准不构成 Template/Release Approval 或 Promotion 授权。

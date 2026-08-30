@@ -18,7 +18,18 @@ evidence = [
 
 [[platforms]]
 id = "claude-code"
-capability_audit = "PARTIAL"
+capability_audit = "CURRENT_PARTIAL"
+verified_on = "2026-08-31"
+context_file = "CLAUDE.md"
+project_config = ".claude/settings.json"
+native_config_format = "json"
+hooks = "NATIVE"
+skills = "NATIVE"
+evidence = [
+  "https://code.claude.com/docs/en/memory",
+  "https://code.claude.com/docs/en/settings",
+  "https://code.claude.com/docs/en/hooks",
+]
 
 [[platforms]]
 id = "gemini-cli"

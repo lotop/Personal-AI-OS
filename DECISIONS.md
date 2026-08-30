@@ -1,8 +1,10 @@
 # Decisions
 
-> 状态：`WORKING`
+> 状态：`APPROVED`
 >
-> Canonical Authority：`NONE`
+> 已批准基线：`v1.1.1`（`PAOS-REL-002`）
+>
+> 当前发布：`v1.1.1`
 
 正式 Decision Record 模板尚未确认。本索引先记录已经由 Founder 明确确认的决策事实。
 
@@ -57,6 +59,13 @@
 - 决定：批准 `01_templates/project-base-pack`（版本 `1.0.0`）作为 Personal AI OS V1.1 的官方首个已批准模板包。
 - 依据：通过 `04_project_factory/create_project.py` 正式 E2E 实例化验收，生成物完整性与 SHA-256 均符合 Schema 定义。
 
+### PAOS-TMPL-002｜Claude Code Template Pack 纳入批准
+
+- 状态：`APPROVED`
+- 决定：批准 `01_templates/project-base-pack` 升级至版本 `1.1.0`，纳入薄层 `CLAUDE.md` Adapter 与项目级 `.claude/settings.json`；`AGENTS.md` 继续作为统一项目规则入口。
+- 边界：不得将 Claude Auto Memory、Conversation、`.claude/rules/`、Hooks、Skills、Subagents 或 MCP 配置自动升级为 Canonical；外部数据发送仍需独立授权。
+- 依据：Founder 已明确确认 Claude Code 纳入 V1.1.1，并授权执行；正式 Factory E2E 与 Claude Code 隔离 Config Load 均须通过。
+
 ### PAOS-REL-001｜Personal AI OS V1.1 正式发布批准
 
 - 状态：`APPROVED`
@@ -66,9 +75,23 @@
   - Gemini 在 V1.1 维持 CONDITIONAL（配置加载支持，不阻塞发布）；
   - 核心基础设施聚焦于本地 Git Canonical Repository 与离线恢复 Bundle 闭环。
 
+### PAOS-008｜V1.1.1 一致性与证据加固实施
+
+- 状态：`APPROVED`
+- 决定：在独立分支实施 V1.1.1 状态一致性、Registry/Skill 收口、Release Audit 加固、当前 Commit 恢复演练和新版 Handoff。
+- 实施边界：本决定授权形成并提交 V1.1.1 Release Candidate；不构成 V1.1.1 Release Approval、Tag、Push、Merge 或 Canonical Promotion 授权。
+- 验收边界：M5 必须校验机器可读恢复证据与 Commit/Bundle/Tree Digest；M6 必须校验 Founder Approval、annotated Tag 与当前 HEAD 的精确绑定。
+
+### PAOS-REL-002｜Personal AI OS V1.1.1 正式发布批准
+
+- 状态：`APPROVED`
+- 决定：批准 Personal AI OS V1.1.1 作为当前 Canonical Control Plane 基线，纳入 Codex、Claude Code 与 Gemini Adapter、Project Factory Template Pack `1.1.0`、加固后的 M1–M6 Release Audit 与可校验恢复证据。
+- 授权范围：合并到本地 `main`，创建本地 annotated tag `v1.1.1`，并执行 Canonical Promotion；本次不授权 Push、远端发布或外部部署。
+- 运行时边界：Codex Runtime Smoke 为 PASS；Claude Code Config Load 为 PASS 但 Live Runtime 未授权；Gemini Config Load 为 CONDITIONAL PASS 且 Live Runtime 未授权。不得扩大解读。
+- 绑定规则：发布实现冻结 Commit 为 `e95cf5aee29bcc018454dcac08d5e04301ab482d`；正式 Release Commit 由 annotated tag `v1.1.1` 精确绑定。
+
 ## Candidate Decisions
 
 - 根 `AGENTS.md` 采用精简 Router，而不是完整 Policy Core。
 - Phase 1 Hooks 可以拒绝固定禁令，但不得代替用户批准操作。
 - `06_deployment/` 作为 Agent 部署、备份与恢复层。
-

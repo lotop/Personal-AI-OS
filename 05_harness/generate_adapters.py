@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""从 adapter_profiles.toml 确定性生成 Codex 与 Gemini CLI Adapter。"""
+"""从 adapter_profiles.toml 确定性生成 Codex、Claude Code 与 Gemini CLI Adapter。"""
 
 from __future__ import annotations
 
@@ -23,7 +23,7 @@ except ModuleNotFoundError:
 ROOT = Path(__file__).resolve().parents[1]
 PROFILE_PATH = ROOT / "00_system/compatibility/adapter_profiles.toml"
 OUTPUT_ROOT = ROOT / "03_adapters"
-GENERATOR = "05_harness/generate_adapters.py@0.1"
+GENERATOR = "05_harness/generate_adapters.py@0.2"
 
 
 def toml_string(value: str) -> str:
@@ -58,6 +58,36 @@ def render_outputs() -> dict[Path, str]:
         + "]\n"
     )
 
+    claude = profiles["claude_code"]
+    imports = claude["context"]["imports"]
+    claude_context = (
+        "<!-- GENERATED CANDIDATE. 修改 Source 或生成器，不直接修改本文件。 -->\n"
+        f"<!-- Source: {PROFILE_PATH.relative_to(ROOT)} -->\n\n"
+        + "\n".join(f"@{item}" for item in imports)
+        + "\n\n"
+        "## Claude Code Adapter\n\n"
+        "本文件是 Generated Working Adapter。统一项目规则来自 `AGENTS.md`；"
+        "不得在此复制或分叉 Canonical Rule。\n\n"
+        "### 初始化与诊断\n\n"
+        "- 首次部署或 Adapter 变化后，用 `/context` 确认 `CLAUDE.md` 已加载；"
+        "若规则未生效，再检查 `@AGENTS.md` 导入。\n"
+        "- 若发现 `AGENTS.md` 导入失败，在复杂写入前停止并报告配置问题。\n"
+        "- 不使用 `/init` 覆盖本文件；改进应回到 Adapter Source 和生成器。\n\n"
+        "### Claude Code 专属边界\n\n"
+        "- Auto Memory、`CLAUDE.local.md` 和 Conversation 只属于个人或运行时上下文，"
+        "不自动成为 Memory、Decision、Rule 或 Project Knowledge。\n"
+        "- 不自行创建或启用项目级 `.claude/rules/`、Hooks、Skills、Subagents 或 MCP 配置；"
+        "这些能力必须遵循项目的 Source、Approval、External Data 与验证流程。\n"
+        "- 平台配置位于 `.claude/settings.json`；不得绕过其中的权限限制。\n"
+    )
+    claude_settings = {
+        "$schema": claude["settings"]["schema"],
+        "permissions": {
+            "deny": claude["settings"]["permissions"]["deny"],
+        },
+    }
+    claude_json = json.dumps(claude_settings, ensure_ascii=False, indent=2) + "\n"
+
     gemini = profiles["gemini_cli"]
     gemini_settings = {
         "context": {
@@ -72,6 +102,18 @@ def render_outputs() -> dict[Path, str]:
         OUTPUT_ROOT / "codex/config.toml": codex_config,
         OUTPUT_ROOT / "codex/manifest.toml": render_manifest(
             "codex", "config.toml", codex["target"], "toml"
+        ),
+        OUTPUT_ROOT / "claude-code/CLAUDE.md": claude_context,
+        OUTPUT_ROOT / "claude-code/settings.json": claude_json,
+        OUTPUT_ROOT / "claude-code/manifest.toml": (
+            'schema_version = "0.1.0-working"\n'
+            'artifact_class = "GENERATED"\n'
+            'maturity_state = "WORKING"\n'
+            'platform = "claude-code"\n'
+            f'generator = {toml_string(GENERATOR)}\n'
+            'source_files = ["AGENTS.md", "00_system/compatibility/adapter_profiles.toml"]\n\n'
+            '[[files]]\nsource = "CLAUDE.md"\ntarget = "CLAUDE.md"\nformat = "markdown"\n\n'
+            '[[files]]\nsource = "settings.json"\ntarget = ".claude/settings.json"\nformat = "json"\n'
         ),
         OUTPUT_ROOT / "gemini-cli/settings.json": gemini_json,
         OUTPUT_ROOT / "gemini-cli/manifest.toml": render_manifest(
