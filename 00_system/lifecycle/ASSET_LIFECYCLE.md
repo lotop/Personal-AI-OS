@@ -20,11 +20,11 @@ Source 保持 Source；从 Source 派生的规则或知识可由 Working 进入 
 
 ## GC Gate
 
-- Phase 1 只允许 Dry Run。
+- Phase 1 默认只允许 Dry Run；Founder 对明确的 Temp/Cache 范围授权后，可以执行可恢复 Quarantine，但仍不得永久删除。
 - Source、Approved、Canonical、Decision、Release Evidence 和未关闭 Task 依赖默认不可删除。
 - 删除前必须验证路径、Owner、引用、备份和恢复窗口。
 - 通配符、仓库根、用户目录和未解析变量不得成为破坏性目标。
 
 GC Dry Run 必须生成 immutable `gc_plan`，至少包含 Plan ID、Policy Version、生成时间、过期时间、目标真实路径、当前 Hash、引用扫描结果、Hold、恢复截止日和逐项 Reason Code。执行前必须重新校验 Hash、引用、Hold 与 Policy Version；任一变化都使 Plan 变为 `STALE`。
 
-Quarantine/Trash 必须使用固定隔离位置，记录原路径、移动后 Hash、访问权限和恢复截止日，并从普通上下文加载与下一轮 GC 扫描中排除。Retention 必须为每类资产解析出唯一值，执行器不得在 min/max 区间中自行选择。
+Quarantine/Trash 必须使用固定隔离位置，记录原路径、移动后 Hash、访问权限和恢复截止日，并从普通上下文加载与下一轮 GC 扫描中排除。Retention 必须为每类资产解析出唯一值，执行器不得在 min/max 区间中自行选择。V1.1.2 清理器只接受 `.DS_Store`、`__pycache__`、`*.pyc` 与 `99_temp/` 中非保护项。

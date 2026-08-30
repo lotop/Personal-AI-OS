@@ -1,12 +1,14 @@
 # Claude Code Support Review
 
-> 状态：`WORKING`
+> 状态：`ARCHIVED`
 >
 > Canonical Authority：`NONE`
 >
 > 分支：`codex/claude-code-support`
 >
 > 执行日期：`2026-08-31`
+>
+> Replacement：`PAOS-TMPL-002`、`PAOS-REL-002` 与 `HANDOFF_V1.1.1.md`
 
 ## Objective
 
@@ -35,7 +37,7 @@ Claude Code 原生读取 `CLAUDE.md`，不会直接读取 `AGENTS.md`。官方�
 
 - 对 Codex 与 Gemini CLI 向后兼容；两者现有生成目标不变。
 - 正式 `01_templates/project-base-pack` 已按 `PAOS-TMPL-002` 升级至 `1.1.0`，纳入 `CLAUDE.md` 与 `.claude/settings.json`。
-- 待 Founder 逐项批准新 Template 版本后，才可把 Candidate Pack 的 Claude 文件迁移到正式 Pack。
+- Candidate Pack 的 Claude 文件已按 `PAOS-TMPL-002` 迁移到正式 Pack；本条保留为历史实施轨迹。
 
 ## Rollback
 
@@ -54,4 +56,4 @@ Claude Code 原生读取 `CLAUDE.md`，不会直接读取 `AGENTS.md`。官方�
 - Claude Config Load：`PASS`（官方 npm 包 `2.1.251`，`claude doctor` exit `0`；未登录、未发送项目内容）。
 - Claude Live Runtime：`BLOCKED_EXTERNAL_DATA_AUTHORIZATION`。
 - Release M4：满足 Config Load 要求；Live Runtime 保持 Conditional，不冒充 Runtime PASS。
-- Template Approval / Release Approval / Promotion：等待本轮 Founder 决策记录与最终 Gate。
+- Template Approval / Release Approval / Promotion：已由 `PAOS-TMPL-002`、`PAOS-REL-002` 与 `v1.1.1` 完成；本 Review 不再代表当前状态。

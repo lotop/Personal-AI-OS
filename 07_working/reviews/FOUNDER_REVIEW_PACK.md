@@ -2,6 +2,8 @@
  
 > 状态：`APPROVED`
 >
+> 日期：`2026-08-30`
+>
 > Approval Reference：`PAOS-REL-001`
 
 ## 已完成的 5 项核心决断与授权
@@ -25,4 +27,3 @@
 5. **决断 5｜V1.1 正式发布授权**：
    - 状态：`APPROVED`（`PAOS-REL-001`）
    - 授权执行 M1–M6 完整发布审计与 Canonical Promotion。
-

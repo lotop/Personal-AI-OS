@@ -1,14 +1,14 @@
-# Personal AI OS V1.1.1
+# Personal AI OS V1.1.2 Working Revision
 
-> Router 版本：`0.6-approved`
+> Router 版本：`0.7-working`
 >
-> 状态：`APPROVED`
+> 状态：`WORKING`
 >
 > 已批准基线：`v1.1.1`（`PAOS-REL-002`）
 >
-> 当前发布：`v1.1.1`，由本地 annotated tag 与 Release Evidence 绑定
+> 当前修订：`v1.1.2`，直接在本地 `main` 进行，尚未 Tag 或 Release Approval
 
-本文件是仓库根入口的 V1.1.1 Approved Router。V1.1.1 已由 Founder 批准；Canonical Authority 由 `PAOS-REL-002`、固定恢复证据与本地 annotated tag `v1.1.1` 共同证明。本文件只负责导航和最低限度安全边界，不承载全部治理正文。
+本文件是仓库根入口的 V1.1.2 Working Router。V1.1.1 仍是已批准基线；V1.1.2 在获得独立 Release Approval 与固定 Tag 前不具有新的 Canonical Authority。本文件只负责导航和最低限度安全边界，不承载全部治理正文。
 
 ## 系统定位
 
@@ -46,7 +46,8 @@
 - 读取型工作可以并行。
 - 写入不同文件的任务必须具有不重叠的 `Write Set`，实现阶段优先使用独立 Git Worktree。
 - 修改同一个 Canonical 文件的任务不得并行。
-- 普通任务不得直接修改 `main` 或执行 Canonical Promotion。
+- 普通任务默认不得直接修改 `main` 或执行 Canonical Promotion。
+- Founder 明确授权且属于明显事实纠错、低风险、小范围、可回滚修订时，可以直接修改本地 `main`；Task Card 必须记录例外理由。该授权不自动包含 Tag、Push、Release Approval 或外部部署。
 - Founder 决策、跨任务冲突、合并、Tag 和 Promotion 回到总控任务。
 
 详细规则由 `00_system/governance/CONCURRENCY_POLICY.md` 定义。

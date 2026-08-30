@@ -1,6 +1,6 @@
-# Personal AI OS V1.1.1
+# Personal AI OS V1.1.2 Working Revision
 
-> **当前状态**：`APPROVED` | **当前版本**：`v1.1.1` | **批准记录**：`PAOS-REL-002`
+> **当前状态**：`WORKING` | **当前修订**：`v1.1.2` | **已批准基线**：`v1.1.1`（`PAOS-REL-002`）
 > 
 > 本仓库是 **Personal AI OS** 的 **Canonical Control Plane（本地中央控制平面）**，用于统筹和治理跨设备、多 Agent（Codex、Claude Code 与 Gemini）的个人 AI 研发工作流与独立业务项目。
 
@@ -98,7 +98,7 @@ TODO ──> ACTIVE ──> REVIEW ──> DONE
 # 运行本地离线检查；它不等同于 Release Readiness
 python3 05_harness/ci_gate.py --profile local-offline
 
-# 检查 M1–M6；未获得 v1.1.1 Tag/Approval 时 M6 应保持 BLOCKED
+# 检查 M1–M6；当前 v1.1.2 未获得 Tag/Approval，M6 应保持 BLOCKED
 python3 05_harness/ci_gate.py --profile release-readiness
 ```
 

@@ -265,6 +265,17 @@ def validate_secrets(report: Report) -> None:
                 report.error(f"疑似 Secret: {path.relative_to(ROOT)}")
 
 
+def validate_work_log_dates(report: Report) -> None:
+    date_field = re.compile(
+        r"^> (?:日期|执行日期|审计日期|生成时间)：`[0-9]{4}-[0-9]{2}-[0-9]{2}`$",
+        re.MULTILINE,
+    )
+    for path in sorted((ROOT / "07_working/reviews").glob("*.md")):
+        header = "\n".join(path.read_text(encoding="utf-8").splitlines()[:20])
+        if not date_field.search(header):
+            report.error(f"工作日志缺少日期字段: {path.relative_to(ROOT)}")
+
+
 def validate_git(report: Report) -> None:
     status = subprocess.run(
         ["git", "status", "--porcelain"],
@@ -300,6 +311,7 @@ def main() -> int:
     validate_lifecycle(parsed, report)
     validate_template_packs(parsed, report)
     validate_secrets(report)
+    validate_work_log_dates(report)
     validate_git(report)
 
     print(f"ERRORS={len(report.errors)} WARNINGS={len(report.warnings)}")

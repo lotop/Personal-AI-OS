@@ -1,8 +1,18 @@
 # Changelog
 
-## V1.1.1 Release Candidate（Working）
+## V1.1.2 Working Revision
 
-- 明确区分已批准的 `v1.1.0` 基线与尚未 Tag 的 `v1.1.1` Working Candidate。
+- 修复 V1.1.1 发布后的 Project、Deployment、Claude Review 与 Registry 状态漂移。
+- 增加经 Founder 明确授权的 Direct Main 小修订例外；不包含 Push、Tag 或 Release Approval。
+- 建立 Decision、Identity、Mode、Memory、Task、Session/Handoff、Skill Registry 与 GC Plan 的扁平 Working Template Candidates。
+- 为 Projects、Tasks、Agents、Skills、Runtimes 与 Hooks 六类 Registry 完成 JSON Schema 绑定。
+- 要求所有 `07_working/reviews/*.md` 工作日志具有日期字段并加入自动验证。
+- 建立 Temp/Cache 不可变计划、重验和可恢复 Quarantine 清理机制。
+
+## V1.1.1 Local Release（Approved）
+
+- 以 `PAOS-REL-002` 与本地 annotated tag `v1.1.1` 完成发布。
+- 纳入 Claude Code Adapter、Config Load 验证与 Approved Project Base Pack `1.1.0`。
 - 统一根入口、System、Project、Registry、Runtime 与 Skill 状态。
 - 修正 README 中与 Task Registry 不一致的状态机说明。
 - 移除重复 Skill 文件，将 `create-paos-project` 正式登记到 Skills Registry。
@@ -39,4 +49,4 @@
 - 新增 Physical Architecture、V1.1 Consolidation Review 和 V1.0 Baseline Evidence Note。
 - 将资产类别与成熟度状态分离，修正 `SOURCE` 被当作 Promotion 状态的问题。
 - 将专业任务拆分为研究、本地产物、评审和实施进度，修正虚假完成状态。
-- 尚无正式 Release、Tag 或 Canonical Promotion。
+- 本段记录 V1.1 正式发布前的历史实施状态；后续发布事实以 `PAOS-REL-001`、`PAOS-REL-002` 和对应 Tag 为准。

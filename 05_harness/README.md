@@ -16,3 +16,4 @@ Harness 负责让任务可靠完成，不负责定义项目事实。
 - `generate_adapters.py`：确定性生成 Codex 与 Gemini CLI Adapter。
 - `ci_gate.py`：统一的一键本地验证入口。
 - `release_audit.py`：输出机器可读的六项 V1.1 Minimum Gate，不执行 Promotion。
+- `temp_cleanup.py`：仅对已知 Temp/Cache 生成不可变计划，重验后移动到可恢复 Quarantine；不永久删除。

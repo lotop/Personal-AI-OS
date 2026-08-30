@@ -1,0 +1,15 @@
+schema_version = "0.1.0-working"
+template_status = "WORKING"
+template_date = "2026-08-31"
+canonical_authority = "NONE"
+
+[[skills]]
+id = "skill-id"
+path = "path/to/SKILL.md"
+artifact_state = "WORKING"
+owner = "skill-owner"
+description = "Skill 解决的问题与触发边界"
+# source = "来源或批准记录"
+# version = "固定版本"
+# validation = ["结构检查", "最小运行验证"]
+# external_data = "NONE / AUTHORIZATION_REQUIRED"

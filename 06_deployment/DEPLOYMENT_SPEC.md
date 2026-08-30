@@ -25,4 +25,4 @@
 - `SMOKE_TESTED`：目标 Agent 已加载并通过最小测试。
 - `ROLLED_BACK`：已恢复到部署前状态。
 
-当前状态：Codex、Claude Code 与 Gemini CLI 项目级 Working Adapter 已部署。Codex Runtime Smoke 为 `PASS`；Gemini Config Load 为 `PASS`，Live Runtime 等待外部数据授权；Claude Code 因本机未安装 CLI，Config Load 与 Live Runtime 均保持 `BLOCKED`。
+当前状态：Codex、Claude Code 与 Gemini CLI 项目级 Working Adapter 已部署。Codex Runtime Smoke 为 `PASS`；Claude Code 使用官方临时 CLI `2.1.251` 完成隔离 Config Load，状态为 `PASS`，Live Runtime 等待外部数据授权；Gemini Config Load 为 `CONDITIONAL PASS`，Live Runtime 同样等待外部数据授权。

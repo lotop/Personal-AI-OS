@@ -19,6 +19,7 @@ LOCAL_CHECKS = [
     ("release-audit", [PYTHON, "05_harness/test_release_audit.py"]),
     ("deployment", [PYTHON, "06_deployment/test_deployment.py"]),
     ("tree-digest", [PYTHON, "05_harness/test_tree_digest.py"]),
+    ("temp-cleanup", [PYTHON, "05_harness/test_temp_cleanup.py"]),
     ("adapters", [PYTHON, "05_harness/generate_adapters.py", "--check"]),
 ]
 

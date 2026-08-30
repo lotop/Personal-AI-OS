@@ -1,10 +1,10 @@
 # Decisions
 
-> 状态：`APPROVED`
+> 状态：`WORKING`
 >
 > 已批准基线：`v1.1.1`（`PAOS-REL-002`）
 >
-> 当前发布：`v1.1.1`
+> 当前修订：`v1.1.2` Working；已批准发布仍为 `v1.1.1`
 
 正式 Decision Record 模板尚未确认。本索引先记录已经由 Founder 明确确认的决策事实。
 
@@ -90,8 +90,27 @@
 - 运行时边界：Codex Runtime Smoke 为 PASS；Claude Code Config Load 为 PASS 但 Live Runtime 未授权；Gemini Config Load 为 CONDITIONAL PASS 且 Live Runtime 未授权。不得扩大解读。
 - 绑定规则：发布实现冻结 Commit 为 `e95cf5aee29bcc018454dcac08d5e04301ab482d`；正式 Release Commit 由 annotated tag `v1.1.1` 精确绑定。
 
+### PAOS-009｜Direct Main 小修订例外
+
+- 状态：`APPROVED`
+- 决定：当 Founder 明确授权，且任务属于明显事实纠错、低风险、小范围、可回滚修订时，可以直接修改本地 `main`，无需为形式完整性单独建立分支。
+- 边界：Task Card 必须记录例外理由并完成验证；复杂功能、架构迁移、并发写入和高风险自动化仍使用独立 branch/worktree；本规则不自动授权 Tag、Push、Release Approval、Promotion 或外部部署。
+
+### PAOS-010｜精简 Root Router
+
+- 状态：`APPROVED`
+- 决定：根 `AGENTS.md` 采用精简 Router，完整 Policy 保持在 `00_system/`，避免重复与规则漂移。
+
+### PAOS-011｜Phase 1 Hooks 固定禁令
+
+- 状态：`APPROVED`
+- 决定：Phase 1 Hooks 可检查并拒绝已批准的固定禁令，但不得代替 Founder 批准或执行自动 Promotion、commit、merge、push、deploy、publish、delete。
+
+### PAOS-012｜Deployment 层级
+
+- 状态：`APPROVED`
+- 决定：`06_deployment/` 作为 Agent Adapter 部署、备份与恢复规范层；Generated Adapter 不反向成为 Canonical Source。
+
 ## Candidate Decisions
 
-- 根 `AGENTS.md` 采用精简 Router，而不是完整 Policy Core。
-- Phase 1 Hooks 可以拒绝固定禁令，但不得代替用户批准操作。
-- `06_deployment/` 作为 Agent 部署、备份与恢复层。
+- `PAOS-REL-003`｜V1.1.2 Release Approval（尚未请求）。

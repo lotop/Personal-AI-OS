@@ -16,7 +16,7 @@
   "properties": {
     "schema_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+-working$"},
     "system_name": {"type": "string", "minLength": 1},
-    "target_version": {"type": "string", "enum": ["1.1", "1.1.1"]},
+    "target_version": {"type": "string", "enum": ["1.1", "1.1.1", "1.1.2"]},
     "artifact_state": {"type": "string", "enum": ["WORKING", "APPROVED", "ARCHIVED"]},
     "canonical_authority": {"type": "string", "enum": ["NONE", "FOUNDER_APPROVED"]},
     "repository": {

@@ -13,6 +13,31 @@ format = "toml"
 schema = "task-registry.schema.json"
 
 [[bindings]]
+path = "02_registry/projects.toml"
+format = "toml"
+schema = "project-registry.schema.json"
+
+[[bindings]]
+path = "02_registry/agents.toml"
+format = "toml"
+schema = "agent-registry.schema.json"
+
+[[bindings]]
+path = "02_registry/skills.toml"
+format = "toml"
+schema = "skill-registry.schema.json"
+
+[[bindings]]
+path = "02_registry/runtimes.toml"
+format = "toml"
+schema = "runtime-registry.schema.json"
+
+[[bindings]]
+path = "02_registry/hooks.toml"
+format = "toml"
+schema = "hook-registry.schema.json"
+
+[[bindings]]
 path_glob = "03_adapters/*/manifest.toml"
 format = "toml"
 schema = "adapter-manifest.schema.json"

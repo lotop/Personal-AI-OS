@@ -2,6 +2,8 @@
 
 > 状态：`APPROVED`
 >
+> 日期：`2026-08-31`
+>
 > 审计模型：`M1–M6`
 
 当前机器入口：`05_harness/release_audit.py`。

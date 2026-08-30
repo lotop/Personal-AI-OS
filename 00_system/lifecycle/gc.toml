@@ -1,13 +1,22 @@
 schema_version = "0.1.0-working"
 artifact_class = "CONFIG"
 maturity_state = "WORKING"
-enabled = false
-dry_run_only = true
+enabled = true
+dry_run_only = false
 destructive_delete = false
 require_immutable_plan = true
 plan_ttl_hours = 24
 revalidate_before_execute = true
 quarantine_excluded_from_scan = true
+execution_mode = "QUARANTINE_ONLY"
+quarantine_root = "99_temp/quarantine"
+plan_root = "99_temp/plans"
+
+[scope]
+allowed_names = [".DS_Store", "__pycache__"]
+allowed_suffixes = [".pyc"]
+allow_99_temp_children = true
+protected_99_temp_names = [".gitkeep", "plans", "quarantine"]
 
 [retention]
 temp_days = 7

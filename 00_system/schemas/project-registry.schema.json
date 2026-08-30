@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "paos://schemas/project-registry/0.1",
+  "type": "object",
+  "required": ["schema_version", "artifact_state", "projects"],
+  "properties": {
+    "schema_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+-working$"},
+    "artifact_state": {"type": "string", "enum": ["WORKING", "APPROVED", "ARCHIVED"]},
+    "projects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "kind", "status", "repository_ref", "business_project"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+          "name": {"type": "string", "minLength": 1},
+          "kind": {"type": "string", "minLength": 1},
+          "status": {"type": "string", "enum": ["ACTIVE", "PAUSED", "ARCHIVED"]},
+          "repository_ref": {"type": "string", "minLength": 1},
+          "business_project": {"type": "boolean"},
+          "approved_version": {"type": "string"},
+          "approved_tag": {"type": "string"},
+          "working_target": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

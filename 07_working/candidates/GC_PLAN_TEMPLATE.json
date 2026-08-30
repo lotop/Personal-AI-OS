@@ -1,0 +1,23 @@
+{
+  "schema_version": "0.1.0-working",
+  "template_status": "WORKING",
+  "template_date": "2026-08-31",
+  "canonical_authority": "NONE",
+  "plan_id": "gc-YYYYMMDDTHHMMSSZ",
+  "policy_version": "0.1.0-working",
+  "generated_at": "YYYY-MM-DDTHH:MM:SSZ",
+  "expires_at": "YYYY-MM-DDTHH:MM:SSZ",
+  "mode": "DRY_RUN_OR_QUARANTINE",
+  "items": [
+    {
+      "path": "repository-relative-path",
+      "real_path": "validated-absolute-path",
+      "artifact_class": "TEMP_OR_CACHE",
+      "sha256": "sha256",
+      "reference_scan": "CLEAR",
+      "hold": false,
+      "recovery_until": "YYYY-MM-DDTHH:MM:SSZ",
+      "reason_code": "KNOWN_TEMP_OR_REBUILDABLE_CACHE"
+    }
+  ]
+}

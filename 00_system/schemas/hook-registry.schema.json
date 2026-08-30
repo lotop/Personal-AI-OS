@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "paos://schemas/hook-registry/0.1",
+  "type": "object",
+  "required": ["schema_version", "artifact_state", "phase", "hooks"],
+  "properties": {
+    "schema_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+-working$"},
+    "artifact_state": {"type": "string", "enum": ["WORKING", "APPROVED", "ARCHIVED"]},
+    "phase": {"type": "integer", "enum": [1]},
+    "hooks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "event", "enabled", "blocking"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+          "event": {"type": "string", "enum": ["SessionStart", "PreToolUse", "Stop", "SessionEnd"]},
+          "enabled": {"type": "boolean"},
+          "blocking": {"type": "boolean"}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

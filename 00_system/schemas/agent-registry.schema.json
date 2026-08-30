@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "paos://schemas/agent-registry/0.1",
+  "type": "object",
+  "required": ["schema_version", "artifact_state", "agents"],
+  "properties": {
+    "schema_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+-working$"},
+    "artifact_state": {"type": "string", "enum": ["WORKING", "APPROVED", "ARCHIVED"]},
+    "agents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "availability", "role"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+          "availability": {"type": "string", "enum": ["DECLARED", "AVAILABLE", "UNAVAILABLE", "ARCHIVED"]},
+          "role": {"type": "string", "enum": ["RUNTIME_AGENT", "INTERFACE_AGENT"]}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

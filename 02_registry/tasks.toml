@@ -97,3 +97,11 @@ status = "DONE"
 validation = ["scope-confirmed", "official-docs-verified", "branch-isolated", "implementation-complete", "adapter-check-pass", "ci-pass", "candidate-e2e-pass"]
 platform = "codex"
 platform_ref = "codex/claude-code-support"
+
+[[tasks]]
+id = "paos-12-v1-1-2-revision"
+purpose = "V1.1.2 状态纠错、Working Templates、Registry Schemas 与 Temp Cleanup"
+status = "ACTIVE"
+validation = ["scope-confirmed", "direct-main-authorized", "no-push"]
+platform = "codex"
+platform_ref = "main"
