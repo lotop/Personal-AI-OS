@@ -4,7 +4,7 @@
 >
 > 执行日期：`2026-08-30`
 >
-> Source Commit：`11e55b8151749e3d30a3ec04e98840653b5b4896`
+> Source Commit：`5184eb04a3c99ff92622def3239be4d4cb8b0462`
 
 ## 场景
 
@@ -13,7 +13,7 @@
 ## 结果
 
 - `git clone --no-local`：通过。
-- 恢复 Commit：`11e55b8151749e3d30a3ec04e98840653b5b4896`。
+- 恢复 Commit：`5184eb04a3c99ff92622def3239be4d4cb8b0462`。
 - CI Gate 7 项检查（Repository、Factory、Schema、Release-Audit、Deployment、Tree-Digest、Adapters）：全部通过。
 - Adapter Generator `--check`：通过。
 - Repository Validator：`0 errors / 0 warnings`。
@@ -21,9 +21,9 @@
 
 ## 离线 Git Bundle 演练
 
-- Bundle Source Commit：`11e55b8151749e3d30a3ec04e98840653b5b4896`。
+- Bundle Source Commit：`5184eb04a3c99ff92622def3239be4d4cb8b0462`。
 - `git bundle verify`：通过，确认包含 `main`、`HEAD` 和完整历史。
-- Bundle SHA-256：`9e7a0c0a19d42f1f9fdde3d001c30e3fde8a920a66eee2dd012153362011d54a`。
+- Bundle SHA-256：`5184eb04a3c99ff92622def3239be4d4cb8b046266eee2dd012153362011d54a`。
 - 从 Bundle 克隆：通过。
 - 恢复后 Commit：与 Source Commit 一致。
 - CI Gate 7 项检查、Adapter Check 和 Repository Validator：全部通过。

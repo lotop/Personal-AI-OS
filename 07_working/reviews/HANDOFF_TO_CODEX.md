@@ -15,7 +15,7 @@
 - **Task ID**: `paos-00-control`、`paos-09-release`
 - **Current Runtime**: `Antigravity IDE (Gemini 3.7 Flash)`
 - **Target Runtime**: `Codex`
-- **Base Commit**: `11e55b8151749e3d30a3ec04e98840653b5b4896`
+- **Base Commit**: `5184eb04a3c99ff92622def3239be4d4cb8b0462`
 - **Working Tree State**: 已建立干净的 Baseline Commit 并完成 Recovery 离线演练。
 
 ---
