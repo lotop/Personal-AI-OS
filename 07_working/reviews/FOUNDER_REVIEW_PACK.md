@@ -54,6 +54,16 @@
 4. Session Close 与 Handoff 是按复杂任务“必需”，还是“发生交接/形成持久结论时必需”。
 5. Provisional 项目转正式时，采用“从 Approved Pack 重新生成”还是“受控 Migration”。
 
+## 决策 1A｜Mode Contract 轴模型
+
+第二轮 Mode 独立审计建议将当前 Mode 拆为：
+
+- `interaction_profile = WORK | CHAT`
+- `intent_mode = BRAINSTORM | RESEARCH | STRATEGY | PRODUCT | CODING | REVIEW`
+- `execution_phase = INTAKE | PLAN | EXECUTE | VERIFY | CLOSE`
+
+当前本地 Candidate 仍使用兼容的单一 `primary_mode + supporting_mode`，并新增 `WORK / PLANNING`。请确认采用三轴模型，还是保留单轴模型；在确认前不会把 Mode Registry 升级为 Approved。
+
 ## 决策 2｜Gemini Capability Tier 与外部数据授权
 
 选择其一：

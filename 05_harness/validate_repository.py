@@ -56,6 +56,7 @@ REQUIRED_FILES = [
     "06_deployment/CODEX_DEPLOYMENT.md",
     "06_deployment/GEMINI_DEPLOYMENT.md",
     "00_system/security/EXTERNAL_DATA_POLICY.md",
+    "00_system/compatibility/capabilities.toml",
     "07_working/reviews/FOUNDER_REVIEW_PACK.md",
     "07_working/reviews/PROJECT_FACTORY_PROVISIONAL_ACCEPTANCE.md",
 ]
@@ -181,6 +182,17 @@ def validate_unique_ids(parsed: dict[Path, dict], report: Report) -> None:
             report.error(f"{relative} 存在缺少 id 的记录")
         if len(ids) != len(set(ids)):
             report.error(f"{relative} 存在重复 id")
+
+    capability_path = ROOT / "00_system/compatibility/capabilities.toml"
+    capabilities = parsed.get(capability_path, {}).get("capability_evidence", [])
+    identities = [(item.get("id"), item.get("platform")) for item in capabilities]
+    if len(identities) != len(set(identities)):
+        report.error("capabilities.toml 存在重复 capability/platform")
+    for item in capabilities:
+        if item.get("runtime_verified") and not item.get("config_loaded"):
+            report.error(f"Capability {item.get('id')}/{item.get('platform')} Runtime PASS 但 Config 未加载")
+        if not item.get("runtime_verified") and not item.get("blocked_reason"):
+            report.error(f"Capability {item.get('id')}/{item.get('platform')} 未验证但缺少 blocked_reason")
 
 
 def validate_tasks(parsed: dict[Path, dict], report: Report) -> None:

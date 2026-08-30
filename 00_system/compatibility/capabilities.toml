@@ -1,0 +1,111 @@
+schema_version = "0.1.0-working"
+artifact_state = "WORKING"
+
+[[capability_evidence]]
+id = "project-context-discovery"
+platform = "codex"
+support_level = "NATIVE"
+version = "0.151.0-alpha.7.1"
+supported_by_docs = true
+configured = true
+config_loaded = true
+runtime_verified = true
+external_data_required = false
+verified_on = "2026-08-30"
+evidence_refs = ["AGENT_DEPLOYMENT_SMOKE.md", "official:codex-agents-md"]
+
+[[capability_evidence]]
+id = "project-context-discovery"
+platform = "gemini-cli"
+support_level = "ADAPTER"
+version = "0.57.0"
+supported_by_docs = true
+configured = true
+config_loaded = true
+runtime_verified = false
+external_data_required = true
+blocked_reason = "BLOCKED_EXTERNAL_DATA_AUTHORIZATION"
+verified_on = "2026-08-30"
+evidence_refs = ["AGENT_DEPLOYMENT_SMOKE.md", "official:gemini-context"]
+
+[[capability_evidence]]
+id = "project-config"
+platform = "codex"
+support_level = "NATIVE"
+version = "0.151.0-alpha.7.1"
+supported_by_docs = true
+configured = true
+config_loaded = true
+runtime_verified = true
+external_data_required = false
+verified_on = "2026-08-30"
+evidence_refs = ["AGENT_DEPLOYMENT_SMOKE.md", "official:codex-config"]
+
+[[capability_evidence]]
+id = "project-config"
+platform = "gemini-cli"
+support_level = "NATIVE"
+version = "0.57.0"
+supported_by_docs = true
+configured = true
+config_loaded = true
+runtime_verified = false
+external_data_required = false
+blocked_reason = "RUNTIME_NOT_AUTHORIZED"
+verified_on = "2026-08-30"
+evidence_refs = ["AGENT_DEPLOYMENT_SMOKE.md", "official:gemini-configuration"]
+
+[[capability_evidence]]
+id = "hooks"
+platform = "codex"
+support_level = "NATIVE"
+version = "0.151.0-alpha.7.1"
+supported_by_docs = true
+configured = false
+config_loaded = false
+runtime_verified = false
+external_data_required = false
+blocked_reason = "PHASE1_DISABLED"
+verified_on = "2026-08-30"
+evidence_refs = ["official:codex-hooks"]
+
+[[capability_evidence]]
+id = "hooks"
+platform = "gemini-cli"
+support_level = "NATIVE"
+version = "0.57.0"
+supported_by_docs = true
+configured = false
+config_loaded = false
+runtime_verified = false
+external_data_required = false
+blocked_reason = "PHASE1_DISABLED"
+verified_on = "2026-08-30"
+evidence_refs = ["official:gemini-hooks"]
+
+[[capability_evidence]]
+id = "live-runtime"
+platform = "codex"
+support_level = "NATIVE"
+version = "0.151.0-alpha.7.1"
+supported_by_docs = true
+configured = true
+config_loaded = true
+runtime_verified = true
+external_data_required = true
+verified_on = "2026-08-30"
+evidence_refs = ["AGENT_DEPLOYMENT_SMOKE.md"]
+
+[[capability_evidence]]
+id = "live-runtime"
+platform = "gemini-cli"
+support_level = "NATIVE"
+version = "0.57.0"
+supported_by_docs = true
+configured = true
+config_loaded = true
+runtime_verified = false
+external_data_required = true
+blocked_reason = "BLOCKED_EXTERNAL_DATA_AUTHORIZATION"
+verified_on = "2026-08-30"
+evidence_refs = ["AGENT_DEPLOYMENT_SMOKE.md"]
