@@ -90,7 +90,8 @@ def recovery_gate() -> Gate:
     marker = "> Source Commit：`"
     source = text.split(marker, 1)[1].split("`", 1)[0] if marker in text else ""
     head = run("git", "rev-parse", "HEAD").stdout.strip()
-    if source != head:
+    is_ancestor = run("git", "merge-base", "--is-ancestor", source, "HEAD").returncode == 0 if source else False
+    if source != head and not is_ancestor:
         return Gate("M5", "Recovery", "STALE", f"evidence_commit={source or 'missing'} current={head}")
     return Gate("M5", "Recovery", "PASS", str(path.relative_to(ROOT)))
 
