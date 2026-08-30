@@ -56,6 +56,8 @@ def discover_candidates(root: Path) -> list[tuple[Path, str, str]]:
     cache_dirs = sorted(path for path in root.rglob("__pycache__") if path.is_dir())
     for path in cache_dirs:
         relative = path.relative_to(root)
+        if relative.parts and relative.parts[0] == ".git":
+            continue
         if is_under(relative, Path("99_temp/quarantine")) or is_under(
             relative, Path("99_temp/plans")
         ):
@@ -66,6 +68,8 @@ def discover_candidates(root: Path) -> list[tuple[Path, str, str]]:
         if not path.is_file():
             continue
         relative = path.relative_to(root)
+        if relative.parts and relative.parts[0] == ".git":
+            continue
         if is_under(relative, Path("99_temp/quarantine")) or is_under(
             relative, Path("99_temp/plans")
         ):
@@ -154,18 +158,37 @@ def apply_plan(root: Path, policy: dict, plan: dict) -> Path:
             raise ValueError(f"Quarantine 目标已存在: {target}")
         validated.append((source, target, item))
 
-    moved = []
-    for source, target, item in validated:
-        target.parent.mkdir(parents=True, exist_ok=True)
-        shutil.move(str(source), str(target))
-        moved.append({**item, "quarantine_path": str(target), "post_move_sha256": sha256_path(target)})
+    moved_items = []
+    moved_paths: list[tuple[Path, Path]] = []
+    try:
+        for source, target, item in validated:
+            target.parent.mkdir(parents=True, exist_ok=True)
+            try:
+                shutil.move(str(source), str(target))
+            except Exception:
+                if source.exists() and target.exists():
+                    if target.is_dir():
+                        shutil.rmtree(target)
+                    else:
+                        target.unlink()
+                raise
+            moved_paths.append((source, target))
+            moved_items.append(
+                {**item, "quarantine_path": str(target), "post_move_sha256": sha256_path(target)}
+            )
+    except Exception:
+        for source, target in reversed(moved_paths):
+            if target.exists() and not source.exists():
+                source.parent.mkdir(parents=True, exist_ok=True)
+                shutil.move(str(target), str(source))
+        raise
 
     record = {
         "schema_version": plan["schema_version"],
         "plan_id": plan["plan_id"],
         "applied_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
         "mode": "QUARANTINE_ONLY",
-        "items": moved,
+        "items": moved_items,
     }
     record_path = root / policy["plan_root"] / f"{plan['plan_id']}.applied.json"
     record_path.write_text(json.dumps(record, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

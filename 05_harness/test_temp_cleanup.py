@@ -5,7 +5,9 @@ from __future__ import annotations
 
 import tempfile
 import unittest
+import shutil
 from pathlib import Path
+from unittest.mock import patch
 
 from temp_cleanup import apply_plan, build_plan, discover_candidates
 
@@ -27,6 +29,8 @@ class TempCleanupTest(unittest.TestCase):
             root = Path(raw)
             (root / "rules.md").write_text("keep\n", encoding="utf-8")
             (root / ".DS_Store").write_bytes(b"temp")
+            (root / ".git").mkdir()
+            (root / ".git/.DS_Store").write_bytes(b"protected")
             cache = root / "module/__pycache__"
             cache.mkdir(parents=True)
             (cache / "x.pyc").write_bytes(b"cache")
@@ -57,6 +61,31 @@ class TempCleanupTest(unittest.TestCase):
             target.write_bytes(b"after")
             with self.assertRaisesRegex(ValueError, "STALE"):
                 apply_plan(root, POLICY, plan)
+
+    def test_move_failure_rolls_back_prior_items(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            first = root / ".DS_Store"
+            second = root / "other.pyc"
+            first.write_bytes(b"first")
+            second.write_bytes(b"second")
+            (root / "99_temp/plans").mkdir(parents=True)
+            plan = build_plan(root, POLICY)
+            real_move = shutil.move
+            calls = 0
+
+            def fail_second(source: str, target: str) -> str:
+                nonlocal calls
+                calls += 1
+                if calls == 2:
+                    raise OSError("injected move failure")
+                return real_move(source, target)
+
+            with patch("temp_cleanup.shutil.move", side_effect=fail_second):
+                with self.assertRaisesRegex(OSError, "injected"):
+                    apply_plan(root, POLICY, plan)
+            self.assertTrue(first.is_file())
+            self.assertTrue(second.is_file())
 
 
 if __name__ == "__main__":
