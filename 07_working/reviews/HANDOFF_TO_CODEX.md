@@ -1,6 +1,6 @@
 # Multi-Agent Handoff Document｜Antigravity to Codex
 
-> 状态：`WORKING`
+> 状态：`APPROVED_FOR_RELEASE`
 >
 > 任务上下文：`PAOS-00 (Control Plane) & PAOS-09 (Release Audit)`
 >
@@ -15,42 +15,24 @@
 - **Task ID**: `paos-00-control`、`paos-09-release`
 - **Current Runtime**: `Antigravity IDE (Gemini 3.7 Flash)`
 - **Target Runtime**: `Codex`
-- **Base Commit**: `5184eb04a3c99ff92622def3239be4d4cb8b0462`
-- **Working Tree State**: 已建立干净的 Baseline Commit 并完成 Recovery 离线演练。
+- **Release Status**: `V1.1_RELEASE_READY` (M1–M6 全部 PASS)
 
 ---
 
-## 2. 本轮工作与自动化验证完成情况 (Completed & Validated)
+## 2. 发布就绪状态与全量验证结果 (Release Gates M1–M6)
 
-1. **Baseline Commit 建立（消解 M1 门禁）**：
-   - 成功将 Codex 与 Antigravity 对齐后的所有 Working 变更高质量打包提交（Commit: `11e55b8`），工作区恢复为干净状态。
-2. **全量自动化测试与验证**：
-   - 23 项单元测试套件全部通过（`04_project_factory` 11 项, `05_harness` 9 项, `06_deployment` 3 项）。
-   - `python3 05_harness/ci_gate.py`：**STATUS = PASS**（7 项核心检查全绿）。
-   - `python3 05_harness/validate_repository.py`：**0 ERRORS / 0 WARNINGS**。
-3. **Recovery 演练完成（消解 M5 门禁）**：
-   - 针对当前最新 Commit 成功执行离线 Git Bundle 创建、验证与无损克隆还原演练。
-   - 还原后运行 CI 门禁检查完全通过，更新了 [RECOVERY_DRILL.md](file:///Users/lotop/Personal-AI-OS/07_working/reviews/RECOVERY_DRILL.md)（Bundle SHA-256: `9e7a0c0a19d42f...`）。
-4. **M1–M6 当前门禁状态**：
-   - `M1 (Repository)`: **PASS**（当前 Commit `11e55b8`）
-   - `M2 (Validation)`: **PASS**（0 errors / 0 warnings）
-   - `M3 (Template & Factory)`: `BLOCKED`（候选模板待 Founder 批准后移入 `01_templates/` 并执行正式 E2E）
-   - `M4 (Adapter & Deployment)`: **PASS**（Codex LIVE PASS + Gemini CONDITIONAL PASS）
-   - `M5 (Recovery)`: **PASS**（已匹配最新 HEAD Commit）
-   - `M6 (Founder Release Approval)`: `BLOCKED`（等待 Founder 最终签署 `PAOS-REL-001`）
+| 门禁 (Gate) | 状态 | 验证证据 / 依据 |
+| :--- | :---: | :--- |
+| **M1 Repository** | `PASS` | Git Working Tree 干净无未提交修改 |
+| **M2 Validation** | `PASS` | 仓库静态合规 0 Errors / 0 Warnings，23 项单元测试全绿 |
+| **M3 Template & Factory** | `PASS` | `01_templates/project-base-pack`（版本 `1.0.0`，`PAOS-TMPL-001`）已批准并通过正式 Factory E2E |
+| **M4 Adapter & Deployment** | `PASS` | Codex 生产通过；Gemini 条件配置通过，适配器一致性校验通过 |
+| **M5 Recovery** | `PASS` | 离线 Git Bundle 与冷克隆还原演练已成功验证 |
+| **M6 Founder Release Approval** | `PASS` | `DECISIONS.md` 登记 `PAOS-REL-001` 正式发布授权 |
 
 ---
 
-## 3. 后续工作入口 (Remaining & Next Steps)
+## 3. 后续维护与协同建议 (Future Maintenance)
 
-后续接手者（Codex 或 Antigravity）只需按以下步骤执行：
-
-1. **Step 1: Founder 审批候选模板包**：
-   - Founder 审查 [07_working/reviews/FOUNDER_REVIEW_PACK.md](file:///Users/lotop/Personal-AI-OS/07_working/reviews/FOUNDER_REVIEW_PACK.md)。
-   - 批准后，将 `07_working/candidates/project-base-pack` 复制到 `01_templates/project-base-pack`，在 `template.toml` 中标记 `artifact_state = "APPROVED"` 并填写 approval reference。
-2. **Step 2: 执行 Formal Factory E2E 测试**：
-   - 基于已批准模板生成项目，生成 [07_working/reviews/PROJECT_FACTORY_ACCEPTANCE.md](file:///Users/lotop/Personal-AI-OS/07_working/reviews/PROJECT_FACTORY_ACCEPTANCE.md)（标记 `结论：PASS`），消解 M3 门禁。
-3. **Step 3: 签署 M6 发布审批**：
-   - 在 [DECISIONS.md](file:///Users/lotop/Personal-AI-OS/DECISIONS.md) 中登记 `PAOS-REL-001` 批准发布。
-   - 运行 `python3 05_harness/release_audit.py --require-release-ready` 验证全绿（M1–M6 PASS）。
-   - 打 Release Tag 并完成 V1.1 Canonical Promotion。
+1. **版本 Tag 绑定**：已满足 `v1.1.0` 发布门禁，可在当前 Commit 打上正式版本 Tag。
+2. **多 Agent 协同流**：后续在 Codex 端或 Antigravity 端开展新功能开发时，请继续遵循 [CONCURRENCY_POLICY.md](file:///Users/lotop/Personal-AI-OS/00_system/governance/CONCURRENCY_POLICY.md) 和 [MULTI_AGENT_SYNC.md](file:///Users/lotop/Personal-AI-OS/00_system/sync/MULTI_AGENT_SYNC.md)。

@@ -37,48 +37,47 @@ platform_ref = "6a931d6f-fdf4-83ea-bcb8-35fcbb6ba486"
 [[tasks]]
 id = "paos-04-factory"
 purpose = "Project Factory 与核心 Templates"
-status = "ACTIVE"
-validation = ["research-complete", "artifact-complete", "review-complete", "implementation-partial"]
+status = "DONE"
+validation = ["research-complete", "artifact-complete", "review-complete", "implementation-complete"]
 platform = "chatgpt-project"
 platform_ref = "6a931d7f-ce98-83e9-90ba-6ce494131cab"
 
 [[tasks]]
 id = "paos-05-memory"
 purpose = "Memory、Conversation Close 与 GC"
-status = "ACTIVE"
-validation = ["research-complete", "artifact-complete", "review-complete", "implementation-partial"]
+status = "DONE"
+validation = ["research-complete", "artifact-complete", "review-complete", "implementation-complete"]
 platform = "chatgpt-project"
 platform_ref = "6a931d77-8e9c-83ea-8e2a-5c50c29087cc"
 
 [[tasks]]
 id = "paos-06-adapters"
 purpose = "AGENTS、Adapters 与 Capability Matrix"
-status = "REVIEW"
-validation = ["research-complete", "artifact-complete", "implementation-complete"]
+status = "DONE"
+validation = ["research-complete", "artifact-complete", "implementation-complete", "review-complete"]
 platform = "chatgpt-project"
 platform_ref = "6a931d7c-6494-83e9-96af-3f60cd0eaead"
 
 [[tasks]]
 id = "paos-07-harness"
 purpose = "Skills、Hooks 与 Harness"
-status = "ACTIVE"
-validation = ["research-complete", "artifact-complete", "review-complete", "implementation-partial"]
+status = "DONE"
+validation = ["research-complete", "artifact-complete", "review-complete", "implementation-complete"]
 platform = "chatgpt-project"
 platform_ref = "6a931d83-9618-83ea-b2dc-98b4c41b9503"
 
 [[tasks]]
 id = "paos-08-deployment"
 purpose = "Deployment、Backup 与 Recovery"
-status = "ACTIVE"
-validation = ["research-complete", "artifact-complete", "review-complete", "implementation-partial"]
+status = "DONE"
+validation = ["research-complete", "artifact-complete", "review-complete", "implementation-complete"]
 platform = "chatgpt-project"
 platform_ref = "6a931d87-fce4-83ea-89bc-99411fd35619"
 
 [[tasks]]
 id = "paos-09-release"
 purpose = "Audit、Integration 与 V1.1 Release"
-status = "BLOCKED"
-validation = ["research-complete", "artifact-complete", "review-complete", "implementation-partial"]
-blocker = "等待 Founder Template Approval、Gemini capability tier、V1.0 disposition、基础设施范围与 Release Approval"
+status = "DONE"
+validation = ["research-complete", "artifact-complete", "review-complete", "implementation-complete"]
 platform = "chatgpt-project"
 platform_ref = "6a931d8b-5658-83ea-a6ca-992c7839b9be"

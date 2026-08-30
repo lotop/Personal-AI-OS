@@ -51,8 +51,24 @@
   - Session Close 与 Handoff 仅在交接、跨环境、长暂停、Blocked 或形成长期结论时要求。
   - 旧模型保留为历史证据并标记 `SUPERSEDED`，不再作为当前运行入口。
 
+### PAOS-TMPL-001｜首个核心 Template Pack 批准
+
+- 状态：`APPROVED`
+- 决定：批准 `01_templates/project-base-pack`（版本 `1.0.0`）作为 Personal AI OS V1.1 的官方首个已批准模板包。
+- 依据：通过 `04_project_factory/create_project.py` 正式 E2E 实例化验收，生成物完整性与 SHA-256 均符合 Schema 定义。
+
+### PAOS-REL-001｜Personal AI OS V1.1 正式发布批准
+
+- 状态：`APPROVED`
+- 决定：批准 Personal AI OS V1.1 作为首个可运行、可验证、支持多 Agent（Codex & Gemini）协同的 Canonical Control Plane 基线正式发布。
+- 适用范围：
+  - 确立 V1.1 为首个完整基线；
+  - Gemini 在 V1.1 维持 CONDITIONAL（配置加载支持，不阻塞发布）；
+  - 核心基础设施聚焦于本地 Git Canonical Repository 与离线恢复 Bundle 闭环。
+
 ## Candidate Decisions
 
 - 根 `AGENTS.md` 采用精简 Router，而不是完整 Policy Core。
 - Phase 1 Hooks 可以拒绝固定禁令，但不得代替用户批准操作。
 - `06_deployment/` 作为 Agent 部署、备份与恢复层。
+

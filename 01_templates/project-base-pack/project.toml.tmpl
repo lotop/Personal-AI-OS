@@ -1,0 +1,21 @@
+schema_version = "0.2.0-working"
+project_id = "{{PROJECT_ID}}"
+name = "{{PROJECT_NAME}}"
+owner = "{{OWNER}}"
+status = "PROVISIONAL"
+primary_type = "{{PRIMARY_TYPE}}"
+overlays_csv = "{{OVERLAYS}}"
+template_pack = "paos-project-base"
+template_version = "{{TEMPLATE_VERSION}}"
+
+[paths]
+sources = "sources"
+knowledge = "knowledge"
+working = "working"
+archive = "archive"
+temp = "tmp"
+
+[policy]
+source_read_only = true
+external_data_requires_authorization = true
+destructive_gc_enabled = false
