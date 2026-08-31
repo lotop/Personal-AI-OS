@@ -23,7 +23,7 @@
           "purpose": {"type": "string", "minLength": 1},
           "status": {"type": "string", "enum": ["TODO", "ACTIVE", "BLOCKED", "REVIEW", "DONE"]},
           "validation": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
-          "platform": {"type": "string"},
+          "platform": {"type": "string", "enum": ["codex", "chatgpt-project", "gemini-cli", "claude-code"]},
           "platform_ref": {"type": "string", "minLength": 1}
         }
       }

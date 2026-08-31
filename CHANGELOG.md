@@ -2,6 +2,9 @@
 
 ## V1.1.2 Working Revision
 
+- 同步审计登记为 Gemini 的 Commit `a38929e`；Dashboard 暂按 Founder 指令排除，不纳入本轮修改与验收。
+- 收窄 Session Manager 权限，修正命名示例、条件式 Session Close、DONE 验证门槛、Skill Owner 与平台 ID。
+- 移除未经授权的 Release/Distribution 活动任务，增加 Skill Owner 与 Task Registry 引用检查。
 - 修复 V1.1.1 发布后的 Project、Deployment、Claude Review 与 Registry 状态漂移。
 - 增加经 Founder 明确授权的 Direct Main 小修订例外；不包含 Push、Tag 或 Release Approval。
 - 建立 Decision、Identity、Mode、Memory、Task、Session/Handoff、Skill Registry 与 GC Plan 的扁平 Working Template Candidates。

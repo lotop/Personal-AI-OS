@@ -12,3 +12,5 @@ Registry 使用一级 TOML 文件，记录项目、任务、Agent、Skill、Runt
 - `hooks.toml`
 
 Schema 只验证结构与最小枚举；Runtime 事实、审批状态和外部授权仍需独立证据。
+
+Task `platform` 必须使用受管平台 ID（`codex`、`chatgpt-project`、`gemini-cli`、`claude-code`）。Skill `owner` 必须引用已登记 Task；`validation` 只记录已经发生的证据，不得预填未来 Approval、Tag 或尚未执行的检查。

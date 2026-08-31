@@ -12,6 +12,5 @@ description = "使用 Approved Project Base Pack 创建独立 PAOS 项目并部�
 id = "paos-session-manager"
 path = ".agents/skills/paos-session-manager/SKILL.md"
 artifact_state = "WORKING"
-owner = "paos-12-v1-1-2-revision"
-description = "自动化管理 Personal AI OS 会话生命周期、窗口标准化命名与 Session Close 知识沉淀"
-
+owner = "paos-13-session-manager-and-dashboard"
+description = "按 Session Protocol 建议窗口命名、同步已验证任务状态并生成条件式 Session Close 候选"

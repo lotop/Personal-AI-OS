@@ -214,6 +214,16 @@ def validate_tasks(parsed: dict[Path, dict], report: Report) -> None:
             report.error(f"{task_id} 的 validation 必须是无重复项列表")
 
 
+def validate_registry_references(parsed: dict[Path, dict], report: Report) -> None:
+    tasks = parsed.get(ROOT / "02_registry/tasks.toml", {}).get("tasks", [])
+    task_ids = {item.get("id") for item in tasks}
+    skills = parsed.get(ROOT / "02_registry/skills.toml", {}).get("skills", [])
+    for skill in skills:
+        owner = skill.get("owner")
+        if owner not in task_ids:
+            report.error(f"Skill {skill.get('id', '<unknown>')} owner 未登记为 Task: {owner}")
+
+
 def validate_lifecycle(parsed: dict[Path, dict], report: Report) -> None:
     data = parsed.get(ROOT / "00_system/lifecycle/states.toml", {})
     classes = set(data.get("artifact_classes", []))
@@ -308,6 +318,7 @@ def main() -> int:
     validate_deployed_adapters(parsed, report)
     validate_unique_ids(parsed, report)
     validate_tasks(parsed, report)
+    validate_registry_references(parsed, report)
     validate_lifecycle(parsed, report)
     validate_template_packs(parsed, report)
     validate_secrets(report)

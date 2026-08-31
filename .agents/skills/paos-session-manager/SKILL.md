@@ -1,110 +1,65 @@
 ---
 name: paos-session-manager
-description: >-
-  自动化管理 Personal AI OS 的会话生命周期与任务窗口命名。
-  包括：新会话初始化命名（严格遵循 SESSION_PROTOCOL 规范）、任务状态动态同步（进行中/待确认/已阻塞/已完成）、任务卡账本登记（tasks.toml）以及会话完工收尾（Session Close & 决策沉淀）。
-  当用户提到“新任务”、“开工”、“会话起名”、“重命名窗口”、“任务阻塞”、“关闭会话”、“Session Close”、“任务收尾”或需要整理多 Agent 聊天窗口时自动触发。
+description: 管理 Personal AI OS 的会话命名、任务状态建议与条件式 Session Close。当用户要求新任务开工、会话起名或重命名、同步任务状态、处理阻塞、执行 Session Close、任务收尾或整理多 Agent 任务窗口时使用。标题只用于检索；只有满足验收条件且当前任务授权写入时，才更新 Task Registry 或持久化知识。
 ---
 
-# PAOS Session Manager (会话生命周期与窗口命名管理技能)
+# PAOS Session Manager
 
-本 Skill 用于自动化管理与规范多 Agent 协作中的聊天窗口（Task Thread / Session），依据 `00_system/conversations/SESSION_PROTOCOL.md` 规范，实现**会话开工起名 ➔ 状态同步 ➔ 账本登记 ➔ 完工收尾（Session Close）**的全生命周期闭环。
+遵循 `00_system/conversations/SESSION_PROTOCOL.md`。本 Skill 状态为 `WORKING`，不自行产生 Canonical Authority，也不执行 Tag、Push、Release Approval 或 Promotion。
 
----
+## 权限边界
 
-## 1. 核心命名公式 (Naming Standard)
+- 窗口标题是检索标签，不是 Task、Decision、Memory 或 Project State 的事实来源。
+- 标题建议与 Registry 写入必须分开；只有当前任务明确授权写入且证据充分时才修改账本。
+- 非简单任务先建立 Task Card，再登记或更新 Task Registry。
+- Session Close 只生成交接与沉淀候选，不自动批准 Decision、Memory 或 Canonical 内容。
+- 若当前环境不能直接重命名窗口，只提供建议，不声称已完成重命名。
 
-所有会话窗口必须严格遵循以下四段式规范：
+## 命名
 
-```
-项目简称 ｜ 工作流或 Mode ｜ 具体主题 ｜ 状态
-```
+使用四段式建议：
 
-### 字段取值规范：
-1. **项目简称**：`PAOS`（控制平面）或当前业务项目 ID（如 `MYAPP`、`DOCAI` 等）。
-2. **工作流/Mode**：
-   - `WORK`：深度开发、编写代码、配置实现
-   - `CHAT`：探索答疑、概念咨询、方案探讨
-   - `REVIEW`：代码审查、发布门禁、质量验收
-3. **具体主题**：动词 + 核心目标（8~16 字精炼描述，例如 `实现微信扫码登录`、`加固M1门禁检查`）。
-4. **状态候选标签**：
-   - `进行中`（默认开工状态）
-   - `待确认`（等待用户决策或外部答复）
-   - `已阻塞`（遇到技术障碍或依赖缺失）
-   - `已完成`（任务完工并已通过验证）
-   - `已归档`（已完成 Session Close 并沉淀知识）
-
----
-
-## 2. 核心执行流程
-
-当用户触发本 Skill 时，按以下三大场景自动执行对应动作：
-
-### 场景 A：会话初始化开工 (Session Init)
-
-**触发信号**：用户提出新任务意图，如“开工做 xxx”、“新任务：xxx”、“帮我给这个窗口起个名”。
-
-**执行步骤**：
-1. **解析意图**：识别当前所属项目、适用的 Mode（`WORK/CHAT/REVIEW`）与核心任务目标。
-2. **生成标准会话名**：
-   ```
-   【推荐窗口标题】: PAOS-013 ｜ WORK ｜ 实现会话管理技能 ｜ 进行中
-   ```
-3. **提示用户**：直接输出上述标题，建议用户在聊天面板中重命名当前窗口。
-4. **登记任务账本（可选/根据需要）**：
-   - 若在主控制平面：检查并建议在 `02_registry/tasks.toml` 中登记。
-   - 若在独立业务项目：在项目的 `TASKS.md` 中创建对应的 Task Card 词条。
-
----
-
-### 场景 B：任务状态同步 (Status Transition)
-
-**触发信号**：任务遇到阻碍、需要用户决策或阶段性暂停。
-
-**执行步骤**：
-1. 识别当前状态跃迁：
-   - 等待用户审批 / 选型 ➔ 提示将标题后缀更新为 `｜ 待确认`
-   - 依赖缺失 / 环境报错无法继续 ➔ 提示更新为 `｜ 已阻塞`，并记录 Blocker 原因
-2. 保持任务记录与当前进展实时一致。
-
----
-
-### 场景 C：完工收尾与知识沉淀 (Session Close)
-
-**触发信号**：用户表示任务完成，如“任务做完了，收尾”、“执行 Session Close”、“可以归档了”。
-
-**执行步骤**：
-1. **生成 Session Close 摘要**（严格遵循系统格式）：
-   - **🎯 任务目标与实际范围**（Objective & Scope）
-   - **✅ 已完成事项与产出物**（Completed Artifacts & Changes）
-   - **📌 关键决策与结论**（Decisions 待沉淀条目）
-   - **🧪 验证证据**（CI / 单元测试通过结果）
-   - **⏭️ 后续行动建议**（Next Steps）
-2. **更新窗口标题**：
-   ```
-   【已完工窗口标题】: PAOS-013 ｜ WORK ｜ 实现会话管理技能 ｜ 已完成
-   ```
-3. **账本状态闭环**：将对应任务卡状态更新为 `DONE`。
-4. **清理与交接提醒**：提示用户已完成闭环，本窗口可安全关闭或归档。
-
----
-
-## 3. 实战交互话术模板
-
-### 示例 1：开工响应
-```markdown
-🚀 **会话初始化就绪 (Session Init)**
-已为您生成本任务的标准窗口命名，建议将当前聊天窗口重命名为：
-> `PAOS-013 ｜ WORK ｜ 封装会话管理技能 ｜ 进行中`
-
-任务卡已同步就绪，我们现在开始执行第一步...
+```text
+项目简称 ｜ CHAT/WORK/REVIEW ｜ 具体主题 ｜ 状态
 ```
 
-### 示例 2：完工收尾响应
-```markdown
-🏁 **会话完工收尾 (Session Close)**
-- **窗口状态建议**：请将当前窗口标题更新为 `PAOS-013 ｜ WORK ｜ 封装会话管理技能 ｜ 已完成`
-- **修改文件**：`.agents/skills/paos-session-manager/SKILL.md`, `02_registry/skills.toml`
-- **验证结果**：CI Gate 全部 PASS，Schema 校验通过。
-- **归档状态**：任务已闭环，关键规范已沉淀。本会话可以安全关闭！
-```
+状态候选为 `进行中`、`待确认`、`已阻塞`、`已完成`、`已归档`。Task ID 单独保存在 Task Card/Registry 中，不替代项目简称。
+
+示例：`PAOS ｜ WORK ｜ 修正会话管理技能 ｜ 进行中`
+
+## 会话初始化
+
+1. 识别项目简称、Mode、具体主题与当前状态。
+2. 给出简洁标题建议；有可用任务管理工具且用户要求时，可直接重命名。
+3. 仅在实际存在非简单任务、Write Set 包含账本且已获授权时登记 Task。
+4. 不以“已生成标题”为由声称 Task Card 或账本已经同步。
+
+## 状态同步
+
+- 等待用户决策或外部答复时，建议 `待确认`，记录 Decision Needed。
+- 存在无法继续的依赖或权限缺口时，建议 `已阻塞`，记录 Blocker 与恢复条件。
+- Registry 更新必须引用实际证据；不得预填未来验证、Approval 或 Tag。
+
+## Session Close
+
+仅在下列情况之一发生时要求 Close：
+
+- 工作需要交给另一 Agent、Owner、Worktree 或设备；
+- 任务阻塞、等待关键批准或进入较长暂停；
+- 会话即将压缩或归档，且有需持久化的结论；
+- 产生了应进入 Decision 或 Memory 流程的长期结论。
+
+简短答疑、连续阶段工作和无持久化价值的简单完成不强制 Close。
+
+Close 至少记录 Objective、实际 Scope、Completed、Changed Files、Validation、Open Risks、Decision/Memory Candidates、Next Owner/Next Step。需要真实交接时再生成 Handoff。
+
+## DONE 门槛
+
+只有同时满足以下条件，才可建议或在已授权账本中写入 `DONE`：
+
+1. Acceptance Criteria 已满足；
+2. 验证证据已记录；
+3. 没有未解决 Blocker 或 Decision Needed；
+4. 当前 Task Owner 具有对应 Write Set 与状态更新权限。
+
+否则使用 `REVIEW`、`BLOCKED` 或保持当前状态。用户口头表示“做完了”只触发收尾核验，不自动越过上述门槛。
