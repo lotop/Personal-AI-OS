@@ -50,4 +50,4 @@
 
 ## 模板关系
 
-`01_templates/` 保存批准后的模板；`07_working/candidates/` 保存待审模板；Factory 只能正式读取前者。Candidate 演练必须显式使用 Dry Run，并标记 `PROVISIONAL`。
+`01_templates/` 保存批准后的模板；`07_working/candidates/` 只在未来存在新候选时保存待审模板。Factory 只能正式读取前者。Candidate 演练必须显式使用 Dry Run，并标记 `PROVISIONAL`。

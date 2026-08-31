@@ -4,9 +4,9 @@
 >
 > 已批准基线：`v1.1.1`（`PAOS-REL-002`）
 >
-> 当前修订：`v1.1.2` Working；已批准发布仍为 `v1.1.1`
+> 当前修订：`v1.1.2` Formal Release 准备中；已批准发布仍为 `v1.1.1`，直到 `PAOS-REL-003` 与 `v1.1.2` tag 完成绑定
 
-正式 Decision Record 模板尚未确认。本索引先记录已经由 Founder 明确确认的决策事实。
+本索引记录已经由 Founder 明确确认的决策事实。Decision Record 正式结构模板由 `PAOS-TMPL-003` 批准。
 
 ## Approved Decisions
 
@@ -111,6 +111,21 @@
 - 状态：`APPROVED`
 - 决定：`06_deployment/` 作为 Agent Adapter 部署、备份与恢复规范层；Generated Adapter 不反向成为 Canonical Source。
 
+### PAOS-TMPL-003｜V1.1.2 Core Template Pack 批准
+
+- 状态：`APPROVED`
+- 日期：`2026-08-31`
+- Owner：`paos-14-v1-1-2-formal-release`
+- Context：Founder 明确要求不再逐项等待模板确认，直接交付完整 V1.1.2 正式版，并要求说明由 AI 代为做出的决定。
+- Decision：批准 `01_templates/core-template-pack`（版本 `1.1.2`）作为 Personal AI OS 的正式核心模板包。
+- Scope：Decision、Profile、Preferences、Communication、Mode、Memory、Knowledge Extraction、Task Card、Session Close、Handoff、Skill Registry、GC Plan 与 Project AGENTS 模板。
+- Constraints：本批准不授权 Push、外部部署、真实项目数据传输或破坏性删除；Dashboard 继续按 Founder 指令排除。
+- Evidence：模板包 Manifest 完整，候选模板已归档，仓库验证与 CI Gate 必须通过。
+- Consequences：`07_working/candidates/` 不再承载当前待确认模板；后续项目和任务可直接引用 Approved Core Template Pack。
+- Alternatives：继续逐项确认模板；因 Founder 明确要求交付完整成品，本轮不采用。
+- Supersedes：`07_working/candidates/CORE_TEMPLATE_CANDIDATES.md`
+- Approval：Founder / 2026-08-31 / 批准模板批量完成并通过校验后进入 Approved。
+
 ## Candidate Decisions
 
-- `PAOS-REL-003`｜V1.1.2 Release Approval（尚未请求）。
+- 当前无待确认 Candidate Decision。

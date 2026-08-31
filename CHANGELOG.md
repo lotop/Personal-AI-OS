@@ -1,5 +1,11 @@
 # Changelog
 
+## V1.1.2 Formal Release Preparation
+
+- 新增 Approved `01_templates/core-template-pack` 版本 `1.1.2`，覆盖 13 类核心模板。
+- 登记 `PAOS-TMPL-003`，按 Founder 明确授权批量批准核心模板，不再逐项等待确认。
+- 原 `07_working/candidates/` 候选模板归档到 `09_archive/v1.1.2-template-candidates/`。
+
 ## V1.1.2 Working Revision
 
 - 同步审计登记为 Gemini 的 Commit `a38929e`；Dashboard 暂按 Founder 指令排除，不纳入本轮修改与验收。

@@ -1,0 +1,37 @@
+# Handoff Template
+
+> 状态：`APPROVED`
+>
+> 日期：`2026-08-31`
+>
+> 层级：`TASK`
+>
+> 维护者：Current Owner
+>
+> Source of Truth：是，作为交接记录结构模板；Handoff 只证明交接上下文
+>
+> 关系：Task Card、Git Commit、Validation、Session Close
+>
+> Approval Reference：`PAOS-TMPL-003`
+
+## 使用规则
+
+- 真实交接、跨 Agent/设备/工作区切换或长暂停才需要 Handoff。
+- Handoff 必须让下一 Owner 能从固定 Git 状态继续。
+- Required Decision 没有时写 `NONE`，不得虚构等待事项。
+
+## 模板
+
+- Handoff ID：`{{HANDOFF_ID}}`
+- Date：`YYYY-MM-DD`
+- Task ID：`{{TASK_ID}}`
+- From / To：`{{FROM_OWNER}} -> {{TO_OWNER}}`
+- Runtime：`{{AGENT_OR_RUNTIME_VERSION}}`
+- Base Commit / Branch：`{{GIT_COMMIT_AND_BRANCH}}`
+- Write Set：`{{WRITE_SET}}`
+- Completed：`{{COMPLETED}}`
+- Remaining：`{{REMAINING_OR_NONE}}`
+- Validation：`{{VALIDATION_EVIDENCE}}`
+- Known Risks：`{{KNOWN_RISKS_OR_NONE}}`
+- Required Decision：`{{REQUIRED_DECISION_OR_NONE}}`
+- Next Action：`{{NEXT_ACTION}}`

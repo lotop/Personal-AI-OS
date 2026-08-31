@@ -1,0 +1,72 @@
+# Project AGENTS Template
+
+> 模板状态：`APPROVED`
+>
+> 日期：`2026-08-31`
+>
+> 层级：`PROJECT`
+>
+> 维护者：Project Owner
+>
+> Source of Truth：是，作为项目 `AGENTS.md` 结构模板；实例化后的项目文件是该项目的指令入口，不反向修改模板
+>
+> 关系：`PROJECT.md`、`project.toml`、Task Card、Adapter Config
+>
+> Approval Reference：`PAOS-TMPL-003`
+
+# {{PROJECT_NAME}} AGENTS
+
+## 项目定位
+
+- Project ID：`{{PROJECT_ID}}`
+- Owner：`{{OWNER}}`
+- Primary Type：`{{PRIMARY_TYPE}}`
+- Template Version：`{{TEMPLATE_VERSION}}`
+- Status：`ACTIVE`
+
+本仓库是独立业务项目，不是 Personal AI OS 控制面本体。Personal AI OS 只通过模板、Adapter 和 Registry 提供治理入口。
+
+## Source of Truth
+
+- `PROJECT.md`：项目定位、范围、交付物和关键约束。
+- `project.toml`：机器可读项目配置。
+- `DECISIONS.md`：已批准项目决策。
+- `TASKS.md`：项目任务账本。
+- `knowledge/`：批准后的长期知识。
+- `sources/`：Original Source 和外部输入证据。
+- `working/`：Working Draft，不具有 Canonical Authority。
+- `archive/`：归档或 Superseded 资料。
+- `tmp/`：临时文件和可清理缓存。
+
+## 工作规则
+
+- 先读取本文件、`PROJECT.md`、`project.toml`、相关 Decisions 和当前 Task Card。
+- 不覆盖 Original Source、Approved Decision 或 Canonical 资料。
+- Markdown 默认中文；路径、配置键、状态码和必要技术术语保留英文。
+- 人工维护结构化配置默认使用 TOML；JSON 用于机器生成数据；YAML 仅在外部工具要求时使用。
+- 密钥、Token、密码和未授权外部数据不得写入仓库。
+
+## 任务与状态
+
+非简单任务必须建立 Task Card，并记录：
+
+- Objective
+- Scope
+- Read Set
+- Write Set
+- Dependencies
+- Constraints
+- Owner
+- Expected Output
+- Acceptance Criteria
+- Validation
+- Decision Needed
+
+任务状态只使用：`TODO / ACTIVE / BLOCKED / REVIEW / DONE`。
+
+## 验证与交付
+
+- 完成前运行与风险匹配的本地验证。
+- `DONE` 必须满足 Acceptance Criteria，并记录验证证据。
+- 需要交接、长暂停、阻塞或持久结论时执行 Session Close 或 Handoff。
+- 不因本地测试通过而自动 Push、Deploy、Publish 或 Promotion。

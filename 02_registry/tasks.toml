@@ -113,3 +113,11 @@ status = "DONE"
 validation = ["contribution-detected", "scope-audited", "dashboard-excluded", "task-card-recorded", "skill-governance-aligned", "skill-quick-validate-pass", "registry-references-pass", "local-offline-ci-pass"]
 platform = "gemini-cli"
 platform_ref = "a38929e0c5ac24beba4da7e4ae9684333eeea3d5"
+
+[[tasks]]
+id = "paos-14-v1-1-2-formal-release"
+purpose = "完成 V1.1.2 Core Template Pack 批准、正式发布证据、Release Approval 与本地 Tag"
+status = "ACTIVE"
+validation = ["founder-bulk-approval-authorized", "core-template-pack-created", "candidate-templates-archived"]
+platform = "codex"
+platform_ref = "main"

@@ -1,0 +1,36 @@
+# Session Close Template
+
+> 状态：`APPROVED`
+>
+> 日期：`2026-08-31`
+>
+> 层级：`SESSION`
+>
+> 维护者：Session Owner
+>
+> Source of Truth：是，作为 Session Close 结构模板；Close Record 是历史证据，不自动成为 Memory
+>
+> 关系：Task Card、Knowledge Extraction、Decisions、Handoff
+>
+> Approval Reference：`PAOS-TMPL-003`
+
+## 使用规则
+
+- Session Close 只在交接、长暂停、阻塞、持久结论或完整收尾时要求。
+- Close 不自动批准 Decision、Memory、Task DONE 或 Canonical Promotion。
+- Remaining 和 Risks 必须如实填写；没有则写 `NONE`。
+
+## 模板
+
+- Session ID：`{{SESSION_ID}}`
+- Date：`YYYY-MM-DD`
+- Task ID：`{{TASK_ID}}`
+- Completed：`{{COMPLETED}}`
+- Changed Files：`{{CHANGED_FILES}}`
+- Validation：`{{VALIDATION_EVIDENCE}}`
+- Decisions：`{{APPROVED_DECISIONS_OR_NONE}}`
+- Memory Candidates：`{{MEMORY_CANDIDATES_OR_NONE}}`
+- Remaining：`{{REMAINING_OR_NONE}}`
+- Risks：`{{RISKS_OR_NONE}}`
+- Next Action：`{{NEXT_ACTION_OR_NONE}}`
+- Close Reason：`HANDOFF | LONG_PAUSE | BLOCKED | PERSISTENT_CONCLUSION | COMPLETE`

@@ -1,0 +1,39 @@
+# Decision Record Template
+
+> 状态：`APPROVED`
+>
+> 日期：`2026-08-31`
+>
+> 层级：`GLOBAL_OR_PROJECT`
+>
+> 维护者：Decision Owner
+>
+> Source of Truth：是，作为 Decision Record 的结构模板；实例化后的 `DECISIONS.md` 才承载具体决策事实
+>
+> 关系：Task Card、Evidence、Release Approval、Superseded Decision
+>
+> Approval Reference：`PAOS-TMPL-003`
+
+## 使用规则
+
+- 每条 Decision 只记录一个明确决定。
+- `APPROVED` 必须包含批准人、日期、范围和证据。
+- `SUPERSEDED` 必须指向替代 Decision，不删除历史记录。
+- 实施授权、Template Approval、Release Approval、Tag、Push、Promotion 必须分别写清楚，不得互相推断。
+
+## 模板
+
+### {{DECISION_ID}}｜{{TITLE}}
+
+- 状态：`PROPOSED | APPROVED | SUPERSEDED`
+- 日期：`YYYY-MM-DD`
+- Owner：`{{OWNER}}`
+- Context：`{{CONTEXT}}`
+- Decision：`{{DECISION}}`
+- Scope：`{{SCOPE}}`
+- Constraints：`{{CONSTRAINTS}}`
+- Evidence：`{{EVIDENCE}}`
+- Consequences：`{{CONSEQUENCES}}`
+- Alternatives：`{{ALTERNATIVES}}`
+- Supersedes：`{{SUPERSEDES_OR_NONE}}`
+- Approval：`{{APPROVER}} / YYYY-MM-DD / {{APPROVAL_SCOPE}}`

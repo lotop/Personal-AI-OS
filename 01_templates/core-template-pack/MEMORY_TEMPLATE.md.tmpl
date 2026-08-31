@@ -1,0 +1,34 @@
+# Memory Template
+
+> 状态：`APPROVED`
+>
+> 日期：`2026-08-31`
+>
+> 层级：`GLOBAL_OR_PROJECT`
+>
+> 维护者：Knowledge Owner
+>
+> Source of Truth：是，作为 Memory 结构模板；单条 Memory 必须绑定来源与置信度
+>
+> 关系：Original Source、Decision、Knowledge、Session Close
+>
+> Approval Reference：`PAOS-TMPL-003`
+
+## 使用规则
+
+- Memory 记录可复用结论，不保存无长期价值的过程文本。
+- Conversation 只能作为证据来源之一，不能直接等同于 Memory。
+- `INFERRED` 和 `UNVERIFIED` 不得作为批准事实使用。
+
+## 模板
+
+- Memory ID：`{{MEMORY_ID}}`
+- Type：`FACT | PREFERENCE | PATTERN | ASSUMPTION | VALIDATION_ITEM`
+- Scope：`GLOBAL | PROJECT`
+- Statement：`{{SINGLE_REUSABLE_STATEMENT}}`
+- Provenance：`{{SOURCE_DECISION_OR_CONVERSATION_REF}}`
+- Confidence：`CONFIRMED | INFERRED | UNVERIFIED`
+- Valid From：`YYYY-MM-DD`
+- Review After：`YYYY-MM-DD | NONE`
+- Supersedes：`{{SUPERSEDES_OR_NONE}}`
+- Restrictions：`{{PRIVACY_EXTERNAL_DATA_OR_LOADING_RESTRICTIONS}}`

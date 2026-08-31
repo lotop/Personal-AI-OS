@@ -1,0 +1,36 @@
+# Knowledge Extraction Template
+
+> 状态：`APPROVED`
+>
+> 日期：`2026-08-31`
+>
+> 层级：`TASK_OR_SESSION`
+>
+> 维护者：Task Owner
+>
+> Source of Truth：是，作为提取记录结构模板；提取输出仍需审核后才能进入 Knowledge、Memory 或 Decisions
+>
+> 关系：Session Close、Memory Pipeline、Decision Record
+>
+> Approval Reference：`PAOS-TMPL-003`
+
+## 使用规则
+
+- 提取必须区分事实、决策、偏好、假设、待验证事项和拒绝沉淀项。
+- 不得把摘要、推断或模型建议自动升级为长期知识。
+- Source Set Hash 用于证明提取对象未被静默替换。
+
+## 模板
+
+- Extraction ID：`{{EXTRACTION_ID}}`
+- Source Set：`{{SOURCE_FILES_CONVERSATIONS_OR_TASK_IDS}}`
+- Source Set Hash：`{{SOURCE_SET_HASH}}`
+- Extractor / Version：`{{EXTRACTOR_AND_VERSION}}`
+- Facts：`{{VERIFIED_FACTS}}`
+- Decisions：`{{DECISIONS_AND_APPROVAL_STATE}}`
+- Preferences：`{{EXPLICIT_USER_PREFERENCES}}`
+- Assumptions：`{{UNVERIFIED_ASSUMPTIONS}}`
+- Validation Items：`{{ITEMS_TO_VERIFY}}`
+- Rejected Items：`{{REJECTED_ITEMS_AND_REASONS}}`
+- Proposed Destinations：`MEMORY | KNOWLEDGE | DECISIONS | NONE`
+- Reviewed By：`{{REVIEWER_OR_PENDING}}`

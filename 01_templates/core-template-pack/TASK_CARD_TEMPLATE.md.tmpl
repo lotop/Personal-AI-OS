@@ -1,0 +1,37 @@
+# Task Card Template
+
+> 状态：`APPROVED`
+>
+> 日期：`2026-08-31`
+>
+> 层级：`TASK`
+>
+> 维护者：Task Owner
+>
+> Source of Truth：是，作为任务卡结构模板；实例 Task Card 是当前任务范围依据
+>
+> 关系：Mode、Concurrency Policy、Validation、Handoff
+>
+> Approval Reference：`PAOS-TMPL-003`
+
+## 使用规则
+
+- 非简单任务必须有 Task Card。
+- Write Set 决定是否允许并发写入；重叠写入必须交回总控或使用隔离工作区。
+- `DONE` 必须有验收和验证证据，不能只靠口头状态。
+
+## 模板
+
+- Task ID：`{{TASK_ID}}`
+- Status：`TODO | ACTIVE | BLOCKED | REVIEW | DONE`
+- Objective：`{{VERIFIABLE_OBJECTIVE}}`
+- Scope：`{{SCOPE}}`
+- Read Set：`{{READ_SET}}`
+- Write Set：`{{WRITE_SET}}`
+- Dependencies：`{{DEPENDENCIES_OR_NONE}}`
+- Constraints：`{{PERMISSIONS_SECURITY_AND_NON_GOALS}}`
+- Owner：`{{SINGLE_OWNER}}`
+- Expected Output：`{{DELIVERABLES}}`
+- Acceptance Criteria：`{{ACCEPTANCE_CRITERIA}}`
+- Validation：`{{COMMANDS_RESULTS_AND_EVIDENCE}}`
+- Decision Needed：`{{ONLY_IF_REQUIRED_OR_NONE}}`

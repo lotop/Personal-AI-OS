@@ -1,0 +1,33 @@
+# Mode Template
+
+> 状态：`APPROVED`
+>
+> 日期：`2026-08-31`
+>
+> 层级：`MODE`
+>
+> 维护者：Governance Owner
+>
+> Source of Truth：是，作为 Mode 定义结构模板；正式 Mode 规则由 `00_system/modes/` 承载
+>
+> 关系：Global Governance、Task Card、Context Loading
+>
+> Approval Reference：`PAOS-TMPL-003`
+
+## 使用规则
+
+- Mode 只定义行为边界，不替代具体 Task Card。
+- V1.1 Minimum 仅保留 `CHAT / WORK / REVIEW`。
+- 涉及权限、Source of Truth、外部数据或正式交付物的冲突必须 Fail Closed。
+
+## 模板
+
+- Mode ID：`CHAT | WORK | REVIEW`
+- Purpose：`{{PURPOSE}}`
+- Entry Trigger：`{{ENTRY_TRIGGER}}`
+- Read Scope：`{{READ_SCOPE}}`
+- Write Permission：`{{WRITE_PERMISSION}}`
+- Required Checks：`{{REQUIRED_CHECKS}}`
+- Stop Conditions：`{{STOP_OR_ESCALATION_CONDITIONS}}`
+- Output Contract：`{{OUTPUT_CONTRACT}}`
+- Exit / Transition：`{{EXIT_OR_TRANSITION_RULES}}`

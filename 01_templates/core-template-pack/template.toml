@@ -1,0 +1,71 @@
+pack_id = "paos-core-templates"
+version = "1.1.2"
+artifact_state = "APPROVED"
+owner = "paos-14-v1-1-2-formal-release"
+canonical_authority = "FOUNDER_APPROVAL"
+approval_reference = "PAOS-TMPL-003"
+
+[[files]]
+source = "DECISION_RECORD_TEMPLATE.md.tmpl"
+destination = "templates/DECISION_RECORD_TEMPLATE.md"
+render = true
+
+[[files]]
+source = "PROFILE_TEMPLATE.md.tmpl"
+destination = "templates/PROFILE_TEMPLATE.md"
+render = true
+
+[[files]]
+source = "PREFERENCES_TEMPLATE.md.tmpl"
+destination = "templates/PREFERENCES_TEMPLATE.md"
+render = true
+
+[[files]]
+source = "COMMUNICATION_TEMPLATE.md.tmpl"
+destination = "templates/COMMUNICATION_TEMPLATE.md"
+render = true
+
+[[files]]
+source = "MODE_TEMPLATE.md.tmpl"
+destination = "templates/MODE_TEMPLATE.md"
+render = true
+
+[[files]]
+source = "MEMORY_TEMPLATE.md.tmpl"
+destination = "templates/MEMORY_TEMPLATE.md"
+render = true
+
+[[files]]
+source = "KNOWLEDGE_EXTRACTION_TEMPLATE.md.tmpl"
+destination = "templates/KNOWLEDGE_EXTRACTION_TEMPLATE.md"
+render = true
+
+[[files]]
+source = "TASK_CARD_TEMPLATE.md.tmpl"
+destination = "templates/TASK_CARD_TEMPLATE.md"
+render = true
+
+[[files]]
+source = "SESSION_CLOSE_TEMPLATE.md.tmpl"
+destination = "templates/SESSION_CLOSE_TEMPLATE.md"
+render = true
+
+[[files]]
+source = "HANDOFF_TEMPLATE.md.tmpl"
+destination = "templates/HANDOFF_TEMPLATE.md"
+render = true
+
+[[files]]
+source = "SKILL_REGISTRY_TEMPLATE.toml.tmpl"
+destination = "templates/SKILL_REGISTRY_TEMPLATE.toml"
+render = true
+
+[[files]]
+source = "GC_PLAN_TEMPLATE.json.tmpl"
+destination = "templates/GC_PLAN_TEMPLATE.json"
+render = true
+
+[[files]]
+source = "PROJECT_AGENTS_TEMPLATE.md.tmpl"
+destination = "templates/PROJECT_AGENTS_TEMPLATE.md"
+render = true
