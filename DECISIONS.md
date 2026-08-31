@@ -176,6 +176,21 @@
 - Consequences：V1.1.2 的发布证据自此可在远端独立校验；`SYSTEM.toml` 的 `implementation.release` 相应由 `APPROVED_LOCAL_NO_PUSH` 更正为 `APPROVED_REMOTE_TAG_PUSHED`。
 - 远端可见性：由 Founder 在 GitHub 侧控制，本仓库不做假设，也不代为修改。
 
+### PAOS-REL-004｜Personal AI OS V1.1.3 本地正式发布批准
+
+- 状态：`APPROVED`
+- 日期：`2026-09-01`
+- Owner：`paos-17-v1-1-3-local-release`
+- Context：PAOS-016 完成 Post-V1.1.2 全仓整改后，发现两个 Approved Template Manifest 被原地加入 Factory 分类字段；同时 M6 的 `release_commit` 字段要求 Commit 在自身 Tree 中声明自身 Hash，无法作为可持续发布协议。Founder 明确指令“修复后直接发布”。
+- Decision：批准 Personal AI OS V1.1.3 作为当前 Canonical Control Plane 本地正式发布版本。
+- Scope：Approved Manifest 恢复、Factory Pack 路由迁移、GC/Factory/Schema/Hooks/Deployment 加固、M5 Bundle Artifact 实体验证、M6 annotated tag 直接绑定及相关文档与 Registry 同步。
+- Authorization：允许直接在本地 `main` 完成 Release Commit，并创建本地 annotated tag `v1.1.3`；不授权 Push、远端 Tag 发布、外部部署、真实项目数据传输或 Dashboard 验收。
+- Runtime Boundary：Codex Runtime Smoke 保持 PASS；Claude Code Config Load 为 PASS 但 Live Runtime 未授权；Gemini Config Load 为 CONDITIONAL PASS 且 Live Runtime 未授权。
+- Evidence：实现冻结 Commit `67486a16630c466a6f46710116eadfbcd0c5fff5`；冻结 Tree SHA-256 `75268a184d145f70886cf81b3d9972b5afbac0f68414dd14ad7d905cbff357d7`；最终 Release Commit 由 annotated tag `v1.1.3` 精确绑定；M1–M6 必须全部 PASS。
+- Template Integrity：`project-base-pack` Manifest SHA-256 `9854c574add72b7904d6cb1405b7031da5b12a2ac77b85eaa4c54e0f9279a941`；`core-template-pack` Manifest SHA-256 `46a870b0a4ce6b7d52560c24bbdb9422f93b814055ec8a89792ea4322a7a40d7`，均与 `v1.1.2` 批准基线一致。
+- AI-made Decisions：Pack Kind 属于 Factory 路由而非 Approved Template Manifest；Release Commit 只由 Git annotated tag 绑定；本地 Bundle Artifact 被 Git 忽略但必须由 M5 读取并验证。
+- Approval：Founder / 2026-09-01 / 明确授权修复后直接发布 V1.1.3，本地 Tag，不 Push。
+
 ## Candidate Decisions
 
 - 当前无待确认 Candidate Decision。

@@ -1,6 +1,6 @@
 # Changelog
 
-## V1.1.3 Local Release Preparation
+## V1.1.3 Local Release
 
 - 修复 PAOS-016 对两个 Approved Template Manifest 的原地元数据修改，将 Pack Kind 迁移到 Factory 自有配置。
 - Factory 与 Repository Validator 共同校验 Pack 用途路由，拒绝未登记 Pack、非法类型及悬空路由。
