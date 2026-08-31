@@ -2,7 +2,7 @@
 
 > 状态：`WORKING`
 >
-> 官方资料核验：`2026-08-30`
+> 官方资料核验：`2026-09-01`
 
 ## 原生能力边界
 
@@ -12,10 +12,10 @@
 - Hooks 在 `settings.json` 的 `hooks` 对象中配置，并通过 JSON 输入输出通信。
 - 项目级 Hooks 应视为不可信代码，启用前必须完成信任检查。
 
-## 候选部署映射
+## 当前部署映射
 
-- Personal AI OS 规则源 → 生成 `GEMINI.md` Router，不直接复制全部治理正文。
-- `.gemini/settings.json` → 仅写平台原生字段；可配置读取 `AGENTS.md` 与 `GEMINI.md`。
+- Personal AI OS 规则源保持为根 `AGENTS.md`，不复制或分叉 Canonical Rule。
+- `.gemini/settings.json` 通过官方 `context.fileName` 数组将 `AGENTS.md` 设为项目上下文文件；当前不额外生成 `GEMINI.md` Router。
 - Gemini Adapter → 保存于 `03_adapters/gemini-cli/`，部署前进行 JSON Schema 验证。
 - Hooks → Phase 1 保持禁用，后续逐项生成与审批。
 
@@ -26,3 +26,5 @@
 - 没有把 TOML 字段直接写入 Gemini 原生 JSON。
 - Hooks 不输出非 JSON 内容到标准输出。
 - Smoke Test 能读取项目目标、Task Card 和适用规则。
+
+当前只完成项目配置生成与历史 Config Load 证据；本机 Registry 仍记录 CLI 未安装，不能将其扩大为当前 Live Runtime Smoke。

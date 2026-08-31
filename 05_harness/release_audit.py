@@ -9,6 +9,7 @@ import json
 import re
 import subprocess
 import sys
+import tempfile
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
@@ -27,20 +28,24 @@ ROOT = Path(__file__).resolve().parents[1]
 PYTHON = sys.executable
 RECOVERY_EVIDENCE = Path("07_working/reviews/recovery_evidence.toml")
 
-# 恢复演练之后只允许证据与账本类文件继续变化；实现文件变化必须重新演练。
-# 使用目录前缀而不是逐版本文件名，避免每次发布都要修改审计器本体。
-RECOVERY_FOLLOWUP_PREFIXES = ("07_working/reviews/",)
-RECOVERY_FOLLOWUP_PATHS = {"02_registry/tasks.toml"}
+# 恢复演练之后只允许已声明的证据与任务账本类文件继续变化；实现文件变化必须重新演练。
+RECOVERY_FOLLOWUP_PATHS = {
+    "02_registry/tasks.toml",
+    "07_working/reviews/recovery_evidence.toml",
+    "07_working/reviews/RECOVERY_DRILL.md",
+    "07_working/reviews/RELEASE_READINESS.md",
+}
+RECOVERY_FOLLOWUP_PATTERNS = (
+    re.compile(r"^07_working/reviews/[A-Z0-9][A-Z0-9_.-]*_TASK\.md$"),
+    re.compile(r"^07_working/reviews/HANDOFF[A-Z0-9_.-]*\.md$"),
+)
 
 
 def is_recovery_followup(path: str) -> bool:
     """判断恢复演练后的变更是否属于允许的证据/账本更新。"""
     if path in RECOVERY_FOLLOWUP_PATHS:
         return True
-    return any(
-        path.startswith(prefix) and "/" not in path[len(prefix) :]
-        for prefix in RECOVERY_FOLLOWUP_PREFIXES
-    )
+    return any(pattern.fullmatch(path) for pattern in RECOVERY_FOLLOWUP_PATTERNS)
 
 
 @dataclass(frozen=True)
@@ -72,17 +77,57 @@ def validation_gate(root: Path = ROOT) -> Gate:
 
 
 def template_factory_gate(root: Path = ROOT) -> Gate:
-    approved = []
+    approved_project_packs = []
     for manifest in (root / "01_templates").glob("*/template.toml"):
-        data = tomllib.loads(manifest.read_text(encoding="utf-8"))
-        if data.get("artifact_state") == "APPROVED" and data.get("approval_reference"):
-            approved.append(manifest)
+        try:
+            data = tomllib.loads(manifest.read_text(encoding="utf-8"))
+        except (OSError, tomllib.TOMLDecodeError) as exc:
+            return Gate("M3", "Template & Factory", "FAIL", f"Template Pack 无法解析: {manifest}: {exc}")
+        if (
+            data.get("artifact_state") == "APPROVED"
+            and data.get("approval_reference")
+            and data.get("pack_kind") == "PROJECT_SCAFFOLD"
+        ):
+            approved_project_packs.append(manifest.parent)
     acceptance = root / "07_working/reviews/PROJECT_FACTORY_ACCEPTANCE.md"
-    if not approved:
-        return Gate("M3", "Template & Factory", "BLOCKED", "没有 Approved Template Pack")
+    if not approved_project_packs:
+        return Gate("M3", "Template & Factory", "BLOCKED", "没有 Approved PROJECT_SCAFFOLD Template Pack")
     if not acceptance.is_file() or "结论：`PASS`" not in acceptance.read_text(encoding="utf-8"):
         return Gate("M3", "Template & Factory", "BLOCKED", "缺少 Formal Factory E2E")
-    return Gate("M3", "Template & Factory", "PASS", f"approved_packs={len(approved)}")
+    with tempfile.TemporaryDirectory(prefix="paos-m3-") as raw:
+        for pack in approved_project_packs:
+            target = Path(raw) / pack.name
+            result = run(
+                root,
+                PYTHON,
+                "04_project_factory/create_project.py",
+                "--template-pack",
+                str(pack),
+                "--target",
+                str(target),
+                "--project-id",
+                f"m3-{pack.name}",
+                "--name",
+                "M3 Factory Validation",
+                "--owner",
+                "paos-release-audit",
+                "--primary-type",
+                "SOFTWARE_PRODUCT",
+            )
+            if result.returncode != 0:
+                detail = (result.stderr or result.stdout).strip().splitlines()
+                return Gate(
+                    "M3",
+                    "Template & Factory",
+                    "FAIL",
+                    f"Approved Project Pack 无法实例化: {pack.name}: {detail[-1] if detail else 'unknown error'}",
+                )
+    return Gate(
+        "M3",
+        "Template & Factory",
+        "PASS",
+        f"approved_project_packs={len(approved_project_packs)}; dry_run=PASS",
+    )
 
 
 def adapter_deployment_gate(root: Path = ROOT) -> Gate:
@@ -213,13 +258,14 @@ def approval_gate(root: Path = ROOT) -> Gate:
     if approval_ref not in tag_body:
         return Gate("M6", "Founder Release Approval", "FAIL", f"{tag_name} 缺少 {approval_ref}")
     baseline = system.get("approved_baseline", {})
-    if baseline.get("version") == version:
-        if baseline.get("git_tag") != tag_name:
-            return Gate("M6", "Founder Release Approval", "FAIL", "approved_baseline.git_tag 与发布 Tag 不一致")
-        if baseline.get("approval_reference") != approval_ref:
-            return Gate("M6", "Founder Release Approval", "FAIL", "approved_baseline.approval_reference 与 Decision 不一致")
-        if baseline.get("release_commit") != tag_commit:
-            return Gate("M6", "Founder Release Approval", "FAIL", "approved_baseline.release_commit 与 Tag 指向的 Commit 不一致")
+    if baseline.get("version") != version:
+        return Gate("M6", "Founder Release Approval", "FAIL", "approved_baseline.version 与 target_version 不一致")
+    if baseline.get("git_tag") != tag_name:
+        return Gate("M6", "Founder Release Approval", "FAIL", "approved_baseline.git_tag 与发布 Tag 不一致")
+    if baseline.get("approval_reference") != approval_ref:
+        return Gate("M6", "Founder Release Approval", "FAIL", "approved_baseline.approval_reference 与 Decision 不一致")
+    if baseline.get("release_commit") != tag_commit:
+        return Gate("M6", "Founder Release Approval", "FAIL", "approved_baseline.release_commit 与 Tag 指向的 Commit 不一致")
     return Gate("M6", "Founder Release Approval", "PASS", f"{approval_ref} tag={tag_name} commit={head}")
 
 

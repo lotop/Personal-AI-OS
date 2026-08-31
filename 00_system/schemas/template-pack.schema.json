@@ -1,11 +1,12 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "paos://schemas/template-pack/0.1",
+  "$id": "paos://schemas/template-pack/0.2",
   "type": "object",
   "additionalProperties": false,
-  "required": ["pack_id", "version", "artifact_state", "owner", "canonical_authority", "files"],
+  "required": ["pack_id", "pack_kind", "version", "artifact_state", "owner", "canonical_authority", "files"],
   "properties": {
     "pack_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]+$"},
+    "pack_kind": {"type": "string", "enum": ["PROJECT_SCAFFOLD", "ARTIFACT_LIBRARY"]},
     "version": {"type": "string", "minLength": 1},
     "artifact_state": {"type": "string", "enum": ["WORKING", "APPROVED"]},
     "owner": {"type": "string", "minLength": 1},

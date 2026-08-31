@@ -14,4 +14,4 @@
 - Git Repository 可初始化，默认分支符合策略。
 - 初始化报告包含创建清单、验证结果和回滚步骤。
 
-当前没有批准的 Template Pack，因此正式创建 Gate 为 `BLOCKED_TEMPLATE_APPROVAL`。
+当前 Approved `PROJECT_SCAFFOLD` Pack 为 `01_templates/project-base-pack`；Release M3 会对每个此类 Pack 执行真实 Dry Run。`ARTIFACT_LIBRARY` Pack 只提供可复用模板内容，不得由 Project Factory 当作项目脚手架实例化。

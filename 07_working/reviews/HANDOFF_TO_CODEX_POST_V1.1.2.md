@@ -1,8 +1,10 @@
 # Multi-Agent Handoff｜Claude Code to Codex｜Post-V1.1.2 Remediation
 
-> 状态：`WORKING`
+> 状态：`ARCHIVED`
 >
 > 日期：`2026-09-01`
+>
+> 归档原因：Founder 明确要求忽略本 Handoff；后续工作由 `paos-16-full-audit-remediation` 基于当前仓库事实独立推进。本文件仅保留为历史证据。
 >
 > 层级：`TASK`
 >

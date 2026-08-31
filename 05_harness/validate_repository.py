@@ -235,6 +235,26 @@ def validate_registry_references(parsed: dict[Path, dict], report: Report) -> No
         if owner not in task_ids:
             report.error(f"Skill {skill.get('id', '<unknown>')} owner 未登记为 Task: {owner}")
 
+    hooks = parsed.get(ROOT / "02_registry/hooks.toml", {}).get("hooks", [])
+    for hook in hooks:
+        owner = hook.get("owner")
+        if owner not in task_ids:
+            report.error(f"Hook {hook.get('id', '<unknown>')} owner 未登记为 Task: {owner}")
+
+    runtimes = parsed.get(ROOT / "02_registry/runtimes.toml", {}).get("runtimes", [])
+    runtime_versions = {item.get("platform"): item.get("version") for item in runtimes}
+    capabilities = parsed.get(
+        ROOT / "00_system/compatibility/capabilities.toml", {}
+    ).get("capability_evidence", [])
+    for capability in capabilities:
+        platform = capability.get("platform")
+        version = capability.get("version")
+        if version and platform in runtime_versions and version != runtime_versions[platform]:
+            report.error(
+                f"Capability {capability.get('id', '<unknown>')}/{platform} version 与 Runtime Registry 漂移: "
+                f"{version} != {runtime_versions[platform]}"
+            )
+
 
 def validate_baseline_consistency(parsed: dict[Path, dict], report: Report) -> None:
     """SYSTEM.toml 的已批准基线必须与 Project Registry 中的本仓库记录一致。"""

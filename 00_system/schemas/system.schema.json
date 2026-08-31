@@ -11,7 +11,8 @@
     "repository",
     "promotion",
     "automation",
-    "implementation"
+    "implementation",
+    "approved_baseline"
   ],
   "properties": {
     "schema_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+-working$"},

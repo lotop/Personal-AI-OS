@@ -1,27 +1,67 @@
-schema_version = "0.1.0-working"
+schema_version = "0.2.0-working"
 artifact_state = "WORKING"
 phase = 1
 
 [[hooks]]
 id = "session-start-context-check"
 event = "SessionStart"
+matcher = "*"
+scope = "PROJECT_CONTEXT"
+permissions = ["READ_PROJECT_METADATA"]
+side_effects = ["WORKING_REPORT_ONLY"]
+idempotency_key = "session-start-context-check:{session_id}"
+timeout_ms = 5000
+failure_policy = "WARN_ONLY"
+retry_policy = "NO_RETRY"
+log_scope = "METADATA_ONLY"
+owner = "paos-07-harness"
 enabled = false
 blocking = false
 
 [[hooks]]
 id = "pre-tool-safety-check"
 event = "PreToolUse"
+matcher = "*"
+scope = "TOOL_REQUEST_METADATA"
+permissions = ["READ_TOOL_METADATA"]
+side_effects = ["FIXED_POLICY_DENY_OR_WORKING_REPORT"]
+idempotency_key = "pre-tool-safety-check:{session_id}:{tool_call_id}"
+timeout_ms = 5000
+failure_policy = "FAIL_CLOSED_FOR_HIGH_RISK_ONLY"
+retry_policy = "NO_RETRY"
+log_scope = "METADATA_ONLY"
+owner = "paos-07-harness"
 enabled = false
 blocking = false
 
 [[hooks]]
 id = "stop-completion-check"
 event = "Stop"
+matcher = "*"
+scope = "TASK_VALIDATION_METADATA"
+permissions = ["READ_TASK_METADATA"]
+side_effects = ["WORKING_REPORT_ONLY"]
+idempotency_key = "stop-completion-check:{session_id}"
+timeout_ms = 5000
+failure_policy = "WARN_ONLY"
+retry_policy = "NO_RETRY"
+log_scope = "METADATA_ONLY"
+owner = "paos-07-harness"
 enabled = false
 blocking = false
 
 [[hooks]]
 id = "session-end-close-marker"
 event = "SessionEnd"
+matcher = "*"
+scope = "SESSION_METADATA"
+permissions = ["READ_SESSION_METADATA"]
+side_effects = ["WORKING_MARKER_ONLY"]
+idempotency_key = "session-end-close-marker:{session_id}"
+timeout_ms = 5000
+failure_policy = "WARN_ONLY"
+retry_policy = "NO_RETRY"
+log_scope = "METADATA_ONLY"
+owner = "paos-07-harness"
 enabled = false
 blocking = false

@@ -18,7 +18,7 @@
 - 已部署 Adapter 与 `03_adapters/` 源文件的字节一致性。
 - Registry Stable ID 唯一性。
 - Task 单一状态与验证证据格式。
-- Skill Owner 必须是已登记 Task。
+- Skill 与 Hook Owner 必须是已登记 Task；Capability 的版本证据必须与 Runtime Registry 对齐。
 - `SYSTEM.toml` 已批准基线与 `02_registry/projects.toml` 本仓库记录的跨文件一致性。
 - 资产类别与 V1.1 Minimum 状态集合。
 - Template Pack 未登记文件与来源缺失。

@@ -88,6 +88,59 @@ class DeploymentTest(unittest.TestCase):
             self.assertFalse((target / ".agent/two.json").exists())
             self.assertEqual(list(target.rglob("*.paos-stage-*")), [])
 
+    def test_reject_target_symlink_escape(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            manifest = self.make_adapter(root)
+            target = root / "target"
+            outside = root / "outside"
+            outside.mkdir()
+            target.mkdir()
+            (target / ".agent").symlink_to(outside, target_is_directory=True)
+            with self.assertRaisesRegex(ValueError, "symlink"):
+                build_plan(manifest, target)
+
+    def test_reject_duplicate_manifest_target(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            manifest = self.make_adapter(root)
+            with manifest.open("a", encoding="utf-8") as stream:
+                stream.write(
+                    '[[files]]\nsource = "settings.json"\n'
+                    'target = ".agent/settings.json"\nformat = "json"\n'
+                )
+            with self.assertRaisesRegex(ValueError, "重复目标"):
+                build_plan(manifest, root / "target")
+
+    def test_stale_create_plan_does_not_overwrite_new_target(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            manifest = self.make_adapter(root)
+            target = root / "target"
+            _, plan = build_plan(manifest, target)
+            appeared = target / ".agent/settings.json"
+            appeared.parent.mkdir(parents=True)
+            appeared.write_text('{"user": true}\n', encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "计划已过期"):
+                apply_plan(plan, None)
+            self.assertEqual(appeared.read_text(encoding="utf-8"), '{"user": true}\n')
+
+    def test_stale_replace_plan_does_not_backup_or_overwrite_changed_target(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            manifest = self.make_adapter(root)
+            target = root / "target"
+            existing = target / ".agent/settings.json"
+            existing.parent.mkdir(parents=True)
+            existing.write_text('{"old": true}\n', encoding="utf-8")
+            _, plan = build_plan(manifest, target)
+            existing.write_text('{"changed": true}\n', encoding="utf-8")
+            backup = root / "backup"
+            with self.assertRaisesRegex(ValueError, "计划已过期"):
+                apply_plan(plan, backup)
+            self.assertEqual(existing.read_text(encoding="utf-8"), '{"changed": true}\n')
+            self.assertFalse(backup.exists())
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,6 +1,14 @@
 # Changelog
 
-## Post-V1.1.2 Working（未提交，未发布）
+## Post-V1.1.2 Working（本地继续修订）
+
+- 建立 `paos-16-full-audit-remediation`，忽略并归档已失真的 Claude Handoff，恢复 Codex 原全仓审计整改清单。
+- Cleanup Apply 阶段重新发现并核对允许清理范围，拒绝被篡改为 Canonical 文件或伪造分类的计划项。
+- Template Pack 增加 `PROJECT_SCAFFOLD`／`ARTIFACT_LIBRARY` 用途；Factory 对结构化输出执行计划阶段解析，M3 对每个 Approved Project Pack 运行真实 Dry Run。
+- JSON Schema `pattern` 恢复 Draft 2020-12 非隐式锚定语义；M5 白名单收紧到已声明的证据、Task Card 与 Handoff 类别。
+- Hooks Registry 补齐 Policy 要求的合同字段；Adapter 部署拒绝目标 symlink 逃逸与重复目标。
+- Gemini 部署说明与实际 `context.fileName = ["AGENTS.md"]` 配置及当前非 Live Runtime 边界对齐。
+- Capability 中的 Codex 版本证据与 Runtime Registry 对齐，并新增 Skill/Hook Owner 与 Capability/Runtime 跨文件引用门禁。
 
 由 `paos-15-post-v1-1-2-remediation` 实施的评审整改；`dashboard/**` 按 Founder 指令完全排除。
 
@@ -8,12 +16,12 @@
   与 Project Registry 的跨文件一致性校验。
 - 将 `approved_baseline.git_commit` 拆分为 `freeze_commit` 与 `release_commit`，同步 Schema，
   并在 M6 增加 Tag、Approval Reference 与 Release Commit 的绑定断言。
-- Schema 子集校验器新增未实现关键字守卫，`pattern` 改为整串匹配，`additionalProperties` 限定布尔值。
+- Schema 子集校验器新增未实现关键字守卫；后续 PAOS-016 将 `pattern` 修正为 Draft 2020-12 匹配语义；`additionalProperties` 限定布尔值。
 - 新增工作日志状态门禁；状态词汇表动态取自 `states.toml` 与 `tasks.toml`，并归一三处越权状态值。
 - M5 恢复跟进白名单由逐版本文件名改为目录前缀判定，审计器不再需要随每次发布修改。
 - 纠正 README 的 M6 说明、Harness 与 Schemas 说明、Identity 说明，并把 overlay 如实描述为分类标签。
 - 将历史 R0-R12 Gate 模型入口归档到 `09_archive/v1.1-release-gates-v2/`。
-- 解除 `test_release_audit.py` 对活体仓库门禁状态的耦合，并对 `audit()` 做单次缓存。
+- 解除 `test_release_audit.py` 对活体仓库门禁状态的耦合，并在测试辅助函数中对 `audit()` 结果做单次缓存。
 - 登记 `PAOS-013`，按 Founder 单次授权把本地 `main` 推送到既有 GitHub `origin`；不推送 annotated tag，不构成远端发布或 Release Approval。
 - 本批次改动实现文件，`M5 Recovery` 如实转为 `STALE`；下次发布前必须重跑冷克隆与离线 Bundle 恢复演练。
 - 登记 `PAOS-014`，按 Founder 后续明确授权推送 annotated tag `v1.1.0`／`v1.1.1`／`v1.1.2`；该决定取代 `PAOS-013` 的 tag 排除条款，`SYSTEM.toml` 的 `implementation.release` 同步更正为 `APPROVED_REMOTE_TAG_PUSHED`。Tag 对象未被重写或移动。

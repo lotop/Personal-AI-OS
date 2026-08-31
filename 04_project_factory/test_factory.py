@@ -12,7 +12,15 @@ from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from create_project import PlannedFile, build_manifest, load_plan, render, validate_target, write_project
+from create_project import (
+    PlannedFile,
+    build_manifest,
+    load_plan,
+    render,
+    validate_rendered_content,
+    validate_target,
+    write_project,
+)
 
 
 class ProjectFactoryTest(unittest.TestCase):
@@ -34,7 +42,7 @@ class ProjectFactoryTest(unittest.TestCase):
             pack.mkdir()
             (pack / "PROJECT.md").write_text("# {{PROJECT_NAME}}\n", encoding="utf-8")
             (pack / "template.toml").write_text(
-                'pack_id = "test"\nversion = "0.1"\nartifact_state = "WORKING"\n'
+                'pack_id = "test"\npack_kind = "PROJECT_SCAFFOLD"\nversion = "0.1"\nartifact_state = "WORKING"\n'
                 'owner = "test"\ncanonical_authority = "NONE"\n'
                 '[[files]]\nsource = "PROJECT.md"\ndestination = "PROJECT.md"\nrender = true\n',
                 encoding="utf-8",
@@ -51,7 +59,7 @@ class ProjectFactoryTest(unittest.TestCase):
             (pack / "PROJECT.md").write_text("# Demo\n", encoding="utf-8")
             (pack / "UNDECLARED.md").write_text("unexpected\n", encoding="utf-8")
             (pack / "template.toml").write_text(
-                'pack_id = "test"\nversion = "0.1"\nartifact_state = "WORKING"\n'
+                'pack_id = "test"\npack_kind = "PROJECT_SCAFFOLD"\nversion = "0.1"\nartifact_state = "WORKING"\n'
                 'owner = "test"\ncanonical_authority = "NONE"\n'
                 '[[files]]\nsource = "PROJECT.md"\ndestination = "PROJECT.md"\n',
                 encoding="utf-8",
@@ -66,7 +74,7 @@ class ProjectFactoryTest(unittest.TestCase):
             pack.mkdir()
             (pack / "PROJECT.md").write_text("# Demo\n", encoding="utf-8")
             (pack / "template.toml").write_text(
-                'pack_id = "test"\nversion = "0.1"\nartifact_state = "APPROVED"\n'
+                'pack_id = "test"\npack_kind = "PROJECT_SCAFFOLD"\nversion = "0.1"\nartifact_state = "APPROVED"\n'
                 'owner = "test"\ncanonical_authority = "FOUNDER_APPROVAL"\n'
                 '[[files]]\nsource = "PROJECT.md"\ndestination = "PROJECT.md"\n',
                 encoding="utf-8",
@@ -82,7 +90,7 @@ class ProjectFactoryTest(unittest.TestCase):
             pack.mkdir()
             (pack / "PROJECT.md").write_text("# {{PROJECT_NAME}}\n", encoding="utf-8")
             (pack / "template.toml").write_text(
-                'pack_id = "test"\nversion = "0.1"\nartifact_state = "WORKING"\n'
+                'pack_id = "test"\npack_kind = "PROJECT_SCAFFOLD"\nversion = "0.1"\nartifact_state = "WORKING"\n'
                 'owner = "test"\ncanonical_authority = "NONE"\n'
                 '[[files]]\nsource = "PROJECT.md"\ndestination = "PROJECT.md"\nrender = true\n',
                 encoding="utf-8",
@@ -127,6 +135,35 @@ class ProjectFactoryTest(unittest.TestCase):
                     write_project(target, files, manifest, init_git=True)
             self.assertFalse(target.exists())
             self.assertEqual(list(root.glob(".failed-project.paos-staging-*")), [])
+
+    def test_reject_artifact_library_pack(self) -> None:
+        pack = Path(__file__).resolve().parents[1] / "01_templates/core-template-pack"
+        with tempfile.TemporaryDirectory() as raw:
+            with self.assertRaisesRegex(ValueError, "不能由 Project Factory 实例化"):
+                load_plan(pack, Path(raw) / "output", {})
+
+    def test_reject_invalid_rendered_toml(self) -> None:
+        with self.assertRaisesRegex(ValueError, "结构化文件无效"):
+            validate_rendered_content(Path("project.toml"), 'name = "Bad " Name"\n')
+
+    def test_factory_rejects_toml_breaking_project_name(self) -> None:
+        pack = Path(__file__).resolve().parents[1] / "01_templates/project-base-pack"
+        with tempfile.TemporaryDirectory() as raw:
+            target = Path(raw) / "invalid-project"
+            command = [
+                sys.executable,
+                str(Path(__file__).resolve().parent / "create_project.py"),
+                "--template-pack", str(pack),
+                "--target", str(target),
+                "--project-id", "invalid-project",
+                "--name", 'Bad " Name',
+                "--owner", "Founder",
+                "--primary-type", "SOFTWARE_PRODUCT",
+            ]
+            result = subprocess.run(command, text=True, capture_output=True, check=False)
+            self.assertEqual(result.returncode, 2)
+            self.assertIn("结构化文件无效", result.stderr)
+            self.assertFalse(target.exists())
 
     def test_repository_approved_pack_dry_run_and_apply(self) -> None:
         pack = Path(__file__).resolve().parents[1] / "01_templates/project-base-pack"

@@ -18,6 +18,7 @@ from release_audit import (
     commit_tree_digest,
     is_recovery_followup,
     recovery_gate,
+    template_factory_gate,
 )
 
 try:
@@ -70,9 +71,40 @@ class ReleaseAuditTest(unittest.TestCase):
         self.assertTrue(is_recovery_followup("07_working/reviews/RECOVERY_DRILL.md"))
         self.assertTrue(is_recovery_followup("07_working/reviews/recovery_evidence.toml"))
         self.assertTrue(is_recovery_followup("02_registry/tasks.toml"))
+        self.assertTrue(is_recovery_followup("07_working/reviews/FULL_AUDIT_REMEDIATION_TASK.md"))
+        self.assertTrue(is_recovery_followup("07_working/reviews/HANDOFF_V1.1.2.md"))
         self.assertFalse(is_recovery_followup("05_harness/release_audit.py"))
         self.assertFalse(is_recovery_followup("SYSTEM.toml"))
         self.assertFalse(is_recovery_followup("07_working/reviews/nested/deep.md"))
+        self.assertFalse(is_recovery_followup("07_working/reviews/UNRELATED.md"))
+        self.assertFalse(is_recovery_followup("07_working/reviews/payload.py"))
+
+    def test_template_gate_counts_only_instantiable_project_packs(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            project_pack = root / "01_templates/project-pack"
+            artifact_pack = root / "01_templates/artifact-pack"
+            project_pack.mkdir(parents=True)
+            artifact_pack.mkdir(parents=True)
+            (project_pack / "template.toml").write_text(
+                'pack_id = "project-pack"\npack_kind = "PROJECT_SCAFFOLD"\n'
+                'version = "1.0"\nartifact_state = "APPROVED"\napproval_reference = "APPROVED-1"\n',
+                encoding="utf-8",
+            )
+            (artifact_pack / "template.toml").write_text(
+                'pack_id = "artifact-pack"\npack_kind = "ARTIFACT_LIBRARY"\n'
+                'version = "1.0"\nartifact_state = "APPROVED"\napproval_reference = "APPROVED-2"\n',
+                encoding="utf-8",
+            )
+            reviews = root / "07_working/reviews"
+            reviews.mkdir(parents=True)
+            (reviews / "PROJECT_FACTORY_ACCEPTANCE.md").write_text("结论：`PASS`\n", encoding="utf-8")
+            factory = root / "04_project_factory"
+            factory.mkdir()
+            (factory / "create_project.py").write_text("raise SystemExit(0)\n", encoding="utf-8")
+            gate = template_factory_gate(root)
+            self.assertEqual(gate.status, "PASS")
+            self.assertIn("approved_project_packs=1", gate.evidence)
 
     def init_repo(self, root: Path) -> str:
         subprocess.run(["git", "init", "-b", "main"], cwd=root, check=True, capture_output=True)
@@ -177,7 +209,7 @@ class ReleaseAuditTest(unittest.TestCase):
             self.assertEqual(gate.status, "FAIL")
             self.assertIn("git_tag", gate.evidence)
 
-    def test_approval_requires_annotated_tag_on_head(self) -> None:
+    def test_approval_rejects_missing_approved_baseline(self) -> None:
         with tempfile.TemporaryDirectory() as raw:
             root = Path(raw)
             self.init_repo(root)
@@ -193,7 +225,9 @@ class ReleaseAuditTest(unittest.TestCase):
                 cwd=root,
                 check=True,
             )
-            self.assertEqual(approval_gate(root).status, "PASS")
+            gate = approval_gate(root)
+            self.assertEqual(gate.status, "FAIL")
+            self.assertIn("approved_baseline.version", gate.evidence)
 
 
 if __name__ == "__main__":

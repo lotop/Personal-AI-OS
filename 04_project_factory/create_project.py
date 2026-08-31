@@ -55,7 +55,25 @@ def render(text: str, variables: dict[str, str]) -> str:
         raise ValueError(f"模板包含未提供变量: {', '.join(missing)}")
     for key, value in variables.items():
         text = text.replace("{{" + key + "}}", value)
+    remaining = sorted(set(TOKEN_PATTERN.findall(text)))
+    if remaining:
+        raise ValueError(f"模板渲染后仍包含变量: {', '.join(remaining)}")
     return text
+
+
+def validate_rendered_content(destination: Path, content: str) -> None:
+    """结构化生成文件必须在计划阶段可解析，避免写出损坏配置。"""
+    try:
+        if destination.suffix == ".toml":
+            tomllib.loads(content)
+        elif destination.suffix == ".json":
+            json.loads(content)
+        elif destination.suffix == ".jsonl":
+            for line in content.splitlines():
+                if line.strip():
+                    json.loads(line)
+    except (json.JSONDecodeError, tomllib.TOMLDecodeError) as exc:
+        raise ValueError(f"渲染后的结构化文件无效 {destination}: {exc}") from exc
 
 
 def load_plan(pack: Path, target: Path, variables: dict[str, str]) -> tuple[dict, list[PlannedFile]]:
@@ -63,9 +81,13 @@ def load_plan(pack: Path, target: Path, variables: dict[str, str]) -> tuple[dict
     if not manifest_path.is_file():
         raise ValueError("Template Pack 缺少 template.toml")
     manifest = tomllib.loads(manifest_path.read_text(encoding="utf-8"))
-    for field in ("pack_id", "version", "artifact_state", "owner", "canonical_authority"):
+    for field in ("pack_id", "pack_kind", "version", "artifact_state", "owner", "canonical_authority"):
         if not manifest.get(field):
             raise ValueError(f"Template Pack 缺少字段: {field}")
+    if manifest["pack_kind"] != "PROJECT_SCAFFOLD":
+        raise ValueError(
+            f"Template Pack {manifest['pack_id']} 用途为 {manifest['pack_kind']}，不能由 Project Factory 实例化"
+        )
     state = manifest["artifact_state"]
     if state not in {"WORKING", "APPROVED"}:
         raise ValueError(f"Template Pack 状态非法: {state}")
@@ -90,6 +112,7 @@ def load_plan(pack: Path, target: Path, variables: dict[str, str]) -> tuple[dict
         content = source.read_text(encoding="utf-8")
         if record.get("render", True):
             content = render(content, render_variables)
+        validate_rendered_content(destination_rel, content)
         files.append(PlannedFile(source, destination, content))
     if not files:
         raise ValueError("Template Pack 没有文件记录")

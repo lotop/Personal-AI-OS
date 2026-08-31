@@ -135,6 +135,8 @@ def apply_plan(root: Path, policy: dict, plan: dict) -> Path:
         raise ValueError("Policy 只允许 Dry Run")
     if policy.get("destructive_delete"):
         raise ValueError("V1.1.2 清理器拒绝 destructive_delete")
+    if plan.get("mode") != "QUARANTINE_ONLY":
+        raise ValueError("计划执行模式非法")
     if plan.get("policy_version") != policy.get("schema_version"):
         raise ValueError("Policy Version 已变化，计划 STALE")
     expires = datetime.fromisoformat(plan["expires_at"].replace("Z", "+00:00"))
@@ -144,10 +146,25 @@ def apply_plan(root: Path, policy: dict, plan: dict) -> Path:
     allowed_classes = {"TEMP", "CACHE"}
     validated: list[tuple[Path, Path, dict]] = []
     quarantine_root = root / policy["quarantine_root"] / plan["plan_id"]
+    discovered = {
+        path.relative_to(root).as_posix(): (artifact_class, reason)
+        for path, artifact_class, reason in discover_candidates(root)
+    }
+    seen: set[str] = set()
     for item in plan.get("items", []):
         relative = Path(item["path"])
         if relative.is_absolute() or ".." in relative.parts or item["artifact_class"] not in allowed_classes:
             raise ValueError(f"非法计划项: {item}")
+        relative_text = relative.as_posix()
+        if relative_text in seen:
+            raise ValueError(f"计划包含重复项: {relative}")
+        seen.add(relative_text)
+        expected_classification = discovered.get(relative_text)
+        actual_classification = (item.get("artifact_class"), item.get("reason_code"))
+        if expected_classification is None or actual_classification != expected_classification:
+            raise ValueError(f"计划项不属于实时允许清理范围，疑似被篡改: {relative}")
+        if item.get("reference_scan") != "CLEAR_KNOWN_EPHEMERAL_ONLY" or item.get("hold") is not False:
+            raise ValueError(f"计划项缺少清理授权证据: {relative}")
         source = root / relative
         if not source.exists() or source.is_symlink():
             raise ValueError(f"计划项缺失或为 symlink，状态 STALE: {relative}")

@@ -53,10 +53,11 @@ class SchemaValidationTest(unittest.TestCase):
         errors = validate_instance({"id": "demo", "typo": True}, schema)
         self.assertTrue(any("未知字段 typo" in error for error in errors))
 
-    def test_pattern_is_full_match(self) -> None:
+    def test_pattern_is_not_implicitly_anchored(self) -> None:
         schema = {"type": "string", "pattern": "[a-z]+"}
         self.assertEqual(validate_instance("demo", schema), [])
-        self.assertTrue(validate_instance("demo1", schema))
+        self.assertEqual(validate_instance("demo1", schema), [])
+        self.assertTrue(validate_instance("123", schema))
 
     def test_unsupported_keyword_is_rejected(self) -> None:
         self.assertTrue(unsupported_keywords({"type": "object", "oneOf": []}))
@@ -80,6 +81,28 @@ class SchemaValidationTest(unittest.TestCase):
         for path in sorted(schema_root.glob("*.schema.json")):
             schema = json.loads(path.read_text(encoding="utf-8"))
             self.assertEqual(unsupported_keywords(schema), [], path.name)
+
+    def test_hook_contract_requires_policy_fields(self) -> None:
+        root = Path(__file__).resolve().parents[1]
+        schema = json.loads(
+            (root / "00_system/schemas/hook-registry.schema.json").read_text(encoding="utf-8")
+        )
+        incomplete = {
+            "schema_version": "0.2.0-working",
+            "artifact_state": "WORKING",
+            "phase": 1,
+            "hooks": [
+                {
+                    "id": "unsafe-hook",
+                    "event": "PreToolUse",
+                    "enabled": False,
+                    "blocking": False,
+                }
+            ],
+        }
+        errors = validate_instance(incomplete, schema)
+        self.assertTrue(any("缺少必填字段 matcher" in error for error in errors))
+        self.assertTrue(any("缺少必填字段 owner" in error for error in errors))
 
     def test_all_registry_files_have_schema_bindings(self) -> None:
         root = Path(__file__).resolve().parents[1]

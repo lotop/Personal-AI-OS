@@ -85,7 +85,8 @@ def validate_instance(instance: Any, schema: dict[str, Any], path: str = "$") ->
     if isinstance(instance, str):
         if len(instance) < schema.get("minLength", 0):
             errors.append(f"{path}: 字符串长度不足")
-        if "pattern" in schema and not re.fullmatch(schema["pattern"], instance):
+        # JSON Schema Draft 2020-12 的 pattern 不隐式锚定；整串约束由 Schema 显式使用 ^...$。
+        if "pattern" in schema and not re.search(schema["pattern"], instance):
             errors.append(f"{path}: 不匹配 pattern {schema['pattern']}")
 
     if isinstance(instance, list):

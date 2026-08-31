@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "paos://schemas/hook-registry/0.1",
+  "$id": "paos://schemas/hook-registry/0.2",
   "type": "object",
   "required": ["schema_version", "artifact_state", "phase", "hooks"],
   "properties": {
@@ -11,10 +11,24 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["id", "event", "enabled", "blocking"],
+        "required": [
+          "id", "event", "matcher", "scope", "permissions", "side_effects",
+          "idempotency_key", "timeout_ms", "failure_policy", "retry_policy",
+          "log_scope", "owner", "enabled", "blocking"
+        ],
         "properties": {
           "id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
           "event": {"type": "string", "enum": ["SessionStart", "PreToolUse", "Stop", "SessionEnd"]},
+          "matcher": {"type": "string", "minLength": 1},
+          "scope": {"type": "string", "minLength": 1},
+          "permissions": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+          "side_effects": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+          "idempotency_key": {"type": "string", "minLength": 1},
+          "timeout_ms": {"type": "integer"},
+          "failure_policy": {"type": "string", "minLength": 1},
+          "retry_policy": {"type": "string", "enum": ["NO_RETRY"]},
+          "log_scope": {"type": "string", "enum": ["METADATA_ONLY"]},
+          "owner": {"type": "string", "minLength": 1},
           "enabled": {"type": "boolean"},
           "blocking": {"type": "boolean"}
         },

@@ -5,13 +5,13 @@ artifact_state = "WORKING"
 id = "project-context-discovery"
 platform = "codex"
 support_level = "NATIVE"
-version = "0.151.0-alpha.7.1"
+version = "0.151.0-alpha.7.2"
 supported_by_docs = true
 configured = true
 config_loaded = true
 runtime_verified = true
 external_data_required = false
-verified_on = "2026-08-30"
+verified_on = "2026-08-31"
 evidence_refs = ["AGENT_DEPLOYMENT_SMOKE.md", "official:codex-agents-md"]
 
 [[capability_evidence]]
@@ -46,13 +46,13 @@ evidence_refs = ["official:claude-code-memory", "CLAUDE_CODE_DEPLOYMENT.md", "cl
 id = "project-config"
 platform = "codex"
 support_level = "NATIVE"
-version = "0.151.0-alpha.7.1"
+version = "0.151.0-alpha.7.2"
 supported_by_docs = true
 configured = true
 config_loaded = true
 runtime_verified = true
 external_data_required = false
-verified_on = "2026-08-30"
+verified_on = "2026-08-31"
 evidence_refs = ["AGENT_DEPLOYMENT_SMOKE.md", "official:codex-config"]
 
 [[capability_evidence]]
@@ -87,14 +87,14 @@ evidence_refs = ["official:claude-code-settings", "CLAUDE_CODE_DEPLOYMENT.md", "
 id = "hooks"
 platform = "codex"
 support_level = "NATIVE"
-version = "0.151.0-alpha.7.1"
+version = "0.151.0-alpha.7.2"
 supported_by_docs = true
 configured = false
 config_loaded = false
 runtime_verified = false
 external_data_required = false
 blocked_reason = "PHASE1_DISABLED"
-verified_on = "2026-08-30"
+verified_on = "2026-08-31"
 evidence_refs = ["official:codex-hooks"]
 
 [[capability_evidence]]
@@ -128,13 +128,13 @@ evidence_refs = ["official:claude-code-hooks"]
 id = "live-runtime"
 platform = "codex"
 support_level = "NATIVE"
-version = "0.151.0-alpha.7.1"
+version = "0.151.0-alpha.7.2"
 supported_by_docs = true
 configured = true
 config_loaded = true
 runtime_verified = true
 external_data_required = true
-verified_on = "2026-08-30"
+verified_on = "2026-08-31"
 evidence_refs = ["AGENT_DEPLOYMENT_SMOKE.md"]
 
 [[capability_evidence]]
