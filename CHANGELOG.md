@@ -16,6 +16,7 @@
 - 解除 `test_release_audit.py` 对活体仓库门禁状态的耦合，并对 `audit()` 做单次缓存。
 - 登记 `PAOS-013`，按 Founder 单次授权把本地 `main` 推送到既有 GitHub `origin`；不推送 annotated tag，不构成远端发布或 Release Approval。
 - 本批次改动实现文件，`M5 Recovery` 如实转为 `STALE`；下次发布前必须重跑冷克隆与离线 Bundle 恢复演练。
+- 登记 `PAOS-014`，按 Founder 后续明确授权推送 annotated tag `v1.1.0`／`v1.1.1`／`v1.1.2`；该决定取代 `PAOS-013` 的 tag 排除条款，`SYSTEM.toml` 的 `implementation.release` 同步更正为 `APPROVED_REMOTE_TAG_PUSHED`。Tag 对象未被重写或移动。
 
 ## V1.1.2 Formal Release Preparation
 

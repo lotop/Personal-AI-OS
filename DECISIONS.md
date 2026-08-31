@@ -161,6 +161,21 @@
   - Revocation：由 Founder 在 GitHub 侧撤除或删除远端内容。
 - Consequences：远端仓库的可见性（Public / Private）由 Founder 在 GitHub 侧控制，本仓库不做假设，也不代为修改。
 
+### PAOS-014｜Release Tag 远端发布授权
+
+- 状态：`APPROVED`
+- 日期：`2026-09-01`
+- Owner：`paos-15-post-v1-1-2-remediation`
+- Context：`PAOS-013` 授权推送 `main` 时明确排除了 annotated tag。Founder 在同一轮任务中随后明确要求推送 tag，构成对该排除条款的显式解除。
+- Decision：授权将本地 annotated tag `v1.1.0`、`v1.1.1`、`v1.1.2` 推送到既有远端 `origin`。
+- Supersedes：`PAOS-013` 中"不推送 annotated tag"一条；`PAOS-013` 的其余条款继续有效。
+- Scope 与边界：
+  - 三个 tag 指向的 Commit 均已存在于 `origin/main` 历史中，推送只新增 tag 对象，不引入新提交。
+  - Tag 对象本身不得重写或移动。`v1.1.1`、`v1.1.2` 的注释含 `PAOS-REL-002`／`PAOS-REL-003`，是 M6 的绑定证据；注释中的 "local release" 字样描述的是**批准当时的范围**，由本决定记录其后续远端发布，不通过改写 tag 来"更新"。
+  - 本授权不构成外部部署、真实项目数据传输或新版本 Release Approval。
+- Consequences：V1.1.2 的发布证据自此可在远端独立校验；`SYSTEM.toml` 的 `implementation.release` 相应由 `APPROVED_LOCAL_NO_PUSH` 更正为 `APPROVED_REMOTE_TAG_PUSHED`。
+- 远端可见性：由 Founder 在 GitHub 侧控制，本仓库不做假设，也不代为修改。
+
 ## Candidate Decisions
 
 - 当前无待确认 Candidate Decision。
