@@ -133,7 +133,7 @@ platform_ref = "main-working-tree"
 [[tasks]]
 id = "paos-16-full-audit-remediation"
 purpose = "继续 V1.1.2 全仓审计，修复 GC、Factory、Schema 与 Release Gate 的确定缺陷"
-status = "REVIEW"
-validation = ["scope-confirmed", "founder-authorized", "dashboard-excluded", "task-card-recorded", "gc-tamper-tests-pass", "factory-render-tests-pass", "schema-semantics-pass", "m3-live-dry-run-pass", "m5-whitelist-tests-pass", "m6-baseline-tests-pass", "hooks-contract-pass", "deployment-toctou-tests-pass", "gemini-official-docs-verified", "adapter-check-pass", "local-offline-ci-pass", "no-push"]
+status = "DONE"
+validation = ["scope-confirmed", "founder-authorized", "dashboard-excluded", "task-card-recorded", "gc-tamper-tests-pass", "factory-render-tests-pass", "schema-semantics-pass", "m3-live-dry-run-pass", "m5-whitelist-tests-pass", "m6-baseline-tests-pass", "hooks-contract-pass", "deployment-toctou-tests-pass", "gemini-official-docs-verified", "adapter-check-pass", "local-offline-ci-pass", "clean-head-ci-pass", "local-commit-19ade21", "cleanup-applied-zero-items", "no-push"]
 platform = "codex"
 platform_ref = "main"
