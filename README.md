@@ -1,6 +1,6 @@
-# Personal AI OS V1.1.2 Working Revision
+# Personal AI OS V1.1.2 Approved Local Release
 
-> **当前状态**：`WORKING` | **当前修订**：`v1.1.2` | **已批准基线**：`v1.1.1`（`PAOS-REL-002`）
+> **当前状态**：`APPROVED` | **当前发布**：`v1.1.2` | **已批准基线**：`v1.1.2`（`PAOS-REL-003`）
 > 
 > 本仓库是 **Personal AI OS** 的 **Canonical Control Plane（本地中央控制平面）**，用于统筹和治理跨设备、多 Agent（Codex、Claude Code 与 Gemini）的个人 AI 研发工作流与独立业务项目。
 

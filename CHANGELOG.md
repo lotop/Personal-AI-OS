@@ -5,6 +5,7 @@
 - 新增 Approved `01_templates/core-template-pack` 版本 `1.1.2`，覆盖 13 类核心模板。
 - 登记 `PAOS-TMPL-003`，按 Founder 明确授权批量批准核心模板，不再逐项等待确认。
 - 原 `07_working/candidates/` 候选模板归档到 `09_archive/v1.1.2-template-candidates/`。
+- 登记 `PAOS-REL-003`，授权 V1.1.2 本地正式发布、本地 release commit 与本地 annotated tag `v1.1.2`；不包含 Push、远端发布、外部部署或 Dashboard 验收。
 
 ## V1.1.2 Working Revision
 

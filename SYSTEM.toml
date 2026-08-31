@@ -1,18 +1,18 @@
 schema_version = "0.4.0-working"
 system_name = "Personal AI OS"
 target_version = "1.1.2"
-artifact_state = "WORKING"
-canonical_authority = "NONE"
+artifact_state = "APPROVED"
+canonical_authority = "FOUNDER_APPROVED"
 default_language = "zh-CN"
 default_structured_config = "toml"
 
 [approved_baseline]
-version = "1.1.1"
+version = "1.1.2"
 artifact_state = "APPROVED"
 canonical_authority = "FOUNDER_APPROVED"
-approval_reference = "PAOS-REL-002"
-git_tag = "v1.1.1"
-git_commit = "25117210346ec6359e4b1e81fea4090d9c936525"
+approval_reference = "PAOS-REL-003"
+git_tag = "v1.1.2"
+git_commit = "b76a8d2f0ba48b4b39afd9ebb9cab4d13172156a"
 
 [repository]
 role = "canonical-control-plane-repository"
@@ -37,9 +37,9 @@ codex_adapter = "GENERATED_WORKING"
 claude_code_adapter = "GENERATED_WORKING"
 gemini_adapter = "GENERATED_WORKING"
 deployment = "APPROVED_LOCAL"
-release = "WORKING_V1.1.2"
-local_git_recovery = "PASS_BASELINE_V1.1.1"
-offline_bundle_recovery = "PASS_BASELINE_V1.1.1"
+release = "APPROVED_LOCAL_NO_PUSH"
+local_git_recovery = "PASS_V1.1.2"
+offline_bundle_recovery = "PASS_V1.1.2"
 private_remote_recovery = "NOT_TESTED"
 
 [deployment_status]

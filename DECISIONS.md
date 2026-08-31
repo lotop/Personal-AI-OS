@@ -1,10 +1,10 @@
 # Decisions
 
-> 状态：`WORKING`
+> 状态：`APPROVED`
 >
-> 已批准基线：`v1.1.1`（`PAOS-REL-002`）
+> 已批准基线：`v1.1.2`（`PAOS-REL-003`）
 >
-> 当前修订：`v1.1.2` Formal Release 准备中；已批准发布仍为 `v1.1.1`，直到 `PAOS-REL-003` 与 `v1.1.2` tag 完成绑定
+> 当前发布：`v1.1.2`，由本地 annotated tag 与 Release Evidence 绑定
 
 本索引记录已经由 Founder 明确确认的决策事实。Decision Record 正式结构模板由 `PAOS-TMPL-003` 批准。
 
@@ -125,6 +125,20 @@
 - Alternatives：继续逐项确认模板；因 Founder 明确要求交付完整成品，本轮不采用。
 - Supersedes：`07_working/candidates/CORE_TEMPLATE_CANDIDATES.md`
 - Approval：Founder / 2026-08-31 / 批准模板批量完成并通过校验后进入 Approved。
+
+### PAOS-REL-003｜Personal AI OS V1.1.2 正式发布批准
+
+- 状态：`APPROVED`
+- 日期：`2026-08-31`
+- Owner：`paos-14-v1-1-2-formal-release`
+- Context：Founder 明确要求交付 V1.1.2 正式版，不再保留未完成模板、待确认项或未授权的 Release Blocker。
+- Decision：批准 Personal AI OS V1.1.2 作为当前 Canonical Control Plane 本地正式发布版本。
+- Scope：V1.1.2 状态纠错、Direct Main 小修订规则、Registry Schema 绑定、Temp Cleanup 机制、Gemini Session Manager 非 Dashboard 治理修正、Approved Core Template Pack `1.1.2`、恢复证据与 M1-M6 Release Audit。
+- Authorization：允许在本地 `main` 创建正式 release commit，并创建本地 annotated tag `v1.1.2`；不授权 Push、远端发布、外部部署、真实项目数据传输或 Dashboard 验收。
+- Runtime Boundary：Codex Runtime Smoke 为 PASS；Claude Code Config Load 为 PASS 但 Live Runtime 未授权；Gemini Config Load 为 CONDITIONAL PASS 且 Live Runtime 未授权。不得扩大解读。
+- Evidence：实现冻结 Commit `b76a8d2f0ba48b4b39afd9ebb9cab4d13172156a`；最终 Release Commit 由 annotated tag `v1.1.2` 精确绑定；`ci_gate.py --profile release-readiness` 必须 PASS。
+- AI-made Decisions：批量批准 13 类核心模板；将旧候选模板归档而非保留为待确认；维持 Dashboard 排除；维持 Push 与外部部署不授权。
+- Approval：Founder / 2026-08-31 / 批准 V1.1.2 本地正式发布、Release Approval 与本地 annotated tag。
 
 ## Candidate Decisions
 

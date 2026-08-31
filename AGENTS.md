@@ -1,14 +1,14 @@
-# Personal AI OS V1.1.2 Working Revision
+# Personal AI OS V1.1.2
 
-> Router 版本：`0.7-working`
+> Router 版本：`0.8-approved`
 >
-> 状态：`WORKING`
+> 状态：`APPROVED`
 >
-> 已批准基线：`v1.1.1`（`PAOS-REL-002`）
+> 已批准基线：`v1.1.2`（`PAOS-REL-003`）
 >
-> 当前修订：`v1.1.2`，直接在本地 `main` 进行，尚未 Tag 或 Release Approval
+> 当前发布：`v1.1.2`，由本地 annotated tag 与 Release Evidence 绑定
 
-本文件是仓库根入口的 V1.1.2 Working Router。V1.1.1 仍是已批准基线；V1.1.2 在获得独立 Release Approval 与固定 Tag 前不具有新的 Canonical Authority。本文件只负责导航和最低限度安全边界，不承载全部治理正文。
+本文件是仓库根入口的 V1.1.2 Approved Router。V1.1.2 已由 Founder 批准；Canonical Authority 由 `PAOS-REL-003`、固定恢复证据与本地 annotated tag `v1.1.2` 共同证明。本文件只负责导航和最低限度安全边界，不承载全部治理正文。
 
 ## 系统定位
 

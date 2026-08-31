@@ -32,6 +32,8 @@ RECOVERY_FOLLOWUP_PATHS = {
     "07_working/reviews/HANDOFF_V1.1.1.md",
     "07_working/reviews/RELEASE_READINESS.md",
     "07_working/reviews/V1.1.1_CONSISTENCY_TASK.md",
+    "07_working/reviews/V1.1.2_FORMAL_RELEASE_TASK.md",
+    "02_registry/tasks.toml",
 }
 
 
