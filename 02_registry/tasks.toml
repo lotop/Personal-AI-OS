@@ -117,7 +117,7 @@ platform_ref = "a38929e0c5ac24beba4da7e4ae9684333eeea3d5"
 [[tasks]]
 id = "paos-14-v1-1-2-formal-release"
 purpose = "完成 V1.1.2 Core Template Pack 批准、正式发布证据、Release Approval 与本地 Tag"
-status = "REVIEW"
-validation = ["founder-bulk-approval-authorized", "core-template-pack-created", "candidate-templates-archived", "release-approval-recorded"]
+status = "DONE"
+validation = ["founder-bulk-approval-authorized", "core-template-pack-created", "candidate-templates-archived", "release-approval-recorded", "cold-clone-recovery-pass", "offline-bundle-recovery-pass", "release-readiness-ready-for-tag", "no-push"]
 platform = "codex"
 platform_ref = "main"
