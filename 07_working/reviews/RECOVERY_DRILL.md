@@ -1,6 +1,6 @@
 # Recovery Drill｜V1.1.2 Approved Local Release
 
-> 状态：`APPROVED_EVIDENCE`
+> 状态：`APPROVED`
 >
 > 执行日期：`2026-08-31`
 >

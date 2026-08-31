@@ -121,3 +121,11 @@ status = "DONE"
 validation = ["founder-bulk-approval-authorized", "core-template-pack-created", "candidate-templates-archived", "release-approval-recorded", "cold-clone-recovery-pass", "offline-bundle-recovery-pass", "release-readiness-ready-for-tag", "no-push"]
 platform = "codex"
 platform_ref = "main"
+
+[[tasks]]
+id = "paos-15-post-v1-1-2-remediation"
+purpose = "按 V1.1.2 全仓库评审修复状态漂移、文档失真与校验器盲区"
+status = "REVIEW"
+validation = ["scope-confirmed", "founder-authorized", "dashboard-excluded", "baseline-consistency-check-added", "schema-keyword-guard-added", "work-log-state-gate-added", "m5-followup-pattern-generalized", "m6-baseline-binding-added", "local-offline-ci-pass", "direct-main-committed", "handoff-to-codex-complete", "pushed-main-no-tags", "m5-stale-recorded"]
+platform = "claude-code"
+platform_ref = "main-working-tree"

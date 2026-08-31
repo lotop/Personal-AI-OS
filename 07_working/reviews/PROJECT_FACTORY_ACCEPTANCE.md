@@ -1,6 +1,6 @@
 # Project Factory Acceptance
 
-> 状态：`APPROVED_FOR_RELEASE`
+> 状态：`APPROVED`
 >
 > 结论：`PASS`
 >

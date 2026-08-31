@@ -98,7 +98,9 @@ TODO ──> ACTIVE ──> REVIEW ──> DONE
 # 运行本地离线检查；它不等同于 Release Readiness
 python3 05_harness/ci_gate.py --profile local-offline
 
-# 检查 M1–M6；当前 v1.1.2 未获得 Tag/Approval，M6 应保持 BLOCKED
+# 检查 M1–M6。v1.1.2 已完成 Founder Approval 与本地 annotated tag，
+# 在干净工作区且 HEAD 位于 tag 上时六个 Gate 全部 PASS。
+# 工作区有未提交修改时 M1 返回 BLOCKED（exit code 14），属于预期行为。
 python3 05_harness/ci_gate.py --profile release-readiness
 ```
 
@@ -117,7 +119,7 @@ python3 06_deployment/deploy_adapter.py --manifest 03_adapters/gemini-cli/manife
 
 ### 3. 创建你的第一个独立业务项目
 * **方式 A：在聊天窗口呼叫 Skill（推荐）**
-  > `@create-paos-project 帮我创建一个名为 my-tool 的软件项目，增加 ai 和 software 扩展包`
+  > `@create-paos-project 帮我创建一个名为 my-tool 的软件项目，打上 ai 和 software 分类标签`
 
 * **方式 B：通过命令行运行脚手架**
   ```bash
@@ -133,6 +135,8 @@ python3 06_deployment/deploy_adapter.py --manifest 03_adapters/gemini-cli/manife
     --apply
   ```
   创建后直接进入新项目：`cd /Users/lotop/Projects/my-tool` 即可开始开发。
+
+  > **关于 `--overlay`**：当前版本的 overlay 是**项目分类标签**，只做取值校验并记录到 `project.toml` 的 `overlays_csv` 与 `.paos-init.json`，不会改变生成的文件内容。差异化模板内容属于后续 Template Pack 工作，尚未实现。
 
 ---
 

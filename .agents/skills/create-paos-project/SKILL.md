@@ -24,11 +24,12 @@ description: >-
    - `RESEARCH_DECISION`（深度调研与决策分析）
    - `OPERATIONS_PROGRAM`（运营与流程项目）
    - `CONTENT_BRAND`（内容创作与品牌建设）
-4. **功能叠加包 (`overlays`)**（可选多选）：
-   - `software`（软件工程最佳实践）
-   - `ai`（AI / LLM 增强）
-   - `data`（数据分析与处理）
-   - `security`（安全与合规审计）
+4. **分类标签 (`overlays`)**（可选多选）：
+   - 允许取值：`software`、`data`、`ai`、`security`、`compliance`、`content`、`finance`、`vendor`
+     （权威来源为 `04_project_factory/factory.toml` 的 `allowed_overlays`）。
+   - **当前语义**：overlay 只做取值校验，并记录到 `project.toml` 的 `overlays_csv` 与
+     `.paos-init.json`。它**不会改变生成的任何文件内容**。不要向用户描述为"功能叠加包"或
+     "扩展包"；差异化模板内容尚未实现。
 5. **目标路径 (`target`)**：
    - 默认推荐：`/Users/lotop/Projects/<project-id>`（严禁创建在 `Personal-AI-OS` 仓库内）。
 6. **负责人 (`owner`)**：默认为当前用户（`lotop`）。
@@ -74,9 +75,10 @@ python3 /Users/lotop/Personal-AI-OS/04_project_factory/create_project.py \
   --apply
 ```
 
-### 步骤 C：部署双 Agent 适配器（Codex + Gemini）
+### 步骤 C：部署 Codex 与 Gemini 适配器
 
-为新建项目注入当前仓库生成并校验过的平台适配器配置。部署仅限目标项目，不表示外部发布：
+Claude Code 入口（`CLAUDE.md` 与 `.claude/settings.json`）已由 Approved Project Base Pack 直接生成，
+无需额外部署。此处只为新建项目注入 Codex 与 Gemini 的平台适配器配置。部署仅限目标项目，不表示外部发布：
 
 ```bash
 # 部署 Codex 适配器
@@ -98,6 +100,8 @@ python3 /Users/lotop/Personal-AI-OS/06_deployment/deploy_adapter.py \
    - `<TARGET_PATH>/AGENTS.md`
    - `<TARGET_PATH>/PROJECT.md`
    - `<TARGET_PATH>/DECISIONS.md`
+   - `<TARGET_PATH>/CLAUDE.md`（首行必须是 `@AGENTS.md`）
+   - `<TARGET_PATH>/.claude/settings.json`
    - `<TARGET_PATH>/.codex/config.toml`
    - `<TARGET_PATH>/.gemini/settings.json`
    - `<TARGET_PATH>/.git`

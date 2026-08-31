@@ -13,10 +13,18 @@
 
 - 必需目录和入口文件。
 - TOML 与 JSON 解析。
+- Schema 自身只使用已实现的关键字（未实现关键字直接失败，不静默通过）。
+- `bindings.toml` 声明的 Registry / Manifest / Template Pack Schema 校验。
+- 已部署 Adapter 与 `03_adapters/` 源文件的字节一致性。
 - Registry Stable ID 唯一性。
 - Task 单一状态与验证证据格式。
+- Skill Owner 必须是已登记 Task。
+- `SYSTEM.toml` 已批准基线与 `02_registry/projects.toml` 本仓库记录的跨文件一致性。
 - 资产类别与 V1.1 Minimum 状态集合。
+- Template Pack 未登记文件与来源缺失。
 - 高置信度 Secret 模式。
+- `07_working/reviews/*.md` 的日期字段，以及状态取值必须来自已登记词汇表
+  （`states.toml` 的 `maturity_states` 与 `tasks.toml` 的 `allowed_statuses`）。
 - 未跟踪 Git 文件和远端配置提示。
 
-Schema、完整悬空引用、Adapter Provenance 和跨 Worktree Write Set 冲突将在后续版本加入。
+完整悬空引用、Adapter Provenance 和跨 Worktree Write Set 冲突将在后续版本加入。

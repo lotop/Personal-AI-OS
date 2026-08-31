@@ -11,7 +11,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from schema_validation import validate_instance
+from schema_validation import unsupported_keywords, validate_instance
 
 try:
     import tomllib
@@ -120,6 +120,18 @@ def validate_structured_files(report: Report) -> dict[Path, dict]:
     return parsed
 
 
+def validate_schema_shapes(report: Report) -> None:
+    """Schema 本身只能使用 schema_validation.py 真正实现的关键字。"""
+    for path in sorted((ROOT / "00_system/schemas").glob("*.schema.json")):
+        try:
+            schema = json.loads(path.read_text(encoding="utf-8"))
+        except Exception as exc:  # noqa: BLE001
+            report.error(f"Schema 解析失败: {path.relative_to(ROOT)}: {exc}")
+            continue
+        for error in unsupported_keywords(schema):
+            report.error(f"Schema 不受支持 {path.relative_to(ROOT)}: {error}")
+
+
 def validate_schema_bindings(parsed: dict[Path, dict], report: Report) -> None:
     schema_root = ROOT / "00_system/schemas"
     bindings = parsed.get(schema_root / "bindings.toml", {}).get("bindings", [])
@@ -224,6 +236,37 @@ def validate_registry_references(parsed: dict[Path, dict], report: Report) -> No
             report.error(f"Skill {skill.get('id', '<unknown>')} owner 未登记为 Task: {owner}")
 
 
+def validate_baseline_consistency(parsed: dict[Path, dict], report: Report) -> None:
+    """SYSTEM.toml 的已批准基线必须与 Project Registry 中的本仓库记录一致。"""
+    system = parsed.get(ROOT / "SYSTEM.toml", {})
+    baseline = system.get("approved_baseline")
+    if not baseline:
+        return
+
+    version = baseline.get("version")
+    tag = baseline.get("git_tag")
+    if version and tag and tag != f"v{version}":
+        report.error(f"approved_baseline.git_tag 与 version 不一致: {tag} != v{version}")
+
+    projects = parsed.get(ROOT / "02_registry/projects.toml", {}).get("projects", [])
+    self_records = [item for item in projects if item.get("repository_ref") == "self"]
+    if len(self_records) != 1:
+        report.error("projects.toml 必须且只能有一条 repository_ref = \"self\" 记录")
+        return
+
+    record = self_records[0]
+    if record.get("approved_version") != version:
+        report.error(
+            f"projects.toml approved_version 与 SYSTEM.toml 基线漂移: "
+            f"{record.get('approved_version')} != {version}"
+        )
+    if record.get("approved_tag") != tag:
+        report.error(
+            f"projects.toml approved_tag 与 SYSTEM.toml 基线漂移: "
+            f"{record.get('approved_tag')} != {tag}"
+        )
+
+
 def validate_lifecycle(parsed: dict[Path, dict], report: Report) -> None:
     data = parsed.get(ROOT / "00_system/lifecycle/states.toml", {})
     classes = set(data.get("artifact_classes", []))
@@ -275,15 +318,33 @@ def validate_secrets(report: Report) -> None:
                 report.error(f"疑似 Secret: {path.relative_to(ROOT)}")
 
 
-def validate_work_log_dates(report: Report) -> None:
+def validate_work_logs(parsed: dict[Path, dict], report: Report) -> None:
     date_field = re.compile(
         r"^> (?:日期|执行日期|审计日期|生成时间)：`[0-9]{4}-[0-9]{2}-[0-9]{2}`$",
         re.MULTILINE,
     )
+    state_field = re.compile(r"^> 状态：`([A-Z_]+)`$", re.MULTILINE)
+
+    # 工作日志既可能是资产（成熟度状态），也可能是 Task Card（任务状态）。
+    # 两套词汇表都必须来自已登记的来源，不允许临时发明状态值。
+    maturity = set(parsed.get(ROOT / "00_system/lifecycle/states.toml", {}).get("maturity_states", []))
+    task_statuses = set(parsed.get(ROOT / "02_registry/tasks.toml", {}).get("allowed_statuses", []))
+    allowed = maturity | task_statuses
+    if not allowed:
+        report.error("无法解析工作日志允许的状态词汇表")
+        return
+
     for path in sorted((ROOT / "07_working/reviews").glob("*.md")):
         header = "\n".join(path.read_text(encoding="utf-8").splitlines()[:20])
         if not date_field.search(header):
             report.error(f"工作日志缺少日期字段: {path.relative_to(ROOT)}")
+        match = state_field.search(header)
+        if not match:
+            report.error(f"工作日志缺少状态字段: {path.relative_to(ROOT)}")
+        elif match.group(1) not in allowed:
+            report.error(
+                f"工作日志状态不在已登记词汇表中: {path.relative_to(ROOT)}: {match.group(1)}"
+            )
 
 
 def validate_git(report: Report) -> None:
@@ -314,15 +375,17 @@ def main() -> int:
     report = Report()
     validate_required(report)
     parsed = validate_structured_files(report)
+    validate_schema_shapes(report)
     validate_schema_bindings(parsed, report)
     validate_deployed_adapters(parsed, report)
     validate_unique_ids(parsed, report)
     validate_tasks(parsed, report)
     validate_registry_references(parsed, report)
+    validate_baseline_consistency(parsed, report)
     validate_lifecycle(parsed, report)
     validate_template_packs(parsed, report)
     validate_secrets(report)
-    validate_work_log_dates(report)
+    validate_work_logs(parsed, report)
     validate_git(report)
 
     print(f"ERRORS={len(report.errors)} WARNINGS={len(report.warnings)}")

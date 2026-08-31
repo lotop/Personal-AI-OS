@@ -26,15 +26,21 @@ except ModuleNotFoundError:
 ROOT = Path(__file__).resolve().parents[1]
 PYTHON = sys.executable
 RECOVERY_EVIDENCE = Path("07_working/reviews/recovery_evidence.toml")
-RECOVERY_FOLLOWUP_PATHS = {
-    "07_working/reviews/recovery_evidence.toml",
-    "07_working/reviews/RECOVERY_DRILL.md",
-    "07_working/reviews/HANDOFF_V1.1.1.md",
-    "07_working/reviews/RELEASE_READINESS.md",
-    "07_working/reviews/V1.1.1_CONSISTENCY_TASK.md",
-    "07_working/reviews/V1.1.2_FORMAL_RELEASE_TASK.md",
-    "02_registry/tasks.toml",
-}
+
+# 恢复演练之后只允许证据与账本类文件继续变化；实现文件变化必须重新演练。
+# 使用目录前缀而不是逐版本文件名，避免每次发布都要修改审计器本体。
+RECOVERY_FOLLOWUP_PREFIXES = ("07_working/reviews/",)
+RECOVERY_FOLLOWUP_PATHS = {"02_registry/tasks.toml"}
+
+
+def is_recovery_followup(path: str) -> bool:
+    """判断恢复演练后的变更是否属于允许的证据/账本更新。"""
+    if path in RECOVERY_FOLLOWUP_PATHS:
+        return True
+    return any(
+        path.startswith(prefix) and "/" not in path[len(prefix) :]
+        for prefix in RECOVERY_FOLLOWUP_PREFIXES
+    )
 
 
 @dataclass(frozen=True)
@@ -178,7 +184,7 @@ def recovery_gate(root: Path = ROOT) -> Gate:
         if run(root, "git", "merge-base", "--is-ancestor", tested, head).returncode != 0:
             return Gate("M5", "Recovery", "STALE", f"evidence={tested} current={head}")
         changed = set(run(root, "git", "diff", "--name-only", f"{tested}..{head}").stdout.splitlines())
-        unexpected = sorted(changed - RECOVERY_FOLLOWUP_PATHS)
+        unexpected = sorted(path for path in changed if not is_recovery_followup(path))
         if unexpected:
             return Gate("M5", "Recovery", "STALE", "恢复后仍有实现变更: " + ", ".join(unexpected))
     return Gate("M5", "Recovery", "PASS", f"commit={tested} bundle_sha256={bundle_sha}")
@@ -206,6 +212,14 @@ def approval_gate(root: Path = ROOT) -> Gate:
         return Gate("M6", "Founder Release Approval", "BLOCKED", f"{tag_name} 未绑定当前 HEAD")
     if approval_ref not in tag_body:
         return Gate("M6", "Founder Release Approval", "FAIL", f"{tag_name} 缺少 {approval_ref}")
+    baseline = system.get("approved_baseline", {})
+    if baseline.get("version") == version:
+        if baseline.get("git_tag") != tag_name:
+            return Gate("M6", "Founder Release Approval", "FAIL", "approved_baseline.git_tag 与发布 Tag 不一致")
+        if baseline.get("approval_reference") != approval_ref:
+            return Gate("M6", "Founder Release Approval", "FAIL", "approved_baseline.approval_reference 与 Decision 不一致")
+        if baseline.get("release_commit") != tag_commit:
+            return Gate("M6", "Founder Release Approval", "FAIL", "approved_baseline.release_commit 与 Tag 指向的 Commit 不一致")
     return Gate("M6", "Founder Release Approval", "PASS", f"{approval_ref} tag={tag_name} commit={head}")
 
 

@@ -16,6 +16,54 @@ TYPE_MAP = {
     "number": (int, float),
 }
 
+# 本实现真正会执行的关键字；未列出的关键字必须显式报错，不得静默忽略。
+SUPPORTED_KEYWORDS = {
+    "type",
+    "enum",
+    "minLength",
+    "pattern",
+    "minItems",
+    "uniqueItems",
+    "items",
+    "required",
+    "properties",
+    "additionalProperties",
+}
+
+# 只承载说明信息、不影响校验结果的关键字。
+ANNOTATION_KEYWORDS = {"$schema", "$id", "title", "description"}
+
+
+def unsupported_keywords(schema: Any, path: str = "$") -> list[str]:
+    """递归检查 Schema 是否只使用本实现支持的关键字。"""
+    errors: list[str] = []
+    if not isinstance(schema, dict):
+        return [f"{path}: Schema 必须是对象"]
+
+    for keyword in schema:
+        if keyword not in SUPPORTED_KEYWORDS and keyword not in ANNOTATION_KEYWORDS:
+            errors.append(f"{path}: 未实现的 Schema 关键字 {keyword}")
+
+    expected = schema.get("type")
+    if expected is not None and expected not in TYPE_MAP:
+        errors.append(f"{path}: 不支持的 Schema type {expected}")
+
+    if "additionalProperties" in schema and not isinstance(schema["additionalProperties"], bool):
+        errors.append(f"{path}: additionalProperties 只支持布尔值")
+
+    if "items" in schema:
+        errors.extend(unsupported_keywords(schema["items"], f"{path}.items"))
+
+    properties = schema.get("properties")
+    if properties is not None:
+        if not isinstance(properties, dict):
+            errors.append(f"{path}.properties: 必须是对象")
+        else:
+            for key, child in properties.items():
+                errors.extend(unsupported_keywords(child, f"{path}.properties.{key}"))
+
+    return errors
+
 
 def validate_instance(instance: Any, schema: dict[str, Any], path: str = "$") -> list[str]:
     errors: list[str] = []
@@ -37,7 +85,7 @@ def validate_instance(instance: Any, schema: dict[str, Any], path: str = "$") ->
     if isinstance(instance, str):
         if len(instance) < schema.get("minLength", 0):
             errors.append(f"{path}: 字符串长度不足")
-        if "pattern" in schema and not re.search(schema["pattern"], instance):
+        if "pattern" in schema and not re.fullmatch(schema["pattern"], instance):
             errors.append(f"{path}: 不匹配 pattern {schema['pattern']}")
 
     if isinstance(instance, list):

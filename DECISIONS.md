@@ -140,6 +140,27 @@
 - AI-made Decisions：批量批准 13 类核心模板；将旧候选模板归档而非保留为待确认；维持 Dashboard 排除；维持 Push 与外部部署不授权。
 - Approval：Founder / 2026-08-31 / 批准 V1.1.2 本地正式发布、Release Approval 与本地 annotated tag。
 
+### PAOS-013｜远端同步授权（GitHub origin）
+
+- 状态：`APPROVED`
+- 日期：`2026-09-01`
+- Owner：`paos-15-post-v1-1-2-remediation`
+- Context：`PAOS-REL-003` 明确不授权 Push；Founder 在本轮任务中明确要求提交本次整改并推送到 GitHub，构成对该边界的单次显式解除。
+- Decision：授权将本地 `main` 推送到既有远端 `origin`（`https://github.com/lotop/Personal-AI-OS.git`）。
+- Scope：仅推送 `main` 分支的提交历史。
+- 明确不包含：
+  - 不推送 annotated tag（`v1.1.0`、`v1.1.1`、`v1.1.2` 保持本地绑定）；
+  - 不构成远端发布、Release Approval、外部部署或真实项目数据传输授权；
+  - 不改变 `SYSTEM.toml` 的 `release = "APPROVED_LOCAL_NO_PUSH"`——V1.1.2 的发布证据仍由本地 tag 绑定。
+- External Data 记录（依 `EXTERNAL_DATA_POLICY.md` 最小字段）：
+  - Provider / Destination：GitHub / `origin`（既有远端，此前已建立跟踪分支）。
+  - Data Class：本仓库 Canonical Control Plane 内容，含个人路径与 Owner 标识；仓库验证器确认无 Secret 模式命中。
+  - Purpose：远端备份与跨设备恢复路径。
+  - Owner / Approver：Founder。
+  - Authorized At：`2026-09-01`；One-shot。
+  - Revocation：由 Founder 在 GitHub 侧撤除或删除远端内容。
+- Consequences：远端仓库的可见性（Public / Private）由 Founder 在 GitHub 侧控制，本仓库不做假设，也不代为修改。
+
 ## Candidate Decisions
 
 - 当前无待确认 Candidate Decision。

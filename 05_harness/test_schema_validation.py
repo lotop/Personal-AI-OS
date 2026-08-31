@@ -18,7 +18,7 @@ except ModuleNotFoundError:
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from schema_validation import validate_instance
+from schema_validation import unsupported_keywords, validate_instance
 
 
 class SchemaValidationTest(unittest.TestCase):
@@ -52,6 +52,34 @@ class SchemaValidationTest(unittest.TestCase):
         self.assertEqual(validate_instance({"id": "demo"}, schema), [])
         errors = validate_instance({"id": "demo", "typo": True}, schema)
         self.assertTrue(any("未知字段 typo" in error for error in errors))
+
+    def test_pattern_is_full_match(self) -> None:
+        schema = {"type": "string", "pattern": "[a-z]+"}
+        self.assertEqual(validate_instance("demo", schema), [])
+        self.assertTrue(validate_instance("demo1", schema))
+
+    def test_unsupported_keyword_is_rejected(self) -> None:
+        self.assertTrue(unsupported_keywords({"type": "object", "oneOf": []}))
+        self.assertTrue(unsupported_keywords({"type": "string", "maxLength": 3}))
+        self.assertTrue(unsupported_keywords({"$ref": "paos://schemas/system/0.3"}))
+
+    def test_unsupported_keyword_is_detected_in_subschema(self) -> None:
+        schema = {
+            "type": "object",
+            "properties": {"items": {"type": "array", "items": {"format": "uuid"}}},
+        }
+        errors = unsupported_keywords(schema)
+        self.assertTrue(any("format" in error for error in errors))
+
+    def test_additional_properties_must_be_boolean(self) -> None:
+        self.assertTrue(unsupported_keywords({"additionalProperties": {"type": "string"}}))
+        self.assertEqual(unsupported_keywords({"additionalProperties": False}), [])
+
+    def test_repository_schemas_stay_within_supported_subset(self) -> None:
+        schema_root = Path(__file__).resolve().parents[1] / "00_system/schemas"
+        for path in sorted(schema_root.glob("*.schema.json")):
+            schema = json.loads(path.read_text(encoding="utf-8"))
+            self.assertEqual(unsupported_keywords(schema), [], path.name)
 
     def test_all_registry_files_have_schema_bindings(self) -> None:
         root = Path(__file__).resolve().parents[1]
