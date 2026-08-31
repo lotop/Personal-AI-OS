@@ -27,6 +27,7 @@ except ModuleNotFoundError:
 ROOT = Path(__file__).resolve().parents[1]
 PYTHON = sys.executable
 RECOVERY_EVIDENCE = Path("07_working/reviews/recovery_evidence.toml")
+RECOVERY_ARTIFACT_ROOT = Path("06_deployment/recovery_artifacts")
 
 # 恢复演练之后只允许已声明的证据与任务账本类文件继续变化；实现文件变化必须重新演练。
 RECOVERY_FOLLOWUP_PATHS = {
@@ -77,6 +78,13 @@ def validation_gate(root: Path = ROOT) -> Gate:
 
 
 def template_factory_gate(root: Path = ROOT) -> Gate:
+    try:
+        factory_config = tomllib.loads(
+            (root / "04_project_factory/factory.toml").read_text(encoding="utf-8")
+        )
+    except (OSError, tomllib.TOMLDecodeError) as exc:
+        return Gate("M3", "Template & Factory", "FAIL", f"Factory Config 无法解析: {exc}")
+    pack_kinds = factory_config.get("template_pack_kinds", {})
     approved_project_packs = []
     for manifest in (root / "01_templates").glob("*/template.toml"):
         try:
@@ -86,7 +94,7 @@ def template_factory_gate(root: Path = ROOT) -> Gate:
         if (
             data.get("artifact_state") == "APPROVED"
             and data.get("approval_reference")
-            and data.get("pack_kind") == "PROJECT_SCAFFOLD"
+            and pack_kinds.get(data.get("pack_id")) == "PROJECT_SCAFFOLD"
         ):
             approved_project_packs.append(manifest.parent)
     acceptance = root / "07_working/reviews/PROJECT_FACTORY_ACCEPTANCE.md"
@@ -208,6 +216,7 @@ def recovery_gate(root: Path = ROOT) -> Gate:
     recovered = evidence.get("recovered_commit", "")
     bundle_head = evidence.get("bundle_head", "")
     bundle_sha = evidence.get("bundle_sha256", "")
+    bundle_path_value = evidence.get("bundle_path", "")
     expected_tree = evidence.get("tree_sha256", "")
     if evidence.get("status") != "PASS":
         return Gate("M5", "Recovery", "BLOCKED", "恢复证据状态不是 PASS")
@@ -215,6 +224,30 @@ def recovery_gate(root: Path = ROOT) -> Gate:
         return Gate("M5", "Recovery", "FAIL", "tested/recovered/bundle commit 未精确一致")
     if not re.fullmatch(r"[0-9a-f]{64}", bundle_sha) or not re.fullmatch(r"[0-9a-f]{64}", expected_tree):
         return Gate("M5", "Recovery", "FAIL", "Bundle 或 Tree SHA-256 格式无效")
+    bundle_relative = Path(bundle_path_value)
+    if (
+        not bundle_path_value
+        or bundle_relative.is_absolute()
+        or ".." in bundle_relative.parts
+        or bundle_relative.parts[:2] != RECOVERY_ARTIFACT_ROOT.parts
+    ):
+        return Gate("M5", "Recovery", "FAIL", "Bundle Artifact 路径不在受管目录")
+    bundle_artifact = root / bundle_relative
+    if not bundle_artifact.is_file() or bundle_artifact.is_symlink():
+        return Gate("M5", "Recovery", "BLOCKED", "Bundle Artifact 缺失或为 symlink")
+    actual_bundle_sha = hashlib.sha256(bundle_artifact.read_bytes()).hexdigest()
+    if actual_bundle_sha != bundle_sha:
+        return Gate("M5", "Recovery", "FAIL", "Bundle Artifact SHA-256 与 Evidence 不一致")
+    verify = run(root, "git", "bundle", "verify", str(bundle_artifact))
+    if verify.returncode != 0:
+        return Gate("M5", "Recovery", "FAIL", "git bundle verify 失败")
+    heads = run(root, "git", "bundle", "list-heads", str(bundle_artifact))
+    if heads.returncode != 0 or not any(
+        line.split(maxsplit=1)[0] == bundle_head
+        for line in heads.stdout.splitlines()
+        if line.strip()
+    ):
+        return Gate("M5", "Recovery", "FAIL", "Bundle Artifact 不包含 Evidence Head")
     try:
         actual_tree = commit_tree_digest(root, tested)
     except ValueError as exc:
@@ -264,8 +297,6 @@ def approval_gate(root: Path = ROOT) -> Gate:
         return Gate("M6", "Founder Release Approval", "FAIL", "approved_baseline.git_tag 与发布 Tag 不一致")
     if baseline.get("approval_reference") != approval_ref:
         return Gate("M6", "Founder Release Approval", "FAIL", "approved_baseline.approval_reference 与 Decision 不一致")
-    if baseline.get("release_commit") != tag_commit:
-        return Gate("M6", "Founder Release Approval", "FAIL", "approved_baseline.release_commit 与 Tag 指向的 Commit 不一致")
     return Gate("M6", "Founder Release Approval", "PASS", f"{approval_ref} tag={tag_name} commit={head}")
 
 

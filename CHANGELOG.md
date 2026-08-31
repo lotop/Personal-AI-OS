@@ -1,5 +1,13 @@
 # Changelog
 
+## V1.1.3 Local Release Preparation
+
+- 修复 PAOS-016 对两个 Approved Template Manifest 的原地元数据修改，将 Pack Kind 迁移到 Factory 自有配置。
+- Factory 与 Repository Validator 共同校验 Pack 用途路由，拒绝未登记 Pack、非法类型及悬空路由。
+- 移除 `approved_baseline.release_commit` 的 Git Commit 自引用设计；最终 Release Commit 改由 annotated tag 直接绑定。
+- M5 新增实际 Bundle Artifact 路径、SHA-256、`git bundle verify` 与 Bundle Head 校验。
+- 本地 Recovery Bundle 保存在被 Git 忽略的 `06_deployment/recovery_artifacts/`，不随 Push 传输。
+
 ## Post-V1.1.2 Working（本地继续修订）
 
 - 建立 `paos-16-full-audit-remediation`，忽略并归档已失真的 Claude Handoff，恢复 Codex 原全仓审计整改清单。

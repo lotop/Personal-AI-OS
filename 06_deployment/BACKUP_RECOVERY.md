@@ -30,3 +30,5 @@
 在首次成功恢复演练前，不得宣称系统已经可恢复。
 
 当前已完成本地 Git 干净克隆与离线 Git Bundle 恢复，证据见 `07_working/reviews/RECOVERY_DRILL.md`；Private Remote、全新设备和大型资产恢复仍未验证。
+
+本地正式发布的 Bundle 保存于被 Git 忽略的 `06_deployment/recovery_artifacts/`。机器证据必须记录相对路径与 SHA-256；M5 会读取实际 Artifact、重算 Hash、执行 `git bundle verify` 并核对 Bundle Head。该本地 Artifact 不等于远端或异地备份，Push 也不会携带它。

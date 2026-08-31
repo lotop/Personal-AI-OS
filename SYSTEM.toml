@@ -12,9 +12,8 @@ artifact_state = "APPROVED"
 canonical_authority = "FOUNDER_APPROVED"
 approval_reference = "PAOS-REL-003"
 git_tag = "v1.1.2"
-# freeze_commit 是实现冻结提交；release_commit 是 annotated tag 实际指向的提交。
+# freeze_commit 是实现冻结提交；最终 Release Commit 由 annotated tag 直接绑定。
 freeze_commit = "b76a8d2f0ba48b4b39afd9ebb9cab4d13172156a"
-release_commit = "b2b0ef8b4ec20be4a2cfb2426174d0532ddafa72"
 
 [repository]
 role = "canonical-control-plane-repository"

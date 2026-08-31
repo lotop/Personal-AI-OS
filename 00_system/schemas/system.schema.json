@@ -35,15 +35,14 @@
     "implementation": {"type": "object"},
     "approved_baseline": {
       "type": "object",
-      "required": ["version", "artifact_state", "canonical_authority", "approval_reference", "git_tag", "freeze_commit", "release_commit"],
+      "required": ["version", "artifact_state", "canonical_authority", "approval_reference", "git_tag", "freeze_commit"],
       "properties": {
         "version": {"type": "string"},
         "artifact_state": {"type": "string", "enum": ["APPROVED"]},
         "canonical_authority": {"type": "string", "enum": ["FOUNDER_APPROVED"]},
         "approval_reference": {"type": "string", "minLength": 1},
         "git_tag": {"type": "string", "minLength": 1},
-        "freeze_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
-        "release_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"}
+        "freeze_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"}
       }
     }
   }

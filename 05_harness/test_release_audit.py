@@ -7,6 +7,7 @@ import sys
 import subprocess
 import tempfile
 import unittest
+import hashlib
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -87,12 +88,12 @@ class ReleaseAuditTest(unittest.TestCase):
             project_pack.mkdir(parents=True)
             artifact_pack.mkdir(parents=True)
             (project_pack / "template.toml").write_text(
-                'pack_id = "project-pack"\npack_kind = "PROJECT_SCAFFOLD"\n'
+                'pack_id = "project-pack"\n'
                 'version = "1.0"\nartifact_state = "APPROVED"\napproval_reference = "APPROVED-1"\n',
                 encoding="utf-8",
             )
             (artifact_pack / "template.toml").write_text(
-                'pack_id = "artifact-pack"\npack_kind = "ARTIFACT_LIBRARY"\n'
+                'pack_id = "artifact-pack"\n'
                 'version = "1.0"\nartifact_state = "APPROVED"\napproval_reference = "APPROVED-2"\n',
                 encoding="utf-8",
             )
@@ -102,6 +103,11 @@ class ReleaseAuditTest(unittest.TestCase):
             factory = root / "04_project_factory"
             factory.mkdir()
             (factory / "create_project.py").write_text("raise SystemExit(0)\n", encoding="utf-8")
+            (factory / "factory.toml").write_text(
+                '[template_pack_kinds]\nproject-pack = "PROJECT_SCAFFOLD"\n'
+                'artifact-pack = "ARTIFACT_LIBRARY"\n',
+                encoding="utf-8",
+            )
             gate = template_factory_gate(root)
             self.assertEqual(gate.status, "PASS")
             self.assertIn("approved_project_packs=1", gate.evidence)
@@ -118,11 +124,22 @@ class ReleaseAuditTest(unittest.TestCase):
     def write_recovery_evidence(self, root: Path, commit: str) -> None:
         review = root / "07_working/reviews"
         review.mkdir(parents=True)
+        artifact_root = root / "06_deployment/recovery_artifacts"
+        artifact_root.mkdir(parents=True)
+        bundle = artifact_root / "test.bundle"
+        subprocess.run(
+            ["git", "bundle", "create", str(bundle), "main"],
+            cwd=root,
+            check=True,
+            capture_output=True,
+        )
+        bundle_sha = hashlib.sha256(bundle.read_bytes()).hexdigest()
         digest = commit_tree_digest(root, commit)
         (review / "recovery_evidence.toml").write_text(
             'schema_version = "0.1.0-working"\nstatus = "PASS"\n'
             f'tested_commit = "{commit}"\nrecovered_commit = "{commit}"\n'
-            f'bundle_head = "{commit}"\nbundle_sha256 = "{"a" * 64}"\n'
+            f'bundle_head = "{commit}"\nbundle_sha256 = "{bundle_sha}"\n'
+            'bundle_path = "06_deployment/recovery_artifacts/test.bundle"\n'
             f'tree_sha256 = "{digest}"\nexecuted_at = "2026-08-31"\n',
             encoding="utf-8",
         )
@@ -150,6 +167,17 @@ class ReleaseAuditTest(unittest.TestCase):
             self.assertEqual(gate.status, "STALE")
             self.assertIn("implementation.py", gate.evidence)
 
+    def test_recovery_rejects_tampered_bundle_artifact(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            commit = self.init_repo(root)
+            self.write_recovery_evidence(root, commit)
+            bundle = root / "06_deployment/recovery_artifacts/test.bundle"
+            bundle.write_bytes(bundle.read_bytes() + b"tampered")
+            gate = recovery_gate(root)
+            self.assertEqual(gate.status, "FAIL")
+            self.assertIn("SHA-256", gate.evidence)
+
     def tag_release(self, root: Path) -> str:
         """提交 Release Approval 并打 annotated tag，返回 tag 指向的 Commit。"""
         (root / "DECISIONS.md").write_text(
@@ -165,42 +193,47 @@ class ReleaseAuditTest(unittest.TestCase):
         )
         return subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip()
 
-    def write_system(self, root: Path, release_commit: str | None) -> None:
+    def write_system(self, root: Path, include_baseline: bool) -> None:
         baseline = ""
-        if release_commit is not None:
+        if include_baseline:
             baseline = (
                 "\n[approved_baseline]\n"
                 'version = "1.1.1"\n'
                 'git_tag = "v1.1.1"\n'
                 'approval_reference = "PAOS-REL-002"\n'
-                f'release_commit = "{release_commit}"\n'
             )
         (root / "SYSTEM.toml").write_text('target_version = "1.1.1"\n' + baseline, encoding="utf-8")
 
-    def test_approval_accepts_matching_baseline_commit(self) -> None:
-        with tempfile.TemporaryDirectory() as raw:
-            root = Path(raw)
-            self.init_repo(root)
-            commit = self.tag_release(root)
-            self.write_system(root, commit)
-            self.assertEqual(approval_gate(root).status, "PASS")
-
-    def test_approval_rejects_baseline_commit_mismatch(self) -> None:
+    def test_approval_accepts_tag_bound_release_without_commit_self_reference(self) -> None:
         with tempfile.TemporaryDirectory() as raw:
             root = Path(raw)
             self.init_repo(root)
             self.tag_release(root)
-            self.write_system(root, "0" * 40)
+            self.write_system(root, True)
+            self.assertEqual(approval_gate(root).status, "PASS")
+
+    def test_approval_rejects_baseline_version_mismatch(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            self.init_repo(root)
+            self.tag_release(root)
+            self.write_system(root, True)
+            (root / "SYSTEM.toml").write_text(
+                (root / "SYSTEM.toml").read_text(encoding="utf-8").replace(
+                    '\nversion = "1.1.1"', '\nversion = "1.1.0"'
+                ),
+                encoding="utf-8",
+            )
             gate = approval_gate(root)
             self.assertEqual(gate.status, "FAIL")
-            self.assertIn("release_commit", gate.evidence)
+            self.assertIn("approved_baseline.version", gate.evidence)
 
     def test_approval_rejects_baseline_tag_mismatch(self) -> None:
         with tempfile.TemporaryDirectory() as raw:
             root = Path(raw)
             self.init_repo(root)
-            commit = self.tag_release(root)
-            self.write_system(root, commit)
+            self.tag_release(root)
+            self.write_system(root, True)
             (root / "SYSTEM.toml").write_text(
                 (root / "SYSTEM.toml").read_text(encoding="utf-8").replace('"v1.1.1"', '"v1.1.0"'),
                 encoding="utf-8",

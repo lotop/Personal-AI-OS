@@ -303,9 +303,19 @@ def validate_lifecycle(parsed: dict[Path, dict], report: Report) -> None:
 
 
 def validate_template_packs(parsed: dict[Path, dict], report: Report) -> None:
+    factory_config = parsed.get(ROOT / "04_project_factory/factory.toml", {})
+    pack_kinds = factory_config.get("template_pack_kinds", {})
+    known_pack_ids: set[str] = set()
     for base in (ROOT / "01_templates", ROOT / "07_working/candidates"):
         for manifest_path in sorted(base.glob("*/template.toml")):
             data = parsed.get(manifest_path, load_toml(manifest_path, report))
+            pack_id = data.get("pack_id")
+            if pack_id:
+                known_pack_ids.add(pack_id)
+                if pack_id not in pack_kinds:
+                    report.error(f"Template Pack 未登记 Factory 用途: {pack_id}")
+                elif pack_kinds[pack_id] not in {"PROJECT_SCAFFOLD", "ARTIFACT_LIBRARY"}:
+                    report.error(f"Template Pack Factory 用途非法: {pack_id}: {pack_kinds[pack_id]}")
             state = data.get("artifact_state")
             if base.name == "01_templates" and (state != "APPROVED" or not data.get("approval_reference")):
                 report.error(f"正式 Template Pack 缺少可验证批准: {manifest_path.relative_to(ROOT)}")
@@ -323,6 +333,9 @@ def validate_template_packs(parsed: dict[Path, dict], report: Report) -> None:
             for source in sources:
                 if not source or not (manifest_path.parent / source).is_file():
                     report.error(f"Template Pack 来源缺失: {manifest_path.relative_to(ROOT)}: {source}")
+    unknown_routes = sorted(set(pack_kinds) - known_pack_ids)
+    if unknown_routes:
+        report.error("Factory 存在无对应 Template Pack 的用途路由: " + ", ".join(unknown_routes))
 
 
 def validate_secrets(report: Report) -> None:

@@ -22,3 +22,8 @@ allowed_overlays = [
   "finance",
   "vendor",
 ]
+
+# Pack 用途属于 Factory 路由配置，不写入或改动已批准 Template Manifest。
+[template_pack_kinds]
+paos-project-base = "PROJECT_SCAFFOLD"
+paos-core-templates = "ARTIFACT_LIBRARY"

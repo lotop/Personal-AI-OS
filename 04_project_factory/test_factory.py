@@ -24,6 +24,8 @@ from create_project import (
 
 
 class ProjectFactoryTest(unittest.TestCase):
+    PROJECT_PACK_KINDS = {"test": "PROJECT_SCAFFOLD"}
+
     def test_render(self) -> None:
         self.assertEqual(render("# {{PROJECT_NAME}}", {"PROJECT_NAME": "Demo"}), "# Demo")
 
@@ -42,12 +44,14 @@ class ProjectFactoryTest(unittest.TestCase):
             pack.mkdir()
             (pack / "PROJECT.md").write_text("# {{PROJECT_NAME}}\n", encoding="utf-8")
             (pack / "template.toml").write_text(
-                'pack_id = "test"\npack_kind = "PROJECT_SCAFFOLD"\nversion = "0.1"\nartifact_state = "WORKING"\n'
+                'pack_id = "test"\nversion = "0.1"\nartifact_state = "WORKING"\n'
                 'owner = "test"\ncanonical_authority = "NONE"\n'
                 '[[files]]\nsource = "PROJECT.md"\ndestination = "PROJECT.md"\nrender = true\n',
                 encoding="utf-8",
             )
-            manifest, files = load_plan(pack, root / "output", {"PROJECT_NAME": "Demo"})
+            manifest, files = load_plan(
+                pack, root / "output", {"PROJECT_NAME": "Demo"}, self.PROJECT_PACK_KINDS
+            )
             self.assertEqual(manifest["pack_id"], "test")
             self.assertEqual(files[0].content, "# Demo\n")
 
@@ -59,13 +63,13 @@ class ProjectFactoryTest(unittest.TestCase):
             (pack / "PROJECT.md").write_text("# Demo\n", encoding="utf-8")
             (pack / "UNDECLARED.md").write_text("unexpected\n", encoding="utf-8")
             (pack / "template.toml").write_text(
-                'pack_id = "test"\npack_kind = "PROJECT_SCAFFOLD"\nversion = "0.1"\nartifact_state = "WORKING"\n'
+                'pack_id = "test"\nversion = "0.1"\nartifact_state = "WORKING"\n'
                 'owner = "test"\ncanonical_authority = "NONE"\n'
                 '[[files]]\nsource = "PROJECT.md"\ndestination = "PROJECT.md"\n',
                 encoding="utf-8",
             )
             with self.assertRaisesRegex(ValueError, "未登记文件"):
-                load_plan(pack, root / "output", {})
+                load_plan(pack, root / "output", {}, self.PROJECT_PACK_KINDS)
 
     def test_reject_approved_pack_without_approval_reference(self) -> None:
         with tempfile.TemporaryDirectory() as raw:
@@ -74,13 +78,13 @@ class ProjectFactoryTest(unittest.TestCase):
             pack.mkdir()
             (pack / "PROJECT.md").write_text("# Demo\n", encoding="utf-8")
             (pack / "template.toml").write_text(
-                'pack_id = "test"\npack_kind = "PROJECT_SCAFFOLD"\nversion = "0.1"\nartifact_state = "APPROVED"\n'
+                'pack_id = "test"\nversion = "0.1"\nartifact_state = "APPROVED"\n'
                 'owner = "test"\ncanonical_authority = "FOUNDER_APPROVAL"\n'
                 '[[files]]\nsource = "PROJECT.md"\ndestination = "PROJECT.md"\n',
                 encoding="utf-8",
             )
             with self.assertRaisesRegex(ValueError, "approval_reference"):
-                load_plan(pack, root / "output", {})
+                load_plan(pack, root / "output", {}, self.PROJECT_PACK_KINDS)
 
     def test_end_to_end_provisional_creation(self) -> None:
         with tempfile.TemporaryDirectory() as raw:
@@ -90,7 +94,7 @@ class ProjectFactoryTest(unittest.TestCase):
             pack.mkdir()
             (pack / "PROJECT.md").write_text("# {{PROJECT_NAME}}\n", encoding="utf-8")
             (pack / "template.toml").write_text(
-                'pack_id = "test"\npack_kind = "PROJECT_SCAFFOLD"\nversion = "0.1"\nartifact_state = "WORKING"\n'
+                'pack_id = "test"\nversion = "0.1"\nartifact_state = "WORKING"\n'
                 'owner = "test"\ncanonical_authority = "NONE"\n'
                 '[[files]]\nsource = "PROJECT.md"\ndestination = "PROJECT.md"\nrender = true\n',
                 encoding="utf-8",
@@ -102,7 +106,7 @@ class ProjectFactoryTest(unittest.TestCase):
                 "PRIMARY_TYPE": "SOFTWARE_PRODUCT",
                 "OVERLAYS": "ai,software",
             }
-            pack_manifest, files = load_plan(pack, target, variables)
+            pack_manifest, files = load_plan(pack, target, variables, self.PROJECT_PACK_KINDS)
             init_manifest = build_manifest(pack_manifest, target, variables, files, True)
             write_project(target, files, init_manifest, init_git=True)
             self.assertTrue((target / "PROJECT.md").is_file())
@@ -140,7 +144,18 @@ class ProjectFactoryTest(unittest.TestCase):
         pack = Path(__file__).resolve().parents[1] / "01_templates/core-template-pack"
         with tempfile.TemporaryDirectory() as raw:
             with self.assertRaisesRegex(ValueError, "不能由 Project Factory 实例化"):
-                load_plan(pack, Path(raw) / "output", {})
+                load_plan(
+                    pack,
+                    Path(raw) / "output",
+                    {},
+                    {"paos-core-templates": "ARTIFACT_LIBRARY"},
+                )
+
+    def test_reject_unregistered_pack_kind(self) -> None:
+        pack = Path(__file__).resolve().parents[1] / "01_templates/project-base-pack"
+        with tempfile.TemporaryDirectory() as raw:
+            with self.assertRaisesRegex(ValueError, "未在 Factory 配置中登记用途"):
+                load_plan(pack, Path(raw) / "output", {}, {})
 
     def test_reject_invalid_rendered_toml(self) -> None:
         with self.assertRaisesRegex(ValueError, "结构化文件无效"):

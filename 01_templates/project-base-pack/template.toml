@@ -1,5 +1,4 @@
 pack_id = "paos-project-base"
-pack_kind = "PROJECT_SCAFFOLD"
 version = "1.1.0"
 artifact_state = "APPROVED"
 owner = "paos-04-factory"

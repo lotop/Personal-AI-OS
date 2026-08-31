@@ -137,3 +137,11 @@ status = "DONE"
 validation = ["scope-confirmed", "founder-authorized", "dashboard-excluded", "task-card-recorded", "gc-tamper-tests-pass", "factory-render-tests-pass", "schema-semantics-pass", "m3-live-dry-run-pass", "m5-whitelist-tests-pass", "m6-baseline-tests-pass", "hooks-contract-pass", "deployment-toctou-tests-pass", "gemini-official-docs-verified", "adapter-check-pass", "local-offline-ci-pass", "clean-head-ci-pass", "local-commit-19ade21", "cleanup-applied-zero-items", "no-push"]
 platform = "codex"
 platform_ref = "main"
+
+[[tasks]]
+id = "paos-17-v1-1-3-local-release"
+purpose = "修复 Approved Manifest 漂移并完成 Personal AI OS V1.1.3 本地正式发布"
+status = "ACTIVE"
+validation = ["scope-confirmed", "founder-release-authorized", "direct-main-authorized", "no-push", "task-card-recorded"]
+platform = "codex"
+platform_ref = "main"

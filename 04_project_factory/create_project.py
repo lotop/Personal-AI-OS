@@ -76,17 +76,25 @@ def validate_rendered_content(destination: Path, content: str) -> None:
         raise ValueError(f"渲染后的结构化文件无效 {destination}: {exc}") from exc
 
 
-def load_plan(pack: Path, target: Path, variables: dict[str, str]) -> tuple[dict, list[PlannedFile]]:
+def load_plan(
+    pack: Path,
+    target: Path,
+    variables: dict[str, str],
+    pack_kinds: dict[str, str],
+) -> tuple[dict, list[PlannedFile]]:
     manifest_path = pack / "template.toml"
     if not manifest_path.is_file():
         raise ValueError("Template Pack 缺少 template.toml")
     manifest = tomllib.loads(manifest_path.read_text(encoding="utf-8"))
-    for field in ("pack_id", "pack_kind", "version", "artifact_state", "owner", "canonical_authority"):
+    for field in ("pack_id", "version", "artifact_state", "owner", "canonical_authority"):
         if not manifest.get(field):
             raise ValueError(f"Template Pack 缺少字段: {field}")
-    if manifest["pack_kind"] != "PROJECT_SCAFFOLD":
+    pack_kind = pack_kinds.get(manifest["pack_id"])
+    if pack_kind is None:
+        raise ValueError(f"Template Pack 未在 Factory 配置中登记用途: {manifest['pack_id']}")
+    if pack_kind != "PROJECT_SCAFFOLD":
         raise ValueError(
-            f"Template Pack {manifest['pack_id']} 用途为 {manifest['pack_kind']}，不能由 Project Factory 实例化"
+            f"Template Pack {manifest['pack_id']} 用途为 {pack_kind}，不能由 Project Factory 实例化"
         )
     state = manifest["artifact_state"]
     if state not in {"WORKING", "APPROVED"}:
@@ -229,7 +237,12 @@ def main() -> int:
             "PRIMARY_TYPE": args.primary_type,
             "OVERLAYS": ",".join(sorted(set(args.overlay))),
         }
-        pack_manifest, files = load_plan(args.template_pack.resolve(), args.target, variables)
+        pack_manifest, files = load_plan(
+            args.template_pack.resolve(),
+            args.target,
+            variables,
+            config["template_pack_kinds"],
+        )
         state = pack_manifest.get("artifact_state")
         if state != "APPROVED" and not args.provisional:
             raise ValueError("正式创建只允许 APPROVED Template Pack")
