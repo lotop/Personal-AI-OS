@@ -5,162 +5,163 @@ artifact_state = "WORKING"
 id = "project-context-discovery"
 platform = "codex"
 support_level = "NATIVE"
-version = "0.151.0-alpha.7.2"
+version = "0.152.0"
 supported_by_docs = true
 configured = true
 config_loaded = true
 runtime_verified = true
 external_data_required = false
-verified_on = "2026-08-31"
+verified_on = "2026-09-01"
 evidence_refs = ["AGENT_DEPLOYMENT_SMOKE.md", "official:codex-agents-md"]
 
 [[capability_evidence]]
 id = "project-context-discovery"
 platform = "gemini-cli"
 support_level = "ADAPTER"
-version = "0.57.0"
+version = "NOT_INSTALLED"
 supported_by_docs = true
 configured = true
-config_loaded = true
+config_loaded = false
 runtime_verified = false
 external_data_required = true
-blocked_reason = "BLOCKED_EXTERNAL_DATA_AUTHORIZATION"
-verified_on = "2026-08-30"
+blocked_reason = "CLI_NOT_INSTALLED"
+verified_on = "2026-09-01"
 evidence_refs = ["AGENT_DEPLOYMENT_SMOKE.md", "official:gemini-context"]
 
 [[capability_evidence]]
 id = "project-context-discovery"
 platform = "claude-code"
 support_level = "ADAPTER"
-version = "2.1.251"
+version = "2.1.252"
 supported_by_docs = true
 configured = true
 config_loaded = true
 runtime_verified = false
 external_data_required = false
 blocked_reason = "LIVE_RUNTIME_NOT_AUTHORIZED"
-verified_on = "2026-08-31"
-evidence_refs = ["official:claude-code-memory", "CLAUDE_CODE_DEPLOYMENT.md", "claude-doctor-2.1.251"]
+verified_on = "2026-09-01"
+evidence_refs = ["official:claude-code-memory", "CLAUDE_CODE_DEPLOYMENT.md", "claude-doctor-2.1.252-isolated"]
 
 [[capability_evidence]]
 id = "project-config"
 platform = "codex"
 support_level = "NATIVE"
-version = "0.151.0-alpha.7.2"
+version = "0.152.0"
 supported_by_docs = true
 configured = true
 config_loaded = true
 runtime_verified = true
 external_data_required = false
-verified_on = "2026-08-31"
+verified_on = "2026-09-01"
 evidence_refs = ["AGENT_DEPLOYMENT_SMOKE.md", "official:codex-config"]
 
 [[capability_evidence]]
 id = "project-config"
 platform = "gemini-cli"
 support_level = "NATIVE"
-version = "0.57.0"
+version = "NOT_INSTALLED"
 supported_by_docs = true
 configured = true
-config_loaded = true
+config_loaded = false
 runtime_verified = false
 external_data_required = false
-blocked_reason = "RUNTIME_NOT_AUTHORIZED"
-verified_on = "2026-08-30"
+blocked_reason = "CLI_NOT_INSTALLED"
+verified_on = "2026-09-01"
 evidence_refs = ["AGENT_DEPLOYMENT_SMOKE.md", "official:gemini-configuration"]
 
 [[capability_evidence]]
 id = "project-config"
 platform = "claude-code"
 support_level = "NATIVE"
-version = "2.1.251"
+version = "2.1.252"
 supported_by_docs = true
 configured = true
 config_loaded = true
 runtime_verified = false
 external_data_required = false
 blocked_reason = "LIVE_RUNTIME_NOT_AUTHORIZED"
-verified_on = "2026-08-31"
-evidence_refs = ["official:claude-code-settings", "CLAUDE_CODE_DEPLOYMENT.md", "claude-doctor-2.1.251"]
+verified_on = "2026-09-01"
+evidence_refs = ["official:claude-code-settings", "CLAUDE_CODE_DEPLOYMENT.md", "claude-doctor-2.1.252-isolated"]
 
 [[capability_evidence]]
 id = "hooks"
 platform = "codex"
 support_level = "NATIVE"
-version = "0.151.0-alpha.7.2"
+version = "0.152.0"
 supported_by_docs = true
 configured = false
 config_loaded = false
 runtime_verified = false
 external_data_required = false
 blocked_reason = "PHASE1_DISABLED"
-verified_on = "2026-08-31"
+verified_on = "2026-09-01"
 evidence_refs = ["official:codex-hooks"]
 
 [[capability_evidence]]
 id = "hooks"
 platform = "gemini-cli"
 support_level = "NATIVE"
-version = "0.57.0"
+version = "NOT_INSTALLED"
 supported_by_docs = true
 configured = false
 config_loaded = false
 runtime_verified = false
 external_data_required = false
 blocked_reason = "PHASE1_DISABLED"
-verified_on = "2026-08-30"
+verified_on = "2026-09-01"
 evidence_refs = ["official:gemini-hooks"]
 
 [[capability_evidence]]
 id = "hooks"
 platform = "claude-code"
 support_level = "NATIVE"
+version = "2.1.252"
 supported_by_docs = true
 configured = false
 config_loaded = false
 runtime_verified = false
 external_data_required = false
 blocked_reason = "PHASE1_DISABLED"
-verified_on = "2026-08-31"
+verified_on = "2026-09-01"
 evidence_refs = ["official:claude-code-hooks"]
 
 [[capability_evidence]]
 id = "live-runtime"
 platform = "codex"
 support_level = "NATIVE"
-version = "0.151.0-alpha.7.2"
+version = "0.152.0"
 supported_by_docs = true
 configured = true
 config_loaded = true
 runtime_verified = true
 external_data_required = true
-verified_on = "2026-08-31"
+verified_on = "2026-09-01"
 evidence_refs = ["AGENT_DEPLOYMENT_SMOKE.md"]
 
 [[capability_evidence]]
 id = "live-runtime"
 platform = "gemini-cli"
 support_level = "NATIVE"
-version = "0.57.0"
+version = "NOT_INSTALLED"
 supported_by_docs = true
 configured = true
-config_loaded = true
+config_loaded = false
 runtime_verified = false
 external_data_required = true
-blocked_reason = "BLOCKED_EXTERNAL_DATA_AUTHORIZATION"
-verified_on = "2026-08-30"
+blocked_reason = "CLI_NOT_INSTALLED"
+verified_on = "2026-09-01"
 evidence_refs = ["AGENT_DEPLOYMENT_SMOKE.md"]
 
 [[capability_evidence]]
 id = "live-runtime"
 platform = "claude-code"
 support_level = "NATIVE"
-version = "2.1.251"
+version = "2.1.252"
 supported_by_docs = true
 configured = true
 config_loaded = true
 runtime_verified = false
 external_data_required = true
 blocked_reason = "BLOCKED_EXTERNAL_DATA_AUTHORIZATION"
-verified_on = "2026-08-31"
+verified_on = "2026-09-01"
 evidence_refs = ["CLAUDE_CODE_DEPLOYMENT.md", "official:claude-code-how-it-works"]

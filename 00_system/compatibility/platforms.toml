@@ -4,7 +4,7 @@ artifact_state = "WORKING"
 [[platforms]]
 id = "codex"
 capability_audit = "CURRENT_PARTIAL"
-verified_on = "2026-08-30"
+verified_on = "2026-09-01"
 context_file = "AGENTS.md"
 project_config = ".codex/config.toml"
 native_config_format = "toml"
@@ -19,7 +19,7 @@ evidence = [
 [[platforms]]
 id = "claude-code"
 capability_audit = "CURRENT_PARTIAL"
-verified_on = "2026-08-31"
+verified_on = "2026-09-01"
 context_file = "CLAUDE.md"
 project_config = ".claude/settings.json"
 native_config_format = "json"
@@ -34,15 +34,16 @@ evidence = [
 [[platforms]]
 id = "gemini-cli"
 capability_audit = "CURRENT_PARTIAL"
-verified_on = "2026-08-30"
+verified_on = "2026-09-01"
 context_file = "GEMINI.md"
 project_config = ".gemini/settings.json"
 native_config_format = "json"
 hooks = "NATIVE"
 skills = "NATIVE"
 evidence = [
-  "https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md",
-  "https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/gemini-md.md",
+  "https://geminicli.com/docs/reference/configuration/",
+  "https://geminicli.com/docs/cli/gemini-md/",
+  "https://geminicli.com/docs/cli/trusted-folders/",
   "https://geminicli.com/docs/hooks/reference/",
 ]
 

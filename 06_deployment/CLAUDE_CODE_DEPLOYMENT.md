@@ -1,6 +1,8 @@
 # Claude Code Deployment
 
-> 状态：`WORKING`
+> 状态：`APPROVED`
+>
+> Approval Reference：`PAOS-020`
 >
 > 官方资料核验：`2026-08-31`
 
@@ -34,7 +36,11 @@ python3 06_deployment/deploy_adapter.py \
 python3 06_deployment/deploy_adapter.py \
   --manifest 03_adapters/claude-code/manifest.toml \
   --target . \
-  --apply
+  --apply \
+  --backup-dir 99_temp/deployment_backups/claude-code \
+  --record-dir 99_temp/deployment_records \
+  --authorization-ref PAOS-020 \
+  --scope PROJECT
 ```
 
 ## 验收边界
@@ -48,6 +54,6 @@ python3 06_deployment/deploy_adapter.py \
 ## 当前状态
 
 - Working Adapter：`GENERATED`、`DEPLOYED_CANDIDATE`。
-- Config Load：`PASS`（通过临时官方 npm 包 `2.1.251` 执行 `claude doctor`；项目设置未报告错误）。
+- Config Check：`PASS`（本机 Claude Code `2.1.252`，隔离 `CLAUDE_CONFIG_DIR` 执行 `claude doctor` exit `0`；未登录、未发送 Prompt；Managed Settings 未获取）。
 - Live Runtime：`BLOCKED`（尚无 External Data Authorization，未登录、未发送项目内容）。
 - Hooks：未配置、未启用。

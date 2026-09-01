@@ -1,4 +1,4 @@
-# GENERATED CANDIDATE. 修改源文件而不是本文件。
+# GENERATED WORKING. 修改 Source 而不是本文件。
 # Source: 00_system/compatibility/adapter_profiles.toml
 
 project_doc_max_bytes = 65536

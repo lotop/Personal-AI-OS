@@ -1,14 +1,17 @@
 # Codex Deployment
 
-> 状态：`WORKING`
+> 状态：`APPROVED`
 >
-> 官方资料核验：`2026-08-30`
+> Approval Reference：`PAOS-020`
+>
+> 官方资料核验：`2026-09-01`
 
 ## 原生能力边界
 
 - Codex 在运行开始时读取 `AGENTS.md` 指令链。
 - 全局层默认位于 Codex Home；项目层从项目根向当前工作目录逐层发现。
 - 项目配置可使用 `.codex/config.toml`，用户配置使用 Codex Home 下的 `config.toml`。
+- 项目级配置只有在项目受信任时才会加载；文件已生成/部署不等于 Trust 或 Config Load 已通过。
 - Hooks、Skills、Rules 和权限配置必须遵循当前 Codex 原生格式，不由 Personal AI OS 自创字段替代。
 
 ## 候选部署映射
@@ -25,3 +28,5 @@
 - 项目配置通过官方 Schema 或 Codex 自检。
 - 默认权限不扩大，Hooks 保持关闭。
 - Smoke Test 能读取项目目标、Task Card 和适用规则。
+
+当前观察：本机 Codex `0.152.0`；本会话加载仓库 `AGENTS.md` 并执行本地工具。该证据不授权外部数据传输、用户级配置部署或 Hooks。

@@ -3,7 +3,7 @@
     "fileName": [
       "AGENTS.md"
     ],
-    "loadFromIncludeDirectories": false,
+    "loadMemoryFromIncludeDirectories": false,
     "fileFiltering": {
       "respectGitIgnore": true
     }

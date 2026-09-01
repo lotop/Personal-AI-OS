@@ -1,6 +1,8 @@
 # Gemini CLI Deployment
 
-> 状态：`WORKING`
+> 状态：`APPROVED`
+>
+> Approval Reference：`PAOS-020`
 >
 > 官方资料核验：`2026-09-01`
 
@@ -9,6 +11,8 @@
 - Gemini CLI 默认使用分层 `GEMINI.md` 作为上下文文件。
 - 项目级设置位于 `.gemini/settings.json`，覆盖用户设置。
 - `context.fileName` 可以配置一个或多个上下文文件名。
+- 当前官方键为 `context.loadMemoryFromIncludeDirectories`；不得使用已漂移的 `loadFromIncludeDirectories`。
+- Folder Trust 启用且目录不受信任时，项目 Settings 会被忽略；部署成功不等于 Config/Context Load。
 - Hooks 在 `settings.json` 的 `hooks` 对象中配置，并通过 JSON 输入输出通信。
 - 项目级 Hooks 应视为不可信代码，启用前必须完成信任检查。
 
@@ -27,4 +31,4 @@
 - Hooks 不输出非 JSON 内容到标准输出。
 - Smoke Test 能读取项目目标、Task Card 和适用规则。
 
-当前只完成项目配置生成与历史 Config Load 证据；本机 Registry 仍记录 CLI 未安装，不能将其扩大为当前 Live Runtime Smoke。
+当前只完成项目配置生成与历史 Config Load 证据；`2026-09-01` 本机 CLI 未安装，不能将其扩大为当前 Config Load、Context Load 或 Live Runtime Smoke。

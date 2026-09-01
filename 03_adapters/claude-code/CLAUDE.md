@@ -1,4 +1,4 @@
-<!-- GENERATED CANDIDATE. 修改 Source 或生成器，不直接修改本文件。 -->
+<!-- GENERATED WORKING. 修改 Source 或生成器，不直接修改本文件。 -->
 <!-- Source: 00_system/compatibility/adapter_profiles.toml -->
 
 @AGENTS.md
@@ -9,12 +9,12 @@
 
 ### 初始化与诊断
 
-- 首次部署或 Adapter 变化后，用 `/context` 确认 `CLAUDE.md` 已加载；若规则未生效，再检查 `@AGENTS.md` 导入。
-- 若发现 `AGENTS.md` 导入失败，在复杂写入前停止并报告配置问题。
-- 不使用 `/init` 覆盖本文件；改进应回到 Adapter Source 和生成器。
+- 用 `/context` 确认 Context Load，用 `/status` 确认 Settings Source；两者不得互相替代。
+- 若 `@AGENTS.md` 导入失败，在复杂写入前停止并报告。
+- 不使用 `/init` 覆盖本文件；改进回到 Adapter Source 和生成器。
 
 ### Claude Code 专属边界
 
-- Auto Memory、`CLAUDE.local.md` 和 Conversation 只属于个人或运行时上下文，不自动成为 Memory、Decision、Rule 或 Project Knowledge。
-- 不自行创建或启用项目级 `.claude/rules/`、Hooks、Skills、Subagents 或 MCP 配置；这些能力必须遵循项目的 Source、Approval、External Data 与验证流程。
-- 平台配置位于 `.claude/settings.json`；不得绕过其中的权限限制。
+- Auto Memory、`CLAUDE.local.md` 和 Conversation 不自动成为正式事实。
+- 不自行创建或启用 Rules、Hooks、Skills、Subagents 或 MCP。
+- 项目配置需经 Workspace Trust；Live Runtime 与外部数据授权单独验证。

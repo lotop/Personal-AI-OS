@@ -267,6 +267,22 @@
 - Integration：在 `codex/v1.2-canonical-promotion` 分支形成批准实现与 Promotion Evidence；默认 Canonical 生效等待最终合并与 V1.2 Release Evidence。
 - Founder Approval：用户明确回复“批准”。
 
+### PAOS-020｜V1.2 Deployment + Recovery Pack 批准
+
+- 状态：`APPROVED`
+- 日期：`2026-09-01`
+- Owner：Founder / `paos-19-v1-2-canonical-promotion-audit`
+- Decision：批准 26 个 Compatibility/Runtime/Adapter/Deployment 文件组成 V1.2 Approval Pack 05，并按审计记录的七组修正完成实施与分层 Promotion。
+- Contract Boundary：`00_system/compatibility/README.md`、`adapter_profiles.toml`、`03_adapters/README.md` 与 `06_deployment/` 规则升级为 Approved Contract；Platforms/Capabilities/Runtime Registry 保持时间敏感 `WORKING` Evidence；Generated Adapter 与项目部署目标保持 `GENERATED/WORKING`。
+- Generation Boundary：Adapter Generator 默认只输出 Plan，写入必须显式 `--write`；Profile 未知字段、目标漂移、symlink、特殊文件、未声明输出和部分失败全部 Fail Closed/回滚。
+- Deployment Boundary：只接受受管 Manifest；Apply 强制单次授权、Target Scope、不可变记录、覆盖备份和全事务回滚。本次只部署仓库项目级 Codex/Claude/Gemini 目标，不授权用户级配置。
+- Runtime Boundary：Codex `0.152.0` 当前 Context/Runtime Evidence 为 PASS；Claude Code `2.1.252` 仅完成隔离 `doctor` Config Check，Live Runtime 未授权；Gemini CLI 当前未安装，历史 Config Load 不冒充当前验证。
+- Recovery Boundary：V1.2 Recovery Evidence 必须使用 Tree Digest V0.2 并等待全部 Pack/最终实现冻结；Recovery Package 与 Clean Distribution Package 分离，Private Remote、全新设备、大型资产与 Secret 重绑定在真实演练前保持 `NOT_TESTED`。
+- Scope：仅限 `V1.2_APPROVAL_PACK_05_DEPLOYMENT_RECOVERY.md` 明列的 Pack 文件及其审计、Decision、Task/Evidence 记录。
+- Boundary：不安装 Gemini、不执行 Claude/Gemini Live Runtime、不启用 Hook/MCP/Plugin/Skill、不刷新最终 V1.2 Recovery Evidence；不构成 Merge、V1.2 Release、Tag、Push、外部数据授权或纯净发行包发布。
+- Integration：在 `codex/v1.2-canonical-promotion` 分支形成批准实现与 Promotion Evidence；默认 Canonical 生效等待最终合并与 V1.2 Release Evidence。
+- Founder Approval：用户明确回复“可以”。
+
 ## Candidate Decisions
 
 - 当前无待确认 Candidate Decision。
