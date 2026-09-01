@@ -1,5 +1,16 @@
 # Changelog
 
+## V1.2.0 Formal Release
+
+- **六大 Approval Pack 全面收口**：完成 Governance、Security、Lifecycle、Identity、Mode、Memory、Factory、Templates、Harness、Hooks、Deployment、Recovery 与 Skills 全部六个模块的审查、修正与 Canonical Promotion。
+- **治理与安全规则升级**：完善审批控制、变更审计、冲突解决、源码保护与外部数据权限安全红线。
+- **项目工厂与模板体系强化**：模板零 Diff 固化，Factory 自动化验证与多平台初始化闭环。
+- **Harness 与验证工具演进**：Tree Digest 升级至 V0.2（纳入 Git object kind/mode 与 SHA-256），Schema 校验器与 Repository Validator 强化 symlink 防御与深度契约检查。
+- **适配器与部署安全门禁**：修复 Gemini 配置键漂移；`deploy_adapter.py` 强制要求 `--authorization-ref`、`--backup-dir` 覆盖保护并输出不可变部署记录。
+- **Skills 架构规范**：升级 `SKILLS_ARCHITECTURE.md` 为 Approved Rule，对齐 `create-paos-project` 部署参数与标准 YAML Frontmatter。
+- **发布与双路径恢复**：完成冷克隆与离线 Bundle 双路径演练，固化 V1.2.0 恢复证据，并通过 M1~M6 全部门禁。
+- Founder 授权本地 annotated tag `v1.2.0`（`PAOS-REL-006`）；不 Push。
+
 ## V1.1.4 Local Release
 
 - 修正 Decision Index、Physical Architecture 与 PAOS-015 Task Registry 的 V1.1.3 状态漂移。

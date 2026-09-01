@@ -85,14 +85,18 @@ Claude Code 入口（`CLAUDE.md` 与 `.claude/settings.json`）已由 Approved P
 python3 /Users/lotop/Personal-AI-OS/06_deployment/deploy_adapter.py \
   --manifest /Users/lotop/Personal-AI-OS/03_adapters/codex/manifest.toml \
   --target <TARGET_PATH> \
+  --scope PROJECT \
   --authorization-ref PAOS-INIT-<PROJECT_ID> \
+  --record-dir 99_temp/deploy_records \
   --apply
 
 # 部署 Gemini 适配器
 python3 /Users/lotop/Personal-AI-OS/06_deployment/deploy_adapter.py \
   --manifest /Users/lotop/Personal-AI-OS/03_adapters/gemini-cli/manifest.toml \
   --target <TARGET_PATH> \
+  --scope PROJECT \
   --authorization-ref PAOS-INIT-<PROJECT_ID> \
+  --record-dir 99_temp/deploy_records \
   --apply
 ```
 

@@ -2,9 +2,9 @@
 
 > 状态：`APPROVED`
 >
-> 已批准基线：`v1.1.4`（`PAOS-REL-005`）
+> 已批准基线：`v1.2.0`（`PAOS-REL-006`）
 >
-> 当前发布：`v1.1.4`，由本地 annotated tag 与 Release Evidence 绑定
+> 当前发布：`v1.2.0`，由本地 annotated tag 与 Release Evidence 绑定
 
 本索引记录已经由 Founder 明确确认的决策事实。Decision Record 正式结构模板由 `PAOS-TMPL-003` 批准。
 
@@ -296,6 +296,17 @@
 - Scope：仅限 `V1.2_APPROVAL_PACK_06_SKILLS.md` 明列的 Pack 文件及其审计、Decision、Task/Evidence 记录。
 - Integration：在 `codex/v1.2-canonical-promotion` 分支形成批准实现与 Promotion Evidence；默认 Canonical 生效等待最终合并与 V1.2 Release Evidence。
 - Founder Approval：用户明确批准推进。
+
+### PAOS-REL-006｜Personal AI OS 1.2.0 Release 批准
+
+- 状态：`APPROVED`
+- 日期：`2026-09-02`
+- Owner：Founder / `paos-20-v1-2-formal-release`
+- Decision：批准 Personal AI OS V1.2.0 本地正式发布，包括六大 Approval Pack 的合流、双路径恢复演练、Tree Digest V0.2 固化与本地 annotated tag `v1.2.0`。
+- Baseline Boundary：已批准基线正式晋升为 `v1.2.0 / PAOS-REL-006`。
+- Release Gate Boundary：M1~M6 全部门禁通过；Release Evidence 由 annotated tag 与本地 Bundle 共同证明。
+- Synchronization Boundary：本发布仅限本地 Control Plane，不执行 `git push`；远端同步由 Founder 自行在 VS Code 独立操作。
+- Founder Approval：用户明确批准发版推进。
 
 ## Candidate Decisions
 
