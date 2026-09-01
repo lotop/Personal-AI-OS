@@ -78,19 +78,21 @@ python3 /Users/lotop/Personal-AI-OS/04_project_factory/create_project.py \
 ### 步骤 C：部署 Codex 与 Gemini 适配器
 
 Claude Code 入口（`CLAUDE.md` 与 `.claude/settings.json`）已由 Approved Project Base Pack 直接生成，
-无需额外部署。此处只为新建项目注入 Codex 与 Gemini 的平台适配器配置。部署仅限目标项目，不表示外部发布：
+无需额外部署。此处只为新建项目注入 Codex 与 Gemini 的平台适配器配置。部署仅限目标项目，必须附带单次授权引用（如 `PAOS-INIT-<PROJECT_ID>`），若目标存在同名文件需提供 `--backup-dir`：
 
 ```bash
 # 部署 Codex 适配器
 python3 /Users/lotop/Personal-AI-OS/06_deployment/deploy_adapter.py \
   --manifest /Users/lotop/Personal-AI-OS/03_adapters/codex/manifest.toml \
   --target <TARGET_PATH> \
+  --authorization-ref PAOS-INIT-<PROJECT_ID> \
   --apply
 
 # 部署 Gemini 适配器
 python3 /Users/lotop/Personal-AI-OS/06_deployment/deploy_adapter.py \
   --manifest /Users/lotop/Personal-AI-OS/03_adapters/gemini-cli/manifest.toml \
   --target <TARGET_PATH> \
+  --authorization-ref PAOS-INIT-<PROJECT_ID> \
   --apply
 ```
 

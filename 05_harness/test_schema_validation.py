@@ -129,6 +129,27 @@ class SchemaValidationTest(unittest.TestCase):
         self.assertTrue(any("缺少必填字段 owner" in error for error in errors))
         self.assertTrue(any("缺少必填字段 platform" in error for error in errors))
 
+    def test_skill_registry_schema_rejections(self) -> None:
+        root = Path(__file__).resolve().parents[1]
+        schema = json.loads(
+            (root / "00_system/schemas/skill-registry.schema.json").read_text(encoding="utf-8")
+        )
+        invalid = {
+            "schema_version": "0.1.0-working",
+            "artifact_state": "WORKING",
+            "skills": [
+                {
+                    "id": "INVALID_UPPERCASE",
+                    "path": ".agents/skills/demo/SKILL.md",
+                    "artifact_state": "WORKING",
+                    "owner": "paos-19",
+                    "description": "demo skill",
+                }
+            ],
+        }
+        errors = validate_instance(invalid, schema)
+        self.assertTrue(any("不匹配 pattern" in error for error in errors))
+
     def test_all_registry_files_have_schema_bindings(self) -> None:
         root = Path(__file__).resolve().parents[1]
         schema_root = root / "00_system/schemas"

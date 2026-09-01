@@ -283,6 +283,20 @@
 - Integration：在 `codex/v1.2-canonical-promotion` 分支形成批准实现与 Promotion Evidence；默认 Canonical 生效等待最终合并与 V1.2 Release Evidence。
 - Founder Approval：用户明确回复“可以”。
 
+### PAOS-021｜V1.2 Skills Pack 批准
+
+- 状态：`APPROVED`
+- 日期：`2026-09-01`
+- Owner：Founder / `paos-19-v1-2-canonical-promotion-audit`
+- Decision：批准 Skills Architecture、Schema、Registry 规范与具体已登记 Skills 组成 V1.2 Approval Pack 06，完成实施与 Promotion。
+- Contract Boundary：`00_system/skills/SKILLS_ARCHITECTURE.md` 升级为 Approved Canonical Rule；`00_system/schemas/skill-registry.schema.json` 升级为 0.2；`02_registry/skills.toml` 保持 Runtime Registry；已登记 Skills 保持在 `.agents/skills/` 下按需工作协议定位。
+- Protocol Boundary：规范标准 YAML Frontmatter 契约（`name`/`description`）；明确 Skills 按需加载、非全局常驻、权限不扩散与严禁未经授权破坏性操作安全红线。
+- Alignment Boundary：修复 `create-paos-project` 技能中的 `deploy_adapter.py` 调用参数，增加 `--authorization-ref` 与 `--backup-dir` 说明，与 Pack 05 部署安全门禁精确对齐。
+- Validation Boundary：`validate_repository.py` 增加对已登记 Skill 实体文件存在性与 Frontmatter 格式的深度校验；Schema 测试套件增加针对 Skill Registry 的校验用例。
+- Scope：仅限 `V1.2_APPROVAL_PACK_06_SKILLS.md` 明列的 Pack 文件及其审计、Decision、Task/Evidence 记录。
+- Integration：在 `codex/v1.2-canonical-promotion` 分支形成批准实现与 Promotion Evidence；默认 Canonical 生效等待最终合并与 V1.2 Release Evidence。
+- Founder Approval：用户明确批准推进。
+
 ## Candidate Decisions
 
 - 当前无待确认 Candidate Decision。

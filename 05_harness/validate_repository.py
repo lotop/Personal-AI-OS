@@ -235,9 +235,27 @@ def validate_registry_references(parsed: dict[Path, dict], report: Report) -> No
     task_ids = {item.get("id") for item in tasks}
     skills = parsed.get(ROOT / "02_registry/skills.toml", {}).get("skills", [])
     for skill in skills:
+        skill_id = skill.get("id", "<unknown>")
         owner = skill.get("owner")
         if owner not in task_ids:
-            report.error(f"Skill {skill.get('id', '<unknown>')} owner 未登记为 Task: {owner}")
+            report.error(f"Skill {skill_id} owner 未登记为 Task: {owner}")
+        skill_rel_path = skill.get("path")
+        if not skill_rel_path:
+            report.error(f"Skill {skill_id} 缺少 path")
+            continue
+        skill_file = ROOT / skill_rel_path
+        if skill_file.is_symlink():
+            report.error(f"Skill {skill_id} 路径不得为 symlink: {skill_rel_path}")
+        elif not skill_file.is_file():
+            report.error(f"Skill {skill_id} 对应文件不存在: {skill_rel_path}")
+        else:
+            text = skill_file.read_text(encoding="utf-8")
+            if not text.startswith("---"):
+                report.error(f"Skill {skill_id} 缺少标准 YAML Frontmatter")
+            else:
+                parts = text.split("---", 2)
+                if len(parts) < 3 or "name:" not in parts[1] or "description:" not in parts[1]:
+                    report.error(f"Skill {skill_id} Frontmatter 必须包含 name 与 description")
 
     hooks = parsed.get(ROOT / "02_registry/hooks.toml", {}).get("hooks", [])
     for hook in hooks:

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "paos://schemas/skill-registry/0.1",
+  "$id": "paos://schemas/skill-registry/0.2",
   "type": "object",
   "required": ["schema_version", "artifact_state", "skills"],
   "properties": {
