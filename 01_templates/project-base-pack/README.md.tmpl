@@ -1,0 +1,52 @@
+# {{PROJECT_NAME}}
+
+> Project ID：`{{PROJECT_ID}}` ｜ Owner：`{{OWNER}}` ｜ 类型：`{{PRIMARY_TYPE}}` ｜ 状态：`PROVISIONAL`
+
+本项目由 Personal AI OS Project Factory 从 `paos-project-base` `{{TEMPLATE_VERSION}}` 生成。
+
+## 这个项目是做什么的
+
+见 `PROJECT.md`。刚生成时其中的 Objective / Scope / Non-goals / Success Criteria 是空的，**需要 Owner 填写**——工厂不会替你编造项目目标。
+
+## 目录
+
+| 目录 | 放什么 |
+|---|---|
+| `00_governance/` | 项目规则与本类型的工作约定框架 |
+| `01_sources/` | 原始输入，只读 |
+| `02_knowledge/` | 已确认的长期知识 |
+| `05_harness/` | 本项目的校验与迭代工具 |
+| `07_working/` | 草稿与中间产物 |
+| `09_archive/` | 已替代但需追溯的材料 |
+| `99_temp/` | 临时文件，不提交 |
+
+根目录文件：`AGENTS.md`（Agent 规则入口）、`PROJECT.md`（目标与范围）、`DECISIONS.md`（决策记录）、`TASKS.md`（任务卡）、`project.toml`（机器可读元数据）。
+
+## 开始使用
+
+```bash
+python3 05_harness/validate_project.py
+```
+
+先跑一次自检，它会告诉你还有哪些内容待填写。
+
+然后按顺序：
+
+1. 填写 `PROJECT.md` 的四个空白小节
+2. 读 `00_governance/PROJECT_TYPE_FRAMEWORK.md`，补全其中"待 Owner 补全"的部分
+3. 在 `TASKS.md` 建立第一张真实 Task Card
+4. 软件开发类：填写 `project.toml` 的 `[stack]` 表
+
+完成后跑门槛校验，通过即可把状态改为 `ACTIVE`：
+
+```bash
+python3 05_harness/validate_project.py --require-active
+```
+
+## Agent 协作
+
+`CLAUDE.md`、`.codex/`、`.gemini/` 是各 Agent 平台的入口配置，均指向 `AGENTS.md`。**不要在平台配置里复制项目规则**——规则只有一份，在 `AGENTS.md`。
+
+## 与 Personal AI OS 的关系
+
+本项目是独立仓库，生成后即自治。Personal AI OS 只在创建时提供模板，不会回头改写本项目内容。项目自己的约定演进方式见 `05_harness/HARNESS.md`。

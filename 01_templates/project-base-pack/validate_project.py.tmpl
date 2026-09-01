@@ -1,0 +1,268 @@
+#!/usr/bin/env python3
+"""项目自校验器：检查项目结构、元数据与状态一致性。
+
+由 Personal AI OS Project Factory 随项目生成，属于项目自身的 Harness。
+默认只读，不修改任何文件。
+
+用法:
+    python3 05_harness/validate_project.py
+    python3 05_harness/validate_project.py --json
+    python3 05_harness/validate_project.py --require-active   # 转 ACTIVE 前的门槛
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import re
+import sys
+from pathlib import Path
+
+try:
+    import tomllib
+except ModuleNotFoundError:  # Python < 3.11
+    import tomli as tomllib  # type: ignore[no-redef]
+
+ROOT = Path(__file__).resolve().parents[1]
+
+PLACEHOLDER_PATTERN = re.compile(r"待\s*(Project Owner|Owner|[A-Za-z0-9_-]+)\s*补?填?写?")
+UNRENDERED_PATTERN = re.compile(r"\{\{[A-Z0-9_]+\}\}")
+
+REQUIRED_DIRS = [
+    "00_governance",
+    "01_sources",
+    "02_knowledge",
+    "05_harness",
+    "07_working",
+    "09_archive",
+    "99_temp",
+]
+
+REQUIRED_FILES = [
+    "AGENTS.md",
+    "CLAUDE.md",
+    "PROJECT.md",
+    "DECISIONS.md",
+    "TASKS.md",
+    "README.md",
+    "project.toml",
+    ".gitignore",
+]
+
+STACK_REQUIRED_FOR = {"SOFTWARE_DEVELOPMENT"}
+STACK_REQUIRED_FIELDS = ["language", "test_command"]
+
+SECRET_PATTERN = re.compile(
+    r"(?i)(api[_-]?key|secret[_-]?key|access[_-]?token|private[_-]?key)\s*[:=]\s*[\"']?[A-Za-z0-9_\-]{16,}"
+)
+
+
+class Report:
+    def __init__(self) -> None:
+        self.errors: list[str] = []
+        self.warnings: list[str] = []
+
+    def error(self, message: str) -> None:
+        self.errors.append(message)
+
+    def warn(self, message: str) -> None:
+        self.warnings.append(message)
+
+
+def load_project_toml(report: Report) -> dict:
+    path = ROOT / "project.toml"
+    if not path.is_file():
+        report.error("缺少 project.toml")
+        return {}
+    try:
+        return tomllib.loads(path.read_text(encoding="utf-8"))
+    except tomllib.TOMLDecodeError as exc:
+        report.error(f"project.toml 无法解析: {exc}")
+        return {}
+
+
+def check_structure(report: Report) -> None:
+    for name in REQUIRED_DIRS:
+        if not (ROOT / name).is_dir():
+            report.error(f"缺少目录: {name}/")
+    for name in REQUIRED_FILES:
+        if not (ROOT / name).is_file():
+            report.error(f"缺少文件: {name}")
+
+
+def check_claude_entry(report: Report) -> None:
+    path = ROOT / "CLAUDE.md"
+    if not path.is_file():
+        return
+    lines = path.read_text(encoding="utf-8").splitlines()
+    if not lines or lines[0].strip() != "@AGENTS.md":
+        report.error("CLAUDE.md 首行必须是 @AGENTS.md，否则项目规则不会被加载")
+
+
+def check_unrendered(report: Report) -> None:
+    for path in sorted(ROOT.rglob("*")):
+        if not path.is_file() or ".git" in path.parts or "99_temp" in path.parts:
+            continue
+        if path.suffix not in {".md", ".toml", ".json"}:
+            continue
+        try:
+            content = path.read_text(encoding="utf-8")
+        except (UnicodeDecodeError, OSError):
+            continue
+        if UNRENDERED_PATTERN.search(content):
+            report.error(f"存在未替换的模板变量: {path.relative_to(ROOT)}")
+
+
+def check_placeholders(report: Report, require_active: bool) -> None:
+    path = ROOT / "PROJECT.md"
+    if not path.is_file():
+        return
+    hits = []
+    for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
+        if PLACEHOLDER_PATTERN.search(line):
+            hits.append(f"PROJECT.md:{number}")
+    if not hits:
+        return
+    message = "PROJECT.md 仍有未填写的占位内容: " + ", ".join(hits)
+    if require_active:
+        report.error(message)
+    else:
+        report.warn(message)
+
+
+def check_status_consistency(report: Report, project: dict) -> None:
+    declared = project.get("status")
+    path = ROOT / "PROJECT.md"
+    if not declared or not path.is_file():
+        return
+    header = "\n".join(path.read_text(encoding="utf-8").splitlines()[:10])
+    match = re.search(r"^>\s*状态：`([A-Z_]+)`", header, re.MULTILINE)
+    if not match:
+        report.warn("PROJECT.md 头部缺少状态字段")
+        return
+    if match.group(1) != declared:
+        report.error(
+            f"状态漂移: project.toml={declared} 与 PROJECT.md={match.group(1)} 不一致"
+        )
+
+
+def check_type_framework(report: Report, project: dict) -> None:
+    primary_type = project.get("primary_type")
+    if not primary_type:
+        report.error("project.toml 缺少 primary_type")
+        return
+    framework = ROOT / "00_governance" / "PROJECT_TYPE_FRAMEWORK.md"
+    if not framework.is_file():
+        report.error("缺少 00_governance/PROJECT_TYPE_FRAMEWORK.md")
+        return
+    content = framework.read_text(encoding="utf-8")
+    if primary_type not in content:
+        report.error(
+            f"类型框架与 project.toml 的 primary_type={primary_type} 不匹配"
+        )
+
+
+def check_stack(report: Report, project: dict, require_active: bool) -> None:
+    primary_type = project.get("primary_type")
+    if primary_type not in STACK_REQUIRED_FOR:
+        return
+    stack = project.get("stack")
+    if not isinstance(stack, dict):
+        report.error("软件开发类项目的 project.toml 必须包含 [stack] 表")
+        return
+    empty = [field for field in STACK_REQUIRED_FIELDS if not str(stack.get(field, "")).strip()]
+    if not empty:
+        return
+    message = "[stack] 未填写必需字段: " + ", ".join(empty)
+    if require_active:
+        report.error(message)
+    else:
+        report.warn(message)
+
+
+def check_first_task(report: Report, require_active: bool) -> None:
+    path = ROOT / "TASKS.md"
+    if not path.is_file():
+        return
+    content = path.read_text(encoding="utf-8")
+    body = content.split("## Task Card Template", 1)[-1]
+    has_real_task = bool(re.search(r"^##\s+(?!Task Card Template)\S", body, re.MULTILINE))
+    if has_real_task:
+        return
+    message = "TASKS.md 只有空白模板，尚无正式 Task Card"
+    if require_active:
+        report.error(message)
+    else:
+        report.warn(message)
+
+
+def check_sources_readonly(report: Report) -> None:
+    sources = ROOT / "01_sources"
+    if not sources.is_dir():
+        return
+    for path in sources.rglob("*"):
+        if path.is_symlink():
+            report.error(f"01_sources/ 内不得存在符号链接: {path.relative_to(ROOT)}")
+
+
+def check_secrets(report: Report) -> None:
+    for path in sorted(ROOT.rglob("*")):
+        if not path.is_file() or ".git" in path.parts:
+            continue
+        if path.suffix not in {".md", ".toml", ".json", ".py", ".txt", ".yml", ".yaml"}:
+            continue
+        try:
+            content = path.read_text(encoding="utf-8")
+        except (UnicodeDecodeError, OSError):
+            continue
+        if SECRET_PATTERN.search(content):
+            report.error(f"疑似明文 Secret: {path.relative_to(ROOT)}")
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--json", action="store_true", help="输出机器可读结果")
+    parser.add_argument(
+        "--require-active",
+        action="store_true",
+        help="按 ACTIVE 门槛校验：占位内容、空 Task Card 与缺失 stack 视为错误",
+    )
+    args = parser.parse_args()
+
+    report = Report()
+    project = load_project_toml(report)
+
+    check_structure(report)
+    check_claude_entry(report)
+    check_unrendered(report)
+    check_placeholders(report, args.require_active)
+    check_status_consistency(report, project)
+    check_type_framework(report, project)
+    check_stack(report, project, args.require_active)
+    check_first_task(report, args.require_active)
+    check_sources_readonly(report)
+    check_secrets(report)
+
+    if args.json:
+        print(
+            json.dumps(
+                {
+                    "status": "FAIL" if report.errors else "PASS",
+                    "errors": report.errors,
+                    "warnings": report.warnings,
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+        )
+    else:
+        for message in report.errors:
+            print(f"ERROR: {message}")
+        for message in report.warnings:
+            print(f"WARN: {message}")
+        print(f"ERRORS={len(report.errors)} WARNINGS={len(report.warnings)}")
+    return 1 if report.errors else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

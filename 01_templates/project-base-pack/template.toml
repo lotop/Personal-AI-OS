@@ -1,9 +1,12 @@
 pack_id = "paos-project-base"
-version = "1.1.0"
+version = "1.2.0"
 artifact_state = "APPROVED"
 owner = "paos-04-factory"
 canonical_authority = "FOUNDER_APPROVAL"
-approval_reference = "PAOS-TMPL-002"
+approval_reference = "PAOS-TMPL-004"
+
+# primary_types 为可选过滤器：仅当项目类型匹配时才产出该文件。
+# 未声明该字段的记录对所有类型产出。
 
 [[files]]
 source = "AGENTS.md.tmpl"
@@ -19,6 +22,11 @@ render = true
 source = "claude-settings.json.tmpl"
 destination = ".claude/settings.json"
 render = false
+
+[[files]]
+source = "README.md.tmpl"
+destination = "README.md"
+render = true
 
 [[files]]
 source = "PROJECT.md.tmpl"
@@ -51,26 +59,65 @@ destination = "HANDOFF.md"
 render = true
 
 [[files]]
+source = "gitignore.tmpl"
+destination = ".gitignore"
+render = false
+
+[[files]]
+source = "HARNESS.md.tmpl"
+destination = "05_harness/HARNESS.md"
+render = true
+
+[[files]]
+source = "validate_project.py.tmpl"
+destination = "05_harness/validate_project.py"
+render = false
+
+[[files]]
+source = "TYPE_SOFTWARE_DEVELOPMENT.md.tmpl"
+destination = "00_governance/PROJECT_TYPE_FRAMEWORK.md"
+render = true
+primary_types = ["SOFTWARE_DEVELOPMENT"]
+
+[[files]]
+source = "TYPE_SOLUTION_RESEARCH.md.tmpl"
+destination = "00_governance/PROJECT_TYPE_FRAMEWORK.md"
+render = true
+primary_types = ["SOLUTION_RESEARCH"]
+
+[[files]]
+source = "TYPE_CONTENT_MARKETING.md.tmpl"
+destination = "00_governance/PROJECT_TYPE_FRAMEWORK.md"
+render = true
+primary_types = ["CONTENT_MARKETING"]
+
+[[files]]
+source = "TYPE_BRAND_MANAGEMENT.md.tmpl"
+destination = "00_governance/PROJECT_TYPE_FRAMEWORK.md"
+render = true
+primary_types = ["BRAND_MANAGEMENT"]
+
+[[files]]
 source = "empty.keep"
-destination = "sources/.gitkeep"
+destination = "01_sources/.gitkeep"
 render = false
 
 [[files]]
 source = "empty.keep"
-destination = "knowledge/.gitkeep"
+destination = "02_knowledge/.gitkeep"
 render = false
 
 [[files]]
 source = "empty.keep"
-destination = "working/.gitkeep"
+destination = "07_working/.gitkeep"
 render = false
 
 [[files]]
 source = "empty.keep"
-destination = "archive/.gitkeep"
+destination = "09_archive/.gitkeep"
 render = false
 
 [[files]]
 source = "empty.keep"
-destination = "tmp/.gitkeep"
+destination = "99_temp/.gitkeep"
 render = false

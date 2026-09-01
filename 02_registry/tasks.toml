@@ -201,3 +201,11 @@ status = "DONE"
 validation = ["scope-confirmed", "founder-authorized", "paos-025-recorded", "wizard-added", "wizard-e2e-pass", "wizard-reuses-canonical-patterns", "skill-authorization-ref-doc-fixed", "dashboard-removed", "dashboard-history-preserved", "harness-references-none", "local-offline-ci-no-fail", "no-tag", "no-push"]
 platform = "claude-code"
 platform_ref = "main"
+
+[[tasks]]
+id = "paos-25-project-template-v2"
+purpose = "Project Base Pack 升级至 1.2.0：四类项目类型框架、编号目录、项目自带 Harness 与技术栈约定"
+status = "DONE"
+validation = ["scope-confirmed", "founder-authorized", "paos-tmpl-004-recorded", "four-primary-types-defined", "four-type-frameworks-written", "numbered-directories-applied", "project-harness-shipped", "active-gate-implemented", "stack-table-added", "gitignore-and-readme-added", "primary-types-filter-implemented", "schema-updated", "duplicate-destination-check-type-aware", "four-type-e2e-creation-pass", "validator-behaviour-verified", "twenty-two-factory-tests-pass", "local-offline-ci-no-fail", "existing-projects-not-migrated", "no-tag", "no-push"]
+platform = "claude-code"
+platform_ref = "main"

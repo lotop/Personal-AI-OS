@@ -140,6 +140,9 @@ def load_plan(
     render_variables["TEMPLATE_VERSION"] = str(manifest.get("version", ""))
     files: list[PlannedFile] = []
     destinations: set[Path] = set()
+    # declared 收录 Manifest 登记的全部来源，与是否按类型产出无关；
+    # 否则按类型跳过的模板会被误判为“未登记文件”。
+    declared: set[Path] = set()
     for record in manifest.get("files", []):
         source_rel = confined_relative(record["source"], "source")
         destination_rel = confined_relative(record["destination"], "destination")
@@ -148,6 +151,16 @@ def load_plan(
             raise ValueError(f"模板来源不得是符号链接: {source_rel}")
         if pack.resolve() not in source.parents or not source.is_file():
             raise ValueError(f"模板来源不存在或越界: {source_rel}")
+        declared.add(source)
+        # primary_types 为可选过滤器：只有匹配当前项目类型的记录才会产出文件。
+        allowed_types = record.get("primary_types")
+        if allowed_types is not None:
+            if not isinstance(allowed_types, list) or not all(
+                isinstance(item, str) for item in allowed_types
+            ):
+                raise ValueError(f"primary_types 必须是字符串数组: {source_rel}")
+            if variables.get("PRIMARY_TYPE") not in allowed_types:
+                continue
         destination = target / destination_rel
         if destination_rel in destinations:
             raise ValueError(f"重复目标路径: {destination_rel}")
@@ -159,7 +172,6 @@ def load_plan(
         files.append(PlannedFile(source, destination, content))
     if not files:
         raise ValueError("Template Pack 没有文件记录")
-    declared = {item.source.resolve() for item in files}
     actual = {
         path.resolve()
         for path in pack.rglob("*")

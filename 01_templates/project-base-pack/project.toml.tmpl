@@ -1,4 +1,4 @@
-schema_version = "0.2.0-working"
+schema_version = "0.3.0-working"
 project_id = "{{PROJECT_ID}}"
 name = "{{PROJECT_NAME}}"
 owner = "{{OWNER}}"
@@ -9,13 +9,28 @@ template_pack = "paos-project-base"
 template_version = "{{TEMPLATE_VERSION}}"
 
 [paths]
-sources = "sources"
-knowledge = "knowledge"
-working = "working"
-archive = "archive"
-temp = "tmp"
+governance = "00_governance"
+sources = "01_sources"
+knowledge = "02_knowledge"
+harness = "05_harness"
+working = "07_working"
+archive = "09_archive"
+temp = "99_temp"
 
 [policy]
 source_read_only = true
 external_data_requires_authorization = true
 destructive_gc_enabled = false
+
+# 技术栈的唯一机器可读来源。Agent 需要构建/测试/lint 时读这里，不猜测。
+# 软件开发类项目转 ACTIVE 前必须填写 language 与 test_command。
+# 依赖清单使用语言原生文件（pyproject.toml / package.json / go.mod），不在此重复。
+[stack]
+language = ""
+language_version = ""
+package_manager = ""
+source_dir = ""
+test_command = ""
+lint_command = ""
+build_command = ""
+run_command = ""

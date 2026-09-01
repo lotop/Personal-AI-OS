@@ -11,6 +11,11 @@ import json
 from pathlib import Path
 from unittest.mock import patch
 
+try:
+    import tomllib
+except ModuleNotFoundError:  # Python < 3.11
+    import tomli as tomllib  # type: ignore[no-redef]
+
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from create_project import (
@@ -106,7 +111,7 @@ class ProjectFactoryTest(unittest.TestCase):
                 "PROJECT_ID": "demo-project",
                 "PROJECT_NAME": "Demo",
                 "OWNER": "Founder",
-                "PRIMARY_TYPE": "SOFTWARE_PRODUCT",
+                "PRIMARY_TYPE": "SOFTWARE_DEVELOPMENT",
                 "OVERLAYS": "ai,software",
             }
             pack_manifest, files = load_plan(pack, target, variables, self.PROJECT_PACK_KINDS)
@@ -120,14 +125,22 @@ class ProjectFactoryTest(unittest.TestCase):
 
     def test_pack_digest_fixed_vector_and_mismatch_rejected(self) -> None:
         pack = Path(__file__).resolve().parents[1] / "01_templates/project-base-pack"
-        expected = "2d63a47bbbb0a2f8f00773b247acc295a25f1a1bde7c7a9ecd526334861bf3dc"
+        # 固定向量：模板包任何改动都必须在此处显式更新，作为静默漂移的减速带。
+        expected = "778fe664e351ec3e4a6ccea01b56e6e5cbc1bcc2f316c8c3e8346899ea006337"
         self.assertEqual(calculate_pack_digest(pack), expected)
+        # factory.toml 的登记值必须与实际内容一致，防止改了模板却忘记更新登记。
+        factory = tomllib.loads(
+            (Path(__file__).resolve().parent / "factory.toml").read_text(encoding="utf-8")
+        )
+        self.assertEqual(
+            factory["approved_template_pack_digests"]["paos-project-base"], expected
+        )
         with tempfile.TemporaryDirectory() as raw:
             variables = {
                 "PROJECT_ID": "digest-test",
                 "PROJECT_NAME": "Digest Test",
                 "OWNER": "Founder",
-                "PRIMARY_TYPE": "SOFTWARE_PRODUCT",
+                "PRIMARY_TYPE": "SOFTWARE_DEVELOPMENT",
                 "OVERLAYS": "",
             }
             with self.assertRaisesRegex(ValueError, "Digest 不匹配"):
@@ -147,7 +160,7 @@ class ProjectFactoryTest(unittest.TestCase):
             "PROJECT_ID": "demo-project",
             "PROJECT_NAME": "Demo",
             "OWNER": "Founder",
-            "PRIMARY_TYPE": "SOFTWARE_PRODUCT",
+            "PRIMARY_TYPE": "SOFTWARE_DEVELOPMENT",
             "OVERLAYS": "ai",
         }
         pack_manifest = {
@@ -179,7 +192,7 @@ class ProjectFactoryTest(unittest.TestCase):
                 "--project-id", "candidate",
                 "--name", "Candidate",
                 "--owner", "Founder",
-                "--primary-type", "SOFTWARE_PRODUCT",
+                "--primary-type", "SOFTWARE_DEVELOPMENT",
                 "--provisional",
                 "--apply",
             ]
@@ -266,7 +279,7 @@ class ProjectFactoryTest(unittest.TestCase):
                 "--project-id", "invalid-project",
                 "--name", 'Bad " Name',
                 "--owner", "Founder",
-                "--primary-type", "SOFTWARE_PRODUCT",
+                "--primary-type", "SOFTWARE_DEVELOPMENT",
             ]
             result = subprocess.run(command, text=True, capture_output=True, check=False)
             self.assertEqual(result.returncode, 2)
@@ -285,7 +298,7 @@ class ProjectFactoryTest(unittest.TestCase):
                 "--project-id", "candidate-project",
                 "--name", "候选项目",
                 "--owner", "Founder",
-                "--primary-type", "SOFTWARE_PRODUCT",
+                "--primary-type", "SOFTWARE_DEVELOPMENT",
                 "--overlay", "ai",
             ]
             dry_run = subprocess.run(command, text=True, capture_output=True, check=False)
@@ -315,6 +328,71 @@ class ProjectFactoryTest(unittest.TestCase):
             self.assertEqual(init_manifest["schema_version"], "0.2.0")
             self.assertEqual(init_manifest["project_status"], "PROVISIONAL")
             self.assertEqual(init_manifest["template_state"], "APPROVED")
+
+    def test_primary_type_filter_emits_only_matching_framework(self) -> None:
+        """每个项目只应拿到与自身类型匹配的那一份类型框架。"""
+        pack = Path(__file__).resolve().parents[1] / "01_templates/project-base-pack"
+        factory = tomllib.loads(
+            (Path(__file__).resolve().parent / "factory.toml").read_text(encoding="utf-8")
+        )
+        expected_marker = {
+            "SOFTWARE_DEVELOPMENT": "software-development-framework",
+            "SOLUTION_RESEARCH": "solution-research-framework",
+            "CONTENT_MARKETING": "content-marketing-framework",
+            "BRAND_MANAGEMENT": "brand-management-framework",
+        }
+        self.assertEqual(sorted(factory["primary_types"]), sorted(expected_marker))
+        for primary_type, marker in expected_marker.items():
+            with tempfile.TemporaryDirectory() as raw:
+                target = Path(raw) / "project"
+                variables = {
+                    "PROJECT_ID": "filter-test",
+                    "PROJECT_NAME": "Filter Test",
+                    "OWNER": "Founder",
+                    "PRIMARY_TYPE": primary_type,
+                    "OVERLAYS": "",
+                }
+                _, files = load_plan(
+                    pack,
+                    target,
+                    variables,
+                    factory["template_pack_kinds"],
+                    factory["approved_template_pack_digests"],
+                )
+                frameworks = [
+                    item
+                    for item in files
+                    if item.destination.name == "PROJECT_TYPE_FRAMEWORK.md"
+                ]
+                self.assertEqual(len(frameworks), 1, f"{primary_type} 应恰好产出一份类型框架")
+                self.assertIn(marker, frameworks[0].content)
+                self.assertIn(primary_type, frameworks[0].content)
+
+    def test_unknown_primary_type_gets_no_framework(self) -> None:
+        """未登记类型不产出框架；由 CLI 的 primary_types 校验先行拦截。"""
+        pack = Path(__file__).resolve().parents[1] / "01_templates/project-base-pack"
+        factory = tomllib.loads(
+            (Path(__file__).resolve().parent / "factory.toml").read_text(encoding="utf-8")
+        )
+        with tempfile.TemporaryDirectory() as raw:
+            variables = {
+                "PROJECT_ID": "filter-test",
+                "PROJECT_NAME": "Filter Test",
+                "OWNER": "Founder",
+                "PRIMARY_TYPE": "NOT_A_REAL_TYPE",
+                "OVERLAYS": "",
+            }
+            _, files = load_plan(
+                pack,
+                Path(raw) / "project",
+                variables,
+                factory["template_pack_kinds"],
+                factory["approved_template_pack_digests"],
+            )
+            self.assertEqual(
+                [item for item in files if item.destination.name == "PROJECT_TYPE_FRAMEWORK.md"],
+                [],
+            )
 
 
 if __name__ == "__main__":

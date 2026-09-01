@@ -7,12 +7,13 @@ dry_run_default = true
 require_approved_template_pack = true
 default_branch = "main"
 
+# 每个类型对应一份专属约定框架，由 Template Pack 按 primary_types 过滤器产出到
+# 目标项目的 00_governance/PROJECT_TYPE_FRAMEWORK.md。新增类型必须同时提供框架文件。
 primary_types = [
-  "BUSINESS_VENTURE",
-  "SOFTWARE_PRODUCT",
-  "RESEARCH_DECISION",
-  "OPERATIONS_PROGRAM",
-  "CONTENT_BRAND",
+  "SOFTWARE_DEVELOPMENT",
+  "SOLUTION_RESEARCH",
+  "CONTENT_MARKETING",
+  "BRAND_MANAGEMENT",
 ]
 
 allowed_overlays = [
@@ -34,5 +35,5 @@ paos-core-templates = "ARTIFACT_LIBRARY"
 # Digest = SHA-256(sorted(relative_path + NUL + file_sha256 + LF))。
 # 该登记位于 Factory 外部，避免改写已批准 Template Manifest。
 [approved_template_pack_digests]
-paos-project-base = "2d63a47bbbb0a2f8f00773b247acc295a25f1a1bde7c7a9ecd526334861bf3dc"
+paos-project-base = "778fe664e351ec3e4a6ccea01b56e6e5cbc1bcc2f316c8c3e8346899ea006337"
 paos-core-templates = "bb5b690fdd4aef1dded0b8d0941b0c97c2a1287dbfdb2beeb09392bfb27b8fd0"

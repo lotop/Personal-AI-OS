@@ -22,13 +22,16 @@
 
 ## 项目类型候选
 
-- `BUSINESS_VENTURE`
-- `SOFTWARE_PRODUCT`
-- `RESEARCH_DECISION`
-- `OPERATIONS_PROGRAM`
-- `CONTENT_BRAND`
+| 类型 | 适用 | 专属框架文件 |
+|---|---|---|
+| `SOFTWARE_DEVELOPMENT` | 软件开发 | `TYPE_SOFTWARE_DEVELOPMENT.md.tmpl` |
+| `SOLUTION_RESEARCH` | 方案调研 | `TYPE_SOLUTION_RESEARCH.md.tmpl` |
+| `CONTENT_MARKETING` | 内容营销 | `TYPE_CONTENT_MARKETING.md.tmpl` |
+| `BRAND_MANAGEMENT` | 品牌管理 | `TYPE_BRAND_MANAGEMENT.md.tmpl` |
 
-复杂项目仍选择一个主要类型，再叠加 `software`、`data`、`ai`、`security`、`compliance`、`content`、`finance` 或 `vendor` Overlay。
+每个类型都必须在 Template Pack 中提供一份专属约定框架，经 `template.toml` 的 `primary_types` 过滤器产出到目标项目的 `00_governance/PROJECT_TYPE_FRAMEWORK.md`。**新增类型时必须同步提供框架文件**，否则该类型的项目会缺少类型约定，项目自校验器会报错。
+
+复杂项目仍选择一个主要类型，再叠加 `software`、`data`、`ai`、`security`、`compliance`、`content`、`finance` 或 `vendor` Overlay。Overlay 只做分类标签，不改变生成内容。
 
 ## 输出
 

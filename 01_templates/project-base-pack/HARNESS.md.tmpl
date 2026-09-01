@@ -1,0 +1,91 @@
+# Harness｜{{PROJECT_NAME}}
+
+> 项目：`{{PROJECT_NAME}}`（`{{PROJECT_ID}}`）
+>
+> 状态：`WORKING`
+
+本目录是项目自己的校验与迭代工具。它随项目生成，**属于项目**，可以由项目自行演进——不需要回到 Personal AI OS 改模板。
+
+---
+
+## 1. 校验器
+
+```bash
+python3 05_harness/validate_project.py
+```
+
+只读，不修改任何文件。检查内容：
+
+| 检查 | 说明 |
+|---|---|
+| 结构完整性 | 7 个编号目录与根级必需文件是否齐全 |
+| Agent 入口 | `CLAUDE.md` 首行是否为 `@AGENTS.md` |
+| 模板残留 | 是否有未替换的 `{{...}}` 变量 |
+| 占位内容 | `PROJECT.md` 是否仍有"待填写" |
+| 状态一致性 | `project.toml` 与 `PROJECT.md` 的状态是否漂移 |
+| 类型框架 | `00_governance/PROJECT_TYPE_FRAMEWORK.md` 是否与 `primary_type` 匹配 |
+| 技术栈 | 软件开发类是否填了 `[stack]` 必需字段 |
+| 首张任务 | `TASKS.md` 是否还只有空白模板 |
+| 只读边界 | `01_sources/` 内是否出现符号链接 |
+| 明文 Secret | 是否有疑似硬编码密钥 |
+
+默认模式下，占位内容、空 Task Card、未填 `[stack]` 只是 `WARN`——项目刚建好本来就该有这些。
+
+---
+
+## 2. PROVISIONAL → ACTIVE 门槛
+
+项目初始状态是 `PROVISIONAL`。转 `ACTIVE` 前先跑：
+
+```bash
+python3 05_harness/validate_project.py --require-active
+```
+
+这个模式把上述三项 `WARN` 升级为 `ERROR`，等价于要求：
+
+- `PROJECT.md` 的 Objective / Scope / Non-goals / Success Criteria 都已填写
+- `TASKS.md` 已有至少一张真实 Task Card
+- 软件开发类已填写 `[stack]` 的 `language` 与 `test_command`
+
+**退出码 0 才可以把状态改为 `ACTIVE`。** 改状态时 `project.toml` 与 `PROJECT.md` 两处都要改，校验器会检查一致性。
+
+---
+
+## 3. 自我迭代
+
+本项目的约定不是固定的。随着工作推进，你会发现类型框架里某些约定不适用、或者缺了关键的一条。**改它，不要绕过它。**
+
+迭代循环：
+
+| 步骤 | 动作 |
+|---|---|
+| **发现** | 记录哪条约定不适用、为什么、遇到了什么实际问题 |
+| **提案** | 在 `07_working/` 写出拟改内容与影响范围 |
+| **决策** | Owner 批准后记入 `DECISIONS.md`，含日期与理由 |
+| **实施** | 修改 `00_governance/PROJECT_TYPE_FRAMEWORK.md` 或 `AGENTS.md` |
+| **归档** | 被替代的旧版本移入 `09_archive/`，不删除 |
+| **校验** | 重跑 `validate_project.py`，确认没有引入不一致 |
+
+**校验器本身也可以改。** 项目发现了新的自动可查的错误类型，就往 `validate_project.py` 里加检查——这是项目 Harness 存在的意义。加检查时同步更新本文件第 1 节的表格。
+
+---
+
+## 4. 边界
+
+- 校验器**只读**，永远不自动修复、不自动提交、不自动改状态。
+- 校验通过**不等于**工作正确，只说明结构与元数据自洽。
+- 本项目的约定**不得与根目录 `AGENTS.md` 冲突**；冲突时以 `AGENTS.md` 为准。
+- 迭代本项目约定**不会**改变 Personal AI OS 的模板。若某条改进对所有项目都成立，把它反馈给 Personal AI OS，由那边决定是否进入下一版 Template Pack。
+
+---
+
+## 5. 与 Personal AI OS 的关系
+
+| 层 | 归属 | 变更方式 |
+|---|---|---|
+| Personal AI OS 治理规则 | 控制平面 | 由 PAOS 的批准流程变更 |
+| 本项目 `AGENTS.md` | 本项目 | 生成自模板，可由 Owner 修改 |
+| 本项目类型框架 | 本项目 | 按第 3 节循环迭代 |
+| 本项目 Harness | 本项目 | 可自由扩展 |
+
+项目一旦生成就是独立的。Personal AI OS 不会回头改写已生成项目的内容。

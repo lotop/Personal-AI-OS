@@ -4,6 +4,13 @@
 
 - **新增项目创建交互向导**（`04_project_factory/new_project.py`）：逐步选择/输入参数，自动完成预演 → 确认 → 创建 → 注入 Codex/Antigravity 适配器 → 验收 → 首次提交。取值范围从 `factory.toml` 读取，`SLUG_PATTERN` 与 `AUTHORIZATION_PATTERN` 直接从既有脚本导入复用，不形成第二份规则定义。
 - **修正 Skill 文档缺陷**：`deploy_adapter.py` 的 `AUTHORIZATION_PATTERN` 为 `^[A-Z0-9][A-Z0-9._:-]{2,127}$` 只接受大写，而 `project-id` 按定义是小写，原 `create-paos-project` Skill 文档给出的 `PAOS-INIT-<PROJECT_ID>` 在 `--apply` 阶段必然以 exit 2 失败。Dry Run 不校验该字段，问题只在正式部署时暴露。
+- **Project Base Pack 升级至 `1.2.0`**（`PAOS-TMPL-004`）：
+  - **项目类型收敛为四类**并各配一份专属约定框架，产出到项目的 `00_governance/PROJECT_TYPE_FRAMEWORK.md`：`SOFTWARE_DEVELOPMENT`（技术栈来源、工作循环、完成定义、质量红线）、`SOLUTION_RESEARCH`（来源 A/B/C/D 分级、证据要求、结论与置信度格式、方案比选）、`CONTENT_MARKETING`（受众与语气、生产流程、事实核查、发布授权、效果复盘）、`BRAND_MANAGEMENT`（品牌资产 L1~L4 分层、一致性校验、变更控制、危机响应边界）。
+  - **项目目录改为数字编号**，语义可对应处沿用 PAOS 编号：`00_governance/`、`01_sources/`、`02_knowledge/`、`05_harness/`、`07_working/`、`09_archive/`、`99_temp/`。
+  - **每个项目随附自己的 Harness**：`05_harness/validate_project.py` 检查结构、模板残留、占位内容、状态漂移、类型框架匹配、`[stack]` 完整性、首张 Task Card、只读边界与明文 Secret；`--require-active` 作为 `PROVISIONAL → ACTIVE` 的可验证门槛。`HARNESS.md` 定义项目自我迭代循环（发现 → 提案 → 决策 → 实施 → 归档 → 复校验），校验器本身可由项目扩展。
+  - **新增 `[stack]` 表**作为技术栈唯一机器可读来源；补齐此前缺失的 `.gitignore` 与 `README.md`。
+  - **Factory 支持按类型选择文件**：`load_plan` 新增 `primary_types` 过滤器，被跳过的模板仍计入已登记来源；Schema 与 `validate_repository.py` 的目标路径重复检查同步支持"类型互斥的同名目标"，并拒绝类型重叠或混入无过滤记录。
+  - 既有 `1.1.0` 项目不迁移，其类型取值已不在新枚举内。
 - **移除 `dashboard/`**（`PAOS-025`）：Founder 确认该组件不再需要。该目录自 `paos-13` 起长期排除在治理与验收之外，内容保留在 Git 历史与既有 tag、Bundle 中。相关历史评审记录与 `PAOS-023` 的安全整改记录一并保留，不改写。
 
 ## V1.2.2 Evidence Integrity Release

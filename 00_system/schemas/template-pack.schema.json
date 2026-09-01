@@ -20,7 +20,13 @@
         "properties": {
           "source": {"type": "string", "minLength": 1},
           "destination": {"type": "string", "minLength": 1},
-          "render": {"type": "boolean"}
+          "render": {"type": "boolean"},
+          "primary_types": {
+            "type": "array",
+            "items": {"type": "string", "minLength": 1},
+            "minItems": 1,
+            "uniqueItems": true
+          }
         }
       },
       "minItems": 1

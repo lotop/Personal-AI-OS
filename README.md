@@ -135,7 +135,7 @@ python3 06_deployment/deploy_adapter.py --manifest 03_adapters/antigravity-cli/m
     --project-id my-tool \
     --name "My Tool" \
     --owner lotop \
-    --primary-type SOFTWARE_PRODUCT \
+    --primary-type SOFTWARE_DEVELOPMENT \
     --overlay software --overlay ai \
     --git \
     --apply

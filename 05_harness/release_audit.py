@@ -174,7 +174,7 @@ def template_factory_gate(root: Path = ROOT) -> Gate:
                 "--owner",
                 "paos-release-audit",
                 "--primary-type",
-                "SOFTWARE_PRODUCT",
+                "SOFTWARE_DEVELOPMENT",
                 "--apply",
                 "--git",
             )

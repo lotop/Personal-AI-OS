@@ -1,0 +1,31 @@
+# 操作系统与编辑器
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# 密钥与本地环境：永远不提交
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# 临时运行资产：按项目 GC 规则可清理，不进入版本历史
+99_temp/*
+!99_temp/.gitkeep
+
+# 语言与工具缓存
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+node_modules/
+dist/
+build/
+*.log
+*.tmp
+
+# Agent 平台的个人级覆盖
+CLAUDE.local.md
+**/.claude/settings.local.json

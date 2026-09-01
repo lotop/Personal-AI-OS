@@ -4,6 +4,10 @@
 >
 > Owner：`{{OWNER}}`
 >
+> 项目类型：`{{PRIMARY_TYPE}}`
+>
+> 分类标签：`{{OVERLAYS}}`
+>
 > Template Version：`{{TEMPLATE_VERSION}}`
 >
 > 实例状态：`PROVISIONAL`（经项目 Owner 验收后方可调整）
@@ -15,25 +19,57 @@
 处理非简单任务前，按最小充分原则读取：
 
 1. 本文件及项目级已批准规则。
-2. `PROJECT.md`、`project.toml` 和适用 Decisions。
-3. `TASKS.md` 中的当前 Task Card。
-4. 与任务直接相关的 Source、Knowledge 和文件。
+2. `00_governance/PROJECT_TYPE_FRAMEWORK.md`（本项目类型的专属工作约定）。
+3. `PROJECT.md`、`project.toml` 和适用 Decisions。
+4. `TASKS.md` 中的当前 Task Card。
+5. 与任务直接相关的 Source、Knowledge 和文件。
 
 不得默认加载全部历史、归档、其他项目或无关资料。
 
-## Source of Truth 与生命周期
+## 项目类型约定
 
-- `sources/`：原始输入，只读，不静默改写。
-- `knowledge/`：项目批准后的长期知识。
-- `working/`：Working 产物，不具有 Canonical Authority。
-- `archive/`：已替代但需追溯的材料。
-- `tmp/`：临时运行资产，可按批准的 GC 规则清理。
+本项目类型为 `{{PRIMARY_TYPE}}`，其专属工作约定位于 `00_governance/PROJECT_TYPE_FRAMEWORK.md`，内容包括该类型的工作循环、完成标准、质量红线与目录落位。
+
+**涉及该类型核心工作的任务，动手前必须先读该文件。** 它从属于本文件；两者冲突时以本文件与 Owner 当前指令为准。
+
+类型框架初始状态为 `WORKING`，其中标注"待 Owner 补全"的部分在填写前不构成约束。
+
+`{{OVERLAYS}}` 是分类标签，只用于检索与归类，不改变任何工作约定。
+
+## 目录结构与 Source of Truth
+
+| 目录 | 用途 | 约束 |
+|---|---|---|
+| `00_governance/` | 项目级规则与类型约定框架 | 变更须经 Owner 批准并记入 `DECISIONS.md` |
+| `01_sources/` | 原始输入 | **只读**，不静默改写；需要加工时产出新文件 |
+| `02_knowledge/` | 项目批准后的长期知识 | 须可追溯到来源或决策 |
+| `05_harness/` | 项目自己的校验与迭代工具 | 只读校验，不自动修复 |
+| `07_working/` | Working 产物 | 不具有 Canonical Authority |
+| `09_archive/` | 已替代但需追溯的材料 | 归档不删除 |
+| `99_temp/` | 临时运行资产 | 可按批准的 GC 规则清理，不提交 |
 
 Conversation、AI 总结和 Generated 文件不得自动成为项目事实。
 
 ## Task Card
 
 复杂任务必须在 `TASKS.md` 声明 Objective、Scope、Non-goals、Read Set、Write Set、Dependencies、Expected Output、Acceptance Criteria、Owner 和 Permissions。并行任务的 Write Set 不得重叠。
+
+## 校验与状态推进
+
+```bash
+python3 05_harness/validate_project.py                    # 日常自检
+python3 05_harness/validate_project.py --require-active    # 转 ACTIVE 前的门槛
+```
+
+项目初始为 `PROVISIONAL`。转 `ACTIVE` 前 `--require-active` 必须退出码为 `0`，且 `project.toml` 与 `PROJECT.md` 两处状态同步更新。详见 `05_harness/HARNESS.md`。
+
+## 自我迭代
+
+本项目的约定可以演进。发现某条约定不适用时，**修改它而不是绕过它**：在 `07_working/` 提案 → Owner 批准并记入 `DECISIONS.md` → 修改 `00_governance/` 或本文件 → 旧版本移入 `09_archive/` → 重跑校验器。
+
+校验器本身也可扩展；新增检查时同步更新 `05_harness/HARNESS.md`。
+
+迭代本项目不会改变 Personal AI OS 的模板；若某条改进对所有项目都成立，反馈给 Personal AI OS 决定是否进入下一版 Template Pack。
 
 ## 权限与安全
 
@@ -51,4 +87,4 @@ Conversation、AI 总结和 Generated 文件不得自动成为项目事实。
 
 ## 冲突处理
 
-当用户当前指令、项目规则、Task Card 和 Agent 默认行为冲突时，不静默选择。影响目标、权限、Source of Truth 或正式交付物的冲突必须交给 Project Owner 决定。
+当用户当前指令、项目规则、类型框架、Task Card 和 Agent 默认行为冲突时，不静默选择。影响目标、权限、Source of Truth 或正式交付物的冲突必须交给 Project Owner 决定。

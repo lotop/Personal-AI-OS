@@ -364,9 +364,34 @@ def validate_template_packs(parsed: dict[Path, dict], report: Report) -> None:
                 report.error(f"Working 区 Template Pack 状态越权: {manifest_path.relative_to(ROOT)}")
             records = data.get("files", [])
             sources = [record.get("source") for record in records]
-            destinations = [record.get("destination") for record in records]
-            if len(destinations) != len(set(destinations)):
-                report.error(f"Template Pack 目标路径重复: {manifest_path.relative_to(ROOT)}")
+            # 同一目标路径只有在 primary_types 互斥时才允许重复：
+            # 每个项目类型各自产出一份，单次实例化仍只写一个文件。
+            claims: dict[str, list[set[str] | None]] = {}
+            for record in records:
+                destination = record.get("destination")
+                allowed = record.get("primary_types")
+                claims.setdefault(destination, []).append(
+                    set(allowed) if isinstance(allowed, list) else None
+                )
+            for destination, type_sets in claims.items():
+                if len(type_sets) == 1:
+                    continue
+                if any(item is None for item in type_sets):
+                    report.error(
+                        f"Template Pack 目标路径重复且存在无类型过滤记录: "
+                        f"{manifest_path.relative_to(ROOT)}: {destination}"
+                    )
+                    continue
+                seen: set[str] = set()
+                for item in type_sets:
+                    assert item is not None
+                    if item & seen:
+                        report.error(
+                            f"Template Pack 目标路径在同一项目类型下重复: "
+                            f"{manifest_path.relative_to(ROOT)}: {destination}"
+                        )
+                        break
+                    seen |= item
             entries = sorted(manifest_path.parent.rglob("*"))
             for path in entries:
                 relative = path.relative_to(manifest_path.parent)

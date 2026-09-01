@@ -382,6 +382,21 @@
 - Recovery Boundary：内容保留在 Git 历史与 `v1.2.2` 及更早的 tag、Bundle 中，可随时取回。
 - Founder Approval：用户明确说明该组件由本人删除且不再需要。
 
+### PAOS-TMPL-004｜Project Base Pack 1.2.0 批准
+
+- 状态：`APPROVED`
+- 日期：`2026-09-02`
+- Owner：Founder / `paos-25-project-template-v2`
+- Decision：批准 `01_templates/project-base-pack` 升级至 `1.2.0`，取代 `1.1.0`（`PAOS-TMPL-002`）作为唯一 `PROJECT_SCAFFOLD` 模板包。
+- Type Boundary：项目类型收敛为四类——`SOFTWARE_DEVELOPMENT`、`SOLUTION_RESEARCH`、`CONTENT_MARKETING`、`BRAND_MANAGEMENT`。每类必须提供一份专属约定框架，经 `template.toml` 的 `primary_types` 过滤器产出到目标项目的 `00_governance/PROJECT_TYPE_FRAMEWORK.md`。新增类型未提供框架文件即视为配置缺陷。
+- Structure Boundary：项目目录改为数字编号，语义可对应处沿用 Personal AI OS 的编号：`00_governance/`、`01_sources/`、`02_knowledge/`、`05_harness/`、`07_working/`、`09_archive/`、`99_temp/`。
+- Harness Boundary：每个项目随附 `05_harness/validate_project.py` 与 `HARNESS.md`。校验器只读、不自动修复、不自动改状态；`--require-active` 作为 `PROVISIONAL → ACTIVE` 的可验证门槛。项目可自行扩展该校验器，属于项目自治范围，不回写 Personal AI OS 模板。
+- Stack Boundary：`project.toml` 新增 `[stack]` 表作为技术栈的唯一机器可读来源；依赖清单继续使用语言原生文件，不发明新格式。软件开发类转 `ACTIVE` 前必须填写 `language` 与 `test_command`。
+- Factory Boundary：`create_project.py` 的 `load_plan` 新增 `primary_types` 过滤器；被过滤跳过的模板仍计入"已登记来源"，不触发未登记文件检查。`template-pack.schema.json` 与 `validate_repository.py` 的目标路径重复检查同步放行"类型互斥的同名目标"，并拒绝类型重叠或混入无过滤记录的情况。
+- Migration Boundary：本次不迁移既有项目。`1.1.0` 生成的项目（含 `demo-test`）保持原样，其 `primary_type` 取值已不在新枚举内，重新校验时会报类型不匹配；是否重建由项目 Owner 决定。
+- Evidence：四种类型各完成一次真实 `--apply --git` 创建；各自只产出匹配的类型框架；随附校验器在新项目默认模式 `ERRORS=0`，`--require-active` 正确拒绝未填写项，填写后通过，并能检出状态漂移。
+- Founder Approval：用户明确指示保留四类项目类型、为每类编写独立约定框架、为新项目提供校验与自我迭代能力、目录采用数字编号。
+
 ## Candidate Decisions
 
 - 当前无待确认 Candidate Decision。

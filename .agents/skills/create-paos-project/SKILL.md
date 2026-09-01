@@ -19,11 +19,14 @@ description: >-
 1. **项目名称 (`name`)**：人类可读的名称（例如：`智能文档分析器` 或 `smart-doc-analyzer`）。
 2. **项目标识 (`project-id`)**：2-63 位小写字母、数字或短横线连字符（例如：`smart-doc-analyzer`）。
 3. **主项目类型 (`primary-type`)**：
-   - `SOFTWARE_PRODUCT`（软件应用/产品开发，默认推荐）
-   - `BUSINESS_VENTURE`（商业创业/业务规划）
-   - `RESEARCH_DECISION`（深度调研与决策分析）
-   - `OPERATIONS_PROGRAM`（运营与流程项目）
-   - `CONTENT_BRAND`（内容创作与品牌建设）
+   - `SOFTWARE_DEVELOPMENT`（软件开发，默认推荐）
+   - `SOLUTION_RESEARCH`（方案调研与决策分析）
+   - `CONTENT_MARKETING`（内容营销与内容生产）
+   - `BRAND_MANAGEMENT`（品牌定位、规范与资产管理）
+
+   每个类型会产出一份专属约定框架到目标项目的 `00_governance/PROJECT_TYPE_FRAMEWORK.md`，
+   内容包括该类型的工作循环、完成标准、质量红线与目录落位。类型一旦选定即决定该文件内容，
+   权威取值来源为 `04_project_factory/factory.toml` 的 `primary_types`。
 4. **分类标签 (`overlays`)**（可选多选）：
    - 允许取值：`software`、`data`、`ai`、`security`、`compliance`、`content`、`finance`、`vendor`
      （权威来源为 `04_project_factory/factory.toml` 的 `allowed_overlays`）。
