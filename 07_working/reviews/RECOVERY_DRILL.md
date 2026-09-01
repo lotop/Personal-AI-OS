@@ -4,7 +4,7 @@
 >
 > 执行日期：`2026-09-01`
 >
-> Source Commit：`20715d51a6e73ae5a558f28a6d169ee9212a816d`
+> Source Commit：`24de865651a7064c536bb7d223791c38db9af237`
 >
 > Machine Evidence：`07_working/reviews/recovery_evidence.toml`
 
@@ -15,7 +15,7 @@
 ## 冷克隆结果
 
 - 命令：`git clone --no-local --branch main`。
-- 恢复 Commit：`20715d51a6e73ae5a558f28a6d169ee9212a816d`。
+- 恢复 Commit：`24de865651a7064c536bb7d223791c38db9af237`。
 - Local Offline CI：`PASS`。
 - Adapter Generator `--check`：`ADAPTERS_OK`。
 - `git fsck --full`：退出码 `0`。
@@ -23,10 +23,10 @@
 ## 离线 Bundle 结果
 
 - Bundle Path：`06_deployment/recovery_artifacts/v1.1.3.bundle`（本地、Git Ignored）。
-- Bundle Head：`20715d51a6e73ae5a558f28a6d169ee9212a816d`。
-- Bundle SHA-256：`317ed1a0cbdf3d13c7fbbb36fb8e6b8fcb966c706d04bc7f07732932cd9f71ad`。
+- Bundle Head：`24de865651a7064c536bb7d223791c38db9af237`。
+- Bundle SHA-256：`183952c02367ca13347a3d920c03ebfb65c1464eb6119a7135fb2eaf218560fb`。
 - `git bundle verify`：退出码 `0`。
-- Bundle 恢复 Commit：`20715d51a6e73ae5a558f28a6d169ee9212a816d`。
+- Bundle 恢复 Commit：`24de865651a7064c536bb7d223791c38db9af237`。
 - Local Offline CI：`PASS`。
 - Adapter Generator `--check`：`ADAPTERS_OK`。
 - `git fsck --full`：退出码 `0`。
@@ -34,7 +34,7 @@
 ## 内容一致性
 
 - Source/Cold Clone/Bundle Clone Commit：精确一致。
-- Tree SHA-256：`3864560515cc0133205ad877e1d992a5c2c7e735c7c82b750203460ec41caeff`。
+- Tree SHA-256：`b65993d552bc976331d9fa984842025121662ec4bcf9beaadfe6480b926082d8`。
 - Machine Evidence 与本报告 Commit、Bundle SHA、Tree SHA：一致。
 
 结论：`PASS`

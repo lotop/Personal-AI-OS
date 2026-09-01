@@ -142,6 +142,6 @@ platform_ref = "main"
 id = "paos-17-v1-1-3-local-release"
 purpose = "修复 Approved Manifest 漂移并完成 Personal AI OS V1.1.3 本地正式发布"
 status = "ACTIVE"
-validation = ["scope-confirmed", "founder-release-authorized", "direct-main-authorized", "no-push", "task-card-recorded", "approved-manifests-restored", "factory-routing-pass", "release-self-reference-removed", "release-candidate-20715d5", "cold-clone-pass", "bundle-clone-pass", "bundle-artifact-verified", "tree-digest-match"]
+validation = ["scope-confirmed", "founder-release-authorized", "direct-main-authorized", "no-push", "task-card-recorded", "approved-manifests-restored", "factory-routing-pass", "release-self-reference-removed", "release-candidate-24de865", "cold-clone-pass", "bundle-clone-pass", "bundle-artifact-verified", "tree-digest-match"]
 platform = "codex"
 platform_ref = "main"
