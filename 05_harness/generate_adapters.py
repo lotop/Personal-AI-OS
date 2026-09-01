@@ -49,7 +49,7 @@ def load_profiles(path: Path = PROFILE_PATH) -> dict:
         profiles,
         {
             "schema_version", "artifact_class", "maturity_state",
-            "canonical_authority", "approval_reference", "codex", "claude_code", "gemini_cli",
+            "canonical_authority", "approval_reference", "codex", "claude_code", "antigravity_cli",
         },
         "Adapter Profile",
     )
@@ -58,9 +58,9 @@ def load_profiles(path: Path = PROFILE_PATH) -> dict:
         or profiles["artifact_class"] != "CONFIG"
         or profiles["maturity_state"] != "APPROVED"
         or profiles["canonical_authority"] != "FOUNDER_APPROVED"
-        or profiles["approval_reference"] != "PAOS-020"
+        or profiles["approval_reference"] not in {"PAOS-020", "PAOS-022"}
     ):
-        raise ValueError("Adapter Profile 尚未形成 PAOS-020 Approved Contract")
+        raise ValueError("Adapter Profile 尚未形成 Approved Contract")
     codex = profiles["codex"]
     require_keys(codex, {"platform", "native_format", "target", "settings"}, "Codex Profile")
     require_keys(codex["settings"], {"project_doc_max_bytes", "project_root_markers"}, "Codex Settings")
@@ -69,14 +69,14 @@ def load_profiles(path: Path = PROFILE_PATH) -> dict:
     require_keys(claude["context"], {"imports"}, "Claude Context")
     require_keys(claude["settings"], {"schema", "permissions"}, "Claude Settings")
     require_keys(claude["settings"]["permissions"], {"deny"}, "Claude Permissions")
-    gemini = profiles["gemini_cli"]
-    require_keys(gemini, {"platform", "native_format", "target", "context"}, "Gemini Profile")
-    require_keys(gemini["context"], {"fileName", "loadMemoryFromIncludeDirectories", "fileFiltering"}, "Gemini Context")
-    require_keys(gemini["context"]["fileFiltering"], {"respectGitIgnore"}, "Gemini Filtering")
-    targets = {codex["target"], claude["context_target"], claude["settings_target"], gemini["target"]}
+    antigravity = profiles["antigravity_cli"]
+    require_keys(antigravity, {"platform", "native_format", "target", "context"}, "Antigravity Profile")
+    require_keys(antigravity["context"], {"fileName", "loadMemoryFromIncludeDirectories", "fileFiltering"}, "Antigravity Context")
+    require_keys(antigravity["context"]["fileFiltering"], {"respectGitIgnore"}, "Antigravity Filtering")
+    targets = {codex["target"], claude["context_target"], claude["settings_target"], antigravity["target"]}
     if targets != {".codex/config.toml", "CLAUDE.md", ".claude/settings.json", ".gemini/settings.json"}:
         raise ValueError("Adapter Profile Target 漂移")
-    if codex["platform"] != "codex" or claude["platform"] != "claude-code" or gemini["platform"] != "gemini-cli":
+    if codex["platform"] != "codex" or claude["platform"] != "claude-code" or antigravity["platform"] != "antigravity-cli":
         raise ValueError("Adapter Profile Platform 漂移")
     return profiles
 
@@ -125,12 +125,12 @@ def render_outputs(profile_path: Path = PROFILE_PATH, output_root: Path = OUTPUT
         "- 项目配置需经 Workspace Trust；Live Runtime 与外部数据授权单独验证。\n"
     )
     claude_json = json.dumps({"$schema": claude["settings"]["schema"], "permissions": {"deny": claude["settings"]["permissions"]["deny"]}}, ensure_ascii=False, indent=2) + "\n"
-    gemini = profiles["gemini_cli"]
-    gemini_json = json.dumps(
+    antigravity = profiles["antigravity_cli"]
+    antigravity_json = json.dumps(
         {"context": {
-            "fileName": gemini["context"]["fileName"],
-            "loadMemoryFromIncludeDirectories": gemini["context"]["loadMemoryFromIncludeDirectories"],
-            "fileFiltering": gemini["context"]["fileFiltering"],
+            "fileName": antigravity["context"]["fileName"],
+            "loadMemoryFromIncludeDirectories": antigravity["context"]["loadMemoryFromIncludeDirectories"],
+            "fileFiltering": antigravity["context"]["fileFiltering"],
         }},
         ensure_ascii=False,
         indent=2,
@@ -148,8 +148,8 @@ def render_outputs(profile_path: Path = PROFILE_PATH, output_root: Path = OUTPUT
             '[[files]]\nsource = "CLAUDE.md"\ntarget = "CLAUDE.md"\nformat = "markdown"\n\n'
             '[[files]]\nsource = "settings.json"\ntarget = ".claude/settings.json"\nformat = "json"\n'
         ),
-        output_root / "gemini-cli/settings.json": gemini_json,
-        output_root / "gemini-cli/manifest.toml": render_manifest("gemini-cli", "settings.json", gemini["target"], "json"),
+        output_root / "antigravity-cli/settings.json": antigravity_json,
+        output_root / "antigravity-cli/manifest.toml": render_manifest("antigravity-cli", "settings.json", antigravity["target"], "json"),
     }
 
 

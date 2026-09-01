@@ -19,7 +19,7 @@
         ],
         "properties": {
           "id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
-          "platform": {"type": "string", "enum": ["codex", "claude-code", "gemini-cli"]},
+          "platform": {"type": "string", "enum": ["codex", "claude-code", "antigravity-cli"]},
           "implementation_status": {"type": "string", "enum": ["NOT_IMPLEMENTED", "IMPLEMENTED"]},
           "config_load": {"type": "string", "enum": ["NOT_RUN", "PASS", "FAIL", "BLOCKED"]},
           "runtime_test": {"type": "string", "enum": ["NOT_RUN", "PASS", "FAIL", "BLOCKED"]},

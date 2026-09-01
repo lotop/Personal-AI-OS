@@ -1,7 +1,7 @@
 schema_version = "0.2.0-working"
 artifact_class = "GENERATED"
 maturity_state = "WORKING"
-platform = "gemini-cli"
+platform = "antigravity-cli"
 generator = "05_harness/generate_adapters.py@0.3"
 source_files = ["AGENTS.md", "00_system/compatibility/adapter_profiles.toml"]
 

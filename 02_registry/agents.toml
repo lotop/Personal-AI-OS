@@ -17,6 +17,6 @@ availability = "DECLARED"
 role = "RUNTIME_AGENT"
 
 [[agents]]
-id = "gemini-cli"
+id = "antigravity-cli"
 availability = "DECLARED"
 role = "RUNTIME_AGENT"

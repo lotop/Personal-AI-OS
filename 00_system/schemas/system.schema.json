@@ -58,13 +58,13 @@
     },
     "implementation": {
       "type": "object",
-      "required": ["physical_architecture", "project_factory", "codex_adapter", "claude_code_adapter", "gemini_adapter", "deployment", "release", "local_git_recovery", "offline_bundle_recovery", "private_remote_recovery"],
+      "required": ["physical_architecture", "project_factory", "codex_adapter", "claude_code_adapter", "antigravity_adapter", "deployment", "release", "local_git_recovery", "offline_bundle_recovery", "private_remote_recovery"],
       "properties": {
         "physical_architecture": {"type": "string"},
         "project_factory": {"type": "string"},
         "codex_adapter": {"type": "string"},
         "claude_code_adapter": {"type": "string"},
-        "gemini_adapter": {"type": "string"},
+        "antigravity_adapter": {"type": "string"},
         "deployment": {"type": "string"},
         "release": {"type": "string"},
         "local_git_recovery": {"type": "string"},
@@ -75,15 +75,15 @@
     },
     "deployment_status": {
       "type": "object",
-      "required": ["codex_project_config", "codex_runtime_smoke", "claude_code_project_config", "claude_code_config_load", "claude_code_runtime_smoke", "gemini_project_config", "gemini_runtime_smoke", "hooks_enabled"],
+      "required": ["codex_project_config", "codex_runtime_smoke", "claude_code_project_config", "claude_code_config_load", "claude_code_runtime_smoke", "antigravity_project_config", "antigravity_runtime_smoke", "hooks_enabled"],
       "properties": {
         "codex_project_config": {"type": "string"},
         "codex_runtime_smoke": {"type": "string"},
         "claude_code_project_config": {"type": "string"},
         "claude_code_config_load": {"type": "string"},
         "claude_code_runtime_smoke": {"type": "string"},
-        "gemini_project_config": {"type": "string"},
-        "gemini_runtime_smoke": {"type": "string"},
+        "antigravity_project_config": {"type": "string"},
+        "antigravity_runtime_smoke": {"type": "string"},
         "hooks_enabled": {"type": "boolean"}
       },
       "additionalProperties": false

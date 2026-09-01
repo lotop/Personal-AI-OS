@@ -2,9 +2,9 @@
 
 > 状态：`APPROVED`
 >
-> 已批准基线：`v1.2.0`（`PAOS-REL-006`）
+> 已批准基线：`v1.2.1`（`PAOS-REL-007`）
 >
-> 当前发布：`v1.2.0`，由本地 annotated tag 与 Release Evidence 绑定
+> 当前发布：`v1.2.1`，由本地 annotated tag 与 Release Evidence 绑定
 
 本索引记录已经由 Founder 明确确认的决策事实。Decision Record 正式结构模板由 `PAOS-TMPL-003` 批准。
 
@@ -304,6 +304,29 @@
 - Owner：Founder / `paos-20-v1-2-formal-release`
 - Decision：批准 Personal AI OS V1.2.0 本地正式发布，包括六大 Approval Pack 的合流、双路径恢复演练、Tree Digest V0.2 固化与本地 annotated tag `v1.2.0`。
 - Baseline Boundary：已批准基线正式晋升为 `v1.2.0 / PAOS-REL-006`。
+- Release Gate Boundary：M1~M6 全部门禁通过；Release Evidence 由 annotated tag 与本地 Bundle 共同证明。
+- Synchronization Boundary：本发布仅限本地 Control Plane，不执行 `git push`；远端同步由 Founder 自行在 VS Code 独立操作。
+- Founder Approval：用户明确批准发版推进。
+
+### PAOS-022｜Antigravity 平台迁移与适配规范批准
+
+- 状态：`APPROVED`
+- 日期：`2026-09-02`
+- Owner：Founder / `paos-21-antigravity-platform-migration`
+- Decision：将系统中历史 `gemini-cli` 平台标识与适配层全面迁移更正为 `antigravity-cli`（Google DeepMind Antigravity CLI / AGY），并与当前真实本地环境对齐。
+- Contract Boundary：`00_system/compatibility/adapter_profiles.toml`、`platforms.toml` 与 `capabilities.toml` 将平台更正为 `antigravity-cli`；原生配置文件保持 `.gemini/settings.json` 与 `.agents/` 映射。
+- Adapter Boundary：适配器重命名生成至 `03_adapters/antigravity-cli/`；部署规范更新为 `06_deployment/ANTIGRAVITY_DEPLOYMENT.md`；`create-paos-project` 技能更新部署路径。
+- Runtime Boundary：在 `02_registry/runtimes.toml` 中将 `antigravity-cli` 状态更正为 `INSTALLED`（实测 `config_load = PASS`, `runtime_smoke = PASS`），消除历史未安装失真状态。
+- Schema Boundary：Task、Hook、Runtime 与 System Schemas 全面增加/更新 `antigravity-cli` 平台枚举支持。
+- Founder Approval：用户明确指示更正并批准实施方案。
+
+### PAOS-REL-007｜Personal AI OS 1.2.1 Release 批准
+
+- 状态：`APPROVED`
+- 日期：`2026-09-02`
+- Owner：Founder / `paos-21-antigravity-platform-migration`
+- Decision：批准 Personal AI OS V1.2.1 本地正式发布，包括 Antigravity CLI 平台迁移、真实运行时账本刷新、双路径恢复演练与本地 annotated tag `v1.2.1`。
+- Baseline Boundary：已批准基线正式晋升为 `v1.2.1 / PAOS-REL-007`。
 - Release Gate Boundary：M1~M6 全部门禁通过；Release Evidence 由 annotated tag 与本地 Bundle 共同证明。
 - Synchronization Boundary：本发布仅限本地 Control Plane，不执行 `git push`；远端同步由 Founder 自行在 VS Code 独立操作。
 - Founder Approval：用户明确批准发版推进。

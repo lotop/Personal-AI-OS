@@ -61,5 +61,5 @@ Skill 的完整演化遵循以下生命周期：
 
 - **Codex / ChatGPT**：通过项目规则按需读取 `.agents/skills/` 下的 `SKILL.md`。
 - **Claude Code**：在 `CLAUDE.md` 治理框架下按需引用协议，不自行私建未登记技能。
-- **Gemini CLI**：遵循 Session Protocol 与 Skill 指引执行。
+- **Antigravity CLI (AGY)**：遵循 Session Protocol 与 Skill 指引执行。
 - 平台入口由各适配器统一协调，保持核心 SOP 业务逻辑一致。

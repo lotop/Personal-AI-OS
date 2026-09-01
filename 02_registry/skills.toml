@@ -6,7 +6,7 @@ id = "create-paos-project"
 path = ".agents/skills/create-paos-project/SKILL.md"
 artifact_state = "WORKING"
 owner = "paos-10-v1-1-1-consistency"
-description = "使用 Approved Project Base Pack 创建独立 PAOS 项目并部署 Codex/Gemini Adapter"
+description = "使用 Approved Project Base Pack 创建独立 PAOS 项目并部署 Codex/Antigravity Adapter"
 
 [[skills]]
 id = "paos-session-manager"

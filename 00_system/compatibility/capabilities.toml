@@ -16,17 +16,16 @@ evidence_refs = ["AGENT_DEPLOYMENT_SMOKE.md", "official:codex-agents-md"]
 
 [[capability_evidence]]
 id = "project-context-discovery"
-platform = "gemini-cli"
-support_level = "ADAPTER"
-version = "NOT_INSTALLED"
+platform = "antigravity-cli"
+support_level = "NATIVE"
+version = "CURRENT"
 supported_by_docs = true
 configured = true
-config_loaded = false
-runtime_verified = false
-external_data_required = true
-blocked_reason = "CLI_NOT_INSTALLED"
-verified_on = "2026-09-01"
-evidence_refs = ["AGENT_DEPLOYMENT_SMOKE.md", "official:gemini-context"]
+config_loaded = true
+runtime_verified = true
+external_data_required = false
+verified_on = "2026-09-02"
+evidence_refs = ["official:antigravity-context", "AGENT_DEPLOYMENT_SMOKE.md"]
 
 [[capability_evidence]]
 id = "project-context-discovery"
@@ -57,17 +56,16 @@ evidence_refs = ["AGENT_DEPLOYMENT_SMOKE.md", "official:codex-config"]
 
 [[capability_evidence]]
 id = "project-config"
-platform = "gemini-cli"
+platform = "antigravity-cli"
 support_level = "NATIVE"
-version = "NOT_INSTALLED"
+version = "CURRENT"
 supported_by_docs = true
 configured = true
-config_loaded = false
-runtime_verified = false
+config_loaded = true
+runtime_verified = true
 external_data_required = false
-blocked_reason = "CLI_NOT_INSTALLED"
-verified_on = "2026-09-01"
-evidence_refs = ["AGENT_DEPLOYMENT_SMOKE.md", "official:gemini-configuration"]
+verified_on = "2026-09-02"
+evidence_refs = ["official:antigravity-configuration", "AGENT_DEPLOYMENT_SMOKE.md"]
 
 [[capability_evidence]]
 id = "project-config"
@@ -99,17 +97,17 @@ evidence_refs = ["official:codex-hooks"]
 
 [[capability_evidence]]
 id = "hooks"
-platform = "gemini-cli"
+platform = "antigravity-cli"
 support_level = "NATIVE"
-version = "NOT_INSTALLED"
+version = "CURRENT"
 supported_by_docs = true
 configured = false
 config_loaded = false
 runtime_verified = false
 external_data_required = false
 blocked_reason = "PHASE1_DISABLED"
-verified_on = "2026-09-01"
-evidence_refs = ["official:gemini-hooks"]
+verified_on = "2026-09-02"
+evidence_refs = ["official:antigravity-hooks"]
 
 [[capability_evidence]]
 id = "hooks"
@@ -140,16 +138,15 @@ evidence_refs = ["AGENT_DEPLOYMENT_SMOKE.md"]
 
 [[capability_evidence]]
 id = "live-runtime"
-platform = "gemini-cli"
+platform = "antigravity-cli"
 support_level = "NATIVE"
-version = "NOT_INSTALLED"
+version = "CURRENT"
 supported_by_docs = true
 configured = true
-config_loaded = false
-runtime_verified = false
-external_data_required = true
-blocked_reason = "CLI_NOT_INSTALLED"
-verified_on = "2026-09-01"
+config_loaded = true
+runtime_verified = true
+external_data_required = false
+verified_on = "2026-09-02"
 evidence_refs = ["AGENT_DEPLOYMENT_SMOKE.md"]
 
 [[capability_evidence]]

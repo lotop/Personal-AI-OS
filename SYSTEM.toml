@@ -1,19 +1,19 @@
 schema_version = "0.4.0-working"
 system_name = "Personal AI OS"
-target_version = "1.2.0"
+target_version = "1.2.1"
 artifact_state = "APPROVED"
 canonical_authority = "FOUNDER_APPROVED"
 default_language = "zh-CN"
 default_structured_config = "toml"
 
 [approved_baseline]
-version = "1.2.0"
+version = "1.2.1"
 artifact_state = "APPROVED"
 canonical_authority = "FOUNDER_APPROVED"
-approval_reference = "PAOS-REL-006"
-git_tag = "v1.2.0"
+approval_reference = "PAOS-REL-007"
+git_tag = "v1.2.1"
 # freeze_commit 是实现冻结提交；最终 Release Commit 由 annotated tag 直接绑定。
-freeze_commit = "5e1053eb6710378a7065b07775582bf4fd70694b"
+freeze_commit = "11e438a8b192aecbb5c109a246fe00d7f5c243dd"
 
 [repository]
 role = "canonical-control-plane-repository"
@@ -36,11 +36,11 @@ physical_architecture = "APPROVED"
 project_factory = "APPROVED"
 codex_adapter = "GENERATED_WORKING"
 claude_code_adapter = "GENERATED_WORKING"
-gemini_adapter = "GENERATED_WORKING"
+antigravity_adapter = "GENERATED_WORKING"
 deployment = "APPROVED_LOCAL"
 release = "APPROVED_LOCAL_NO_PUSH"
-local_git_recovery = "PASS_V1.1.4"
-offline_bundle_recovery = "PASS_V1.1.4"
+local_git_recovery = "PASS_V1.2.0"
+offline_bundle_recovery = "PASS_V1.2.0"
 private_remote_recovery = "NOT_TESTED"
 
 [deployment_status]
@@ -49,6 +49,6 @@ codex_runtime_smoke = "PASS_CURRENT_TASK"
 claude_code_project_config = "DEPLOYED_WORKING"
 claude_code_config_load = "PASS_ISOLATED"
 claude_code_runtime_smoke = "NOT_RUN_EXTERNAL_DATA_NOT_AUTHORIZED"
-gemini_project_config = "DEPLOYED_WORKING"
-gemini_runtime_smoke = "NOT_INSTALLED_AND_EXTERNAL_DATA_NOT_AUTHORIZED"
+antigravity_project_config = "DEPLOYED_WORKING"
+antigravity_runtime_smoke = "PASS_CURRENT_TASK"
 hooks_enabled = false

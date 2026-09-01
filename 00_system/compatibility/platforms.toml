@@ -32,19 +32,19 @@ evidence = [
 ]
 
 [[platforms]]
-id = "gemini-cli"
+id = "antigravity-cli"
 capability_audit = "CURRENT_PARTIAL"
-verified_on = "2026-09-01"
-context_file = "GEMINI.md"
+verified_on = "2026-09-02"
+context_file = "AGENTS.md"
 project_config = ".gemini/settings.json"
 native_config_format = "json"
 hooks = "NATIVE"
 skills = "NATIVE"
 evidence = [
+  "https://github.com/google-deepmind/antigravity",
   "https://geminicli.com/docs/reference/configuration/",
   "https://geminicli.com/docs/cli/gemini-md/",
   "https://geminicli.com/docs/cli/trusted-folders/",
-  "https://geminicli.com/docs/hooks/reference/",
 ]
 
 [[platforms]]

@@ -1,5 +1,14 @@
 # Changelog
 
+## V1.2.1 Platform Migration Release
+
+- **平台标识与运行时全面更正**：将历史 `gemini-cli` 全面迁移更正为 **`antigravity-cli` (Google DeepMind Antigravity CLI / AGY)**。
+- **适配器生成与部署重构**：生成 `03_adapters/antigravity-cli/`，目标保持原生映射至 `.gemini/settings.json` 与 `.agents/`，更新部署说明文档为 `06_deployment/ANTIGRAVITY_DEPLOYMENT.md`。
+- **运行时账本真实证据刷新**：在 `runtimes.toml` 中将 `antigravity-cli` 状态更正为 `INSTALLED`（实测 `config_load = PASS`, `runtime_smoke = PASS`），消除历史未安装失真状态。
+- **Schemas 与门禁全面对齐**：升级 Task、Hook、Runtime 与 System Schemas 平台枚举，更新 `release_audit.py` M4 适配器门禁。
+- **文档与技能调用同步**：更新 `create-paos-project` 技能、`SKILLS_ARCHITECTURE.md` 与 `README.md`。
+- Founder 授权本地 annotated tag `v1.2.1`（`PAOS-REL-007`）；不 Push。
+
 ## V1.2.0 Formal Release
 
 - **六大 Approval Pack 全面收口**：完成 Governance、Security、Lifecycle、Identity、Mode、Memory、Factory、Templates、Harness、Hooks、Deployment、Recovery 与 Skills 全部六个模块的审查、修正与 Canonical Promotion。

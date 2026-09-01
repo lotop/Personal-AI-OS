@@ -32,6 +32,6 @@
 - `SMOKE_TESTED`：目标 Agent 已加载并通过最小测试。
 - `ROLLED_BACK`：已恢复到部署前状态。
 
-当前状态：Codex、Claude Code 与 Gemini CLI 项目级 Working Adapter 已部署。Codex `0.152.0` 当前 Context/Runtime Evidence 为 `PASS`；Claude Code `2.1.252` 隔离 `doctor` Config Check 为 `PASS`，Live Runtime 未授权；Gemini CLI 当前未安装，只有历史 Config Load Evidence，不能扩大为当前 Config Load 或 Live Runtime。
+当前状态：Codex、Claude Code 与 Antigravity CLI 项目级 Working Adapter 已部署。Codex `0.152.0` 当前 Context/Runtime Evidence 为 `PASS`；Claude Code `2.1.252` 隔离 `doctor` Config Check 为 `PASS`，Live Runtime 未授权；Antigravity IDE / CLI 当前运行环境 Context Load 与 Runtime Smoke 实测为 `PASS`。
 
 `Configured → Deployed → Trusted → Config Loaded → Context Loaded → Runtime Verified → External Data Authorized` 是不同证据层，后层不得由前层推断。

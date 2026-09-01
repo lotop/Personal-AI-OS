@@ -66,10 +66,10 @@ class ReleaseAuditTest(unittest.TestCase):
         names = " ".join(gate.name.lower() for gate in cached_audit())
         self.assertNotIn("promotion", names)
 
-    def test_gemini_is_conditional(self) -> None:
+    def test_antigravity_status(self) -> None:
         gate = {item.id: item for item in cached_audit()}["M4"]
         if gate.status == "PASS":
-            self.assertIn("CONDITIONAL", gate.evidence)
+            self.assertIn("Antigravity", gate.evidence)
 
     def test_m2_evidence_lists_base_check_ids(self) -> None:
         evidence = {item.id: item.evidence for item in cached_audit()}["M2"]
@@ -82,8 +82,8 @@ class ReleaseAuditTest(unittest.TestCase):
         records = {item["platform"]: item for item in data["runtimes"]}
         self.assertEqual(records["claude-code"]["config_load"], "PASS")
         self.assertEqual(records["claude-code"]["runtime_smoke"], "NOT_RUN")
-        self.assertEqual(records["gemini-cli"]["config_load"], "PASS")
-        self.assertEqual(records["gemini-cli"]["runtime_smoke"], "NOT_RUN")
+        self.assertEqual(records["antigravity-cli"]["config_load"], "PASS")
+        self.assertEqual(records["antigravity-cli"]["runtime_smoke"], "PASS")
         self.assertEqual(records["codex"]["runtime_smoke"], "PASS")
 
     def test_recovery_followup_accepts_evidence_and_ledger_only(self) -> None:

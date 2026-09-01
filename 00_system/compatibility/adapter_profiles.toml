@@ -2,7 +2,7 @@ schema_version = "0.2.0"
 artifact_class = "CONFIG"
 maturity_state = "APPROVED"
 canonical_authority = "FOUNDER_APPROVED"
-approval_reference = "PAOS-020"
+approval_reference = "PAOS-022"
 
 [codex]
 platform = "codex"
@@ -28,14 +28,15 @@ schema = "https://json.schemastore.org/claude-code-settings.json"
 [claude_code.settings.permissions]
 deny = ["Read(./.env)", "Read(./.env.*)"]
 
-[gemini_cli]
-platform = "gemini-cli"
+[antigravity_cli]
+platform = "antigravity-cli"
 native_format = "json"
 target = ".gemini/settings.json"
 
-[gemini_cli.context]
+[antigravity_cli.context]
 fileName = ["AGENTS.md"]
 loadMemoryFromIncludeDirectories = false
 
-[gemini_cli.context.fileFiltering]
+[antigravity_cli.context.fileFiltering]
 respectGitIgnore = true
+

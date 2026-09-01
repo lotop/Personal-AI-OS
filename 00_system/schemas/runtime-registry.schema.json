@@ -13,7 +13,7 @@
         "required": ["id", "platform", "availability", "version", "verified_on", "project_config", "runtime_smoke"],
         "properties": {
           "id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
-          "platform": {"type": "string", "enum": ["codex", "claude-code", "gemini-cli"]},
+          "platform": {"type": "string", "enum": ["codex", "claude-code", "antigravity-cli"]},
           "availability": {"type": "string", "enum": ["INSTALLED", "TRANSIENT_AVAILABLE", "NOT_INSTALLED"]},
           "version": {"type": "string", "minLength": 1},
           "verified_on": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},

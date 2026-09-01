@@ -58,7 +58,7 @@ REQUIRED_FILES = [
     "04_project_factory/FACTORY_SPEC.md",
     "06_deployment/CODEX_DEPLOYMENT.md",
     "06_deployment/CLAUDE_CODE_DEPLOYMENT.md",
-    "06_deployment/GEMINI_DEPLOYMENT.md",
+    "06_deployment/ANTIGRAVITY_DEPLOYMENT.md",
     "00_system/security/EXTERNAL_DATA_POLICY.md",
     "00_system/compatibility/capabilities.toml",
 ]

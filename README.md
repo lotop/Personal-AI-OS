@@ -1,8 +1,8 @@
-# Personal AI OS V1.1.4 Approved Local Release
+# Personal AI OS V1.2.1 Approved Local Release
 
-> **当前状态**：`APPROVED` | **当前发布**：`v1.1.4` | **已批准基线**：`v1.1.4`（`PAOS-REL-005`）
+> **当前状态**：`APPROVED` | **当前发布**：`v1.2.1` | **已批准基线**：`v1.2.1`（`PAOS-REL-007`）
 > 
-> 本仓库是 **Personal AI OS** 的 **Canonical Control Plane（本地中央控制平面）**，用于统筹和治理跨设备、多 Agent（Codex、Claude Code 与 Gemini）的个人 AI 研发工作流与独立业务项目。
+> 本仓库是 **Personal AI OS** 的 **Canonical Control Plane（本地中央控制平面）**，用于统筹和治理跨设备、多 Agent（Codex、Claude Code 与 Antigravity）的个人 AI 研发工作流与独立业务项目。
 
 ---
 
@@ -70,7 +70,7 @@ TODO ──> ACTIVE ──> REVIEW ──> DONE
 * 🚀 **全栈软件产品研发**：从脚手架初始化、模块设计、单测驱动（TDD）到复杂重构，保持代码风格与架构规范高度统一。
 * 💡 **产品探索与商业分析**：支持商业模式画布（BMC）、精益画布（Lean Canvas）、PRD 需求规格与竞品分析的标准化撰写与迭代。
 * 🔬 **深度研究与架构决策 (ADR)**：在面临复杂技术选型、数据库/框架重构时，通过严格的 `DECISIONS.md` 记录决策依据、替代方案与潜在风险。
-* 🤖 **跨 Agent 协同研发**：通过统一 Canonical Rule 协调 Codex、Claude Code 与 Gemini；各平台能力与验证状态分别登记，不把 Config Load 等同于 Live Runtime。
+* 🤖 **跨 Agent 协同研发**：通过统一 Canonical Rule 协调 Codex、Claude Code 与 Antigravity CLI；各平台能力与验证状态分别登记，不把 Config Load 等同于 Live Runtime。
 * 📚 **个人数字资产与知识积累**：跨年度、跨项目沉淀经过验证的最佳实践模板与技能包，告别项目碎片化。
 
 ---
@@ -98,23 +98,21 @@ TODO ──> ACTIVE ──> REVIEW ──> DONE
 # 运行本地离线检查；它不等同于 Release Readiness
 python3 05_harness/ci_gate.py --profile local-offline
 
-# 检查 M1–M6。v1.1.4 已完成 Founder Approval 与本地 annotated tag，
-# 在干净工作区且 HEAD 位于 tag 上时六个 Gate 全部 PASS。
-# 工作区有未提交修改时 M1 返回 BLOCKED（exit code 14），属于预期行为。
+# 检查 M1–M6 门禁
 python3 05_harness/ci_gate.py --profile release-readiness
 ```
 
-### 2. 部署 Codex、Claude Code 与 Gemini 适配器
+### 2. 部署 Codex、Claude Code 与 Antigravity 适配器
 在当前仓库根目录下执行同步部署：
 ```bash
 # 部署 Codex 适配配置 (.codex/config.toml)
-python3 06_deployment/deploy_adapter.py --manifest 03_adapters/codex/manifest.toml --target . --apply
+python3 06_deployment/deploy_adapter.py --manifest 03_adapters/codex/manifest.toml --target . --scope PROJECT --authorization-ref PAOS-DEPLOY-001 --record-dir 99_temp/deploy_records --apply
 
 # 部署 Claude Code 适配配置 (CLAUDE.md 与 .claude/settings.json)
-python3 06_deployment/deploy_adapter.py --manifest 03_adapters/claude-code/manifest.toml --target . --apply
+python3 06_deployment/deploy_adapter.py --manifest 03_adapters/claude-code/manifest.toml --target . --scope PROJECT --authorization-ref PAOS-DEPLOY-001 --record-dir 99_temp/deploy_records --apply
 
-# 部署 Gemini 适配配置 (.gemini/settings.json)
-python3 06_deployment/deploy_adapter.py --manifest 03_adapters/gemini-cli/manifest.toml --target . --apply
+# 部署 Antigravity 适配配置 (.gemini/settings.json)
+python3 06_deployment/deploy_adapter.py --manifest 03_adapters/antigravity-cli/manifest.toml --target . --scope PROJECT --authorization-ref PAOS-DEPLOY-001 --record-dir 99_temp/deploy_records --apply
 ```
 
 ### 3. 创建你的第一个独立业务项目
@@ -144,7 +142,7 @@ python3 06_deployment/deploy_adapter.py --manifest 03_adapters/gemini-cli/manife
 
 | 角色 | 推荐 Agent | 核心职责 |
 | :--- | :--- | :--- |
-| **总控与架构师** | **Gemini / Antigravity** | 制定项目目标（`PROJECT.md`）、拆解具体任务卡（`tasks/TASK-xxx.md`）、把控只读/只改文件范围（Read/Write Set）、代码审查与架构决策（`DECISIONS.md`）。 |
+| **总控与架构师** | **Antigravity (AGY)** | 制定项目目标（`PROJECT.md`）、拆解具体任务卡（`tasks/TASK-xxx.md`）、把控只读/只改文件范围（Read/Write Set）、代码审查与架构决策（`DECISIONS.md`）。 |
 | **研究与审查协作者** | **Claude Code** | 通过 `CLAUDE.md` 导入同一 `AGENTS.md` Router，在相同 Task Card、权限和 Source-of-Truth 边界下进行实现、分析或审查。 |
 | **工程师与执行者** | **Codex** | 严格围绕单张 Task Card 进行代码编写、单测实现（TDD）与局部重构，确保小步交付。 |
 
@@ -163,7 +161,7 @@ Personal-AI-OS/
 ├── 00_system/              # 【核心规则源】治理、安全、Mode、Memory 与多 Agent 同步
 ├── 01_templates/           # 【模板库】经过严格审批的基础项目包（project-base-pack 等）
 ├── 02_registry/            # 【注册表】Projects、Agents、Skills 与 Hooks 状态登记
-├── 03_adapters/            # 【适配层】Codex、Claude Code 与 Gemini 原生配置生成物
+├── 03_adapters/            # 【适配层】Codex、Claude Code 与 Antigravity 原生配置生成物
 ├── 04_project_factory/     # 【项目工厂】独立业务项目创建引擎与验证
 ├── 05_harness/             # 【验证机制】CI 门禁检查、离线自检与验收工具
 ├── 06_deployment/          # 【部署工具】适配器原子部署、备份与恢复脚本
@@ -180,3 +178,4 @@ Personal-AI-OS/
 1. **单向生成**：`00_system/` 是规则的唯一事实来源；`.codex`、`.claude`、`.gemini` 等平台配置由适配器生成，严禁手动逆向修改。
 2. **零静默覆盖**：所有文件写入均支持 Dry Run 预检与带备份的原子替换。
 3. **Hooks 审慎开启**：Phase 1 阶段自动化 Hook 默认关闭，避免未经授权的自动化操作。
+

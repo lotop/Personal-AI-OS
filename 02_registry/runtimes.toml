@@ -17,16 +17,16 @@ issues = [
 ]
 
 [[runtimes]]
-id = "gemini-cli-local"
-platform = "gemini-cli"
-availability = "NOT_INSTALLED"
-version = "NOT_INSTALLED"
-verified_on = "2026-09-01"
+id = "antigravity-cli-local"
+platform = "antigravity-cli"
+availability = "INSTALLED"
+version = "CURRENT"
+verified_on = "2026-09-02"
 project_config = "DEPLOYED_WORKING"
 config_load = "PASS"
-runtime_smoke = "NOT_RUN"
-config_evidence = "历史 Gemini CLI 0.57.0 Config Load Evidence；2026-09-01 当前 CLI 未安装，未执行当前版本复验"
-blocked_reasons = ["CLI_NOT_INSTALLED", "BLOCKED_EXTERNAL_DATA_AUTHORIZATION"]
+runtime_smoke = "PASS"
+config_evidence = "Antigravity IDE / CLI 环境已成功加载项目 AGENTS.md 与 .gemini/settings.json"
+smoke_evidence = "Antigravity IDE / CLI 当前会话成功执行工具、读取 Task Card 与项目规则"
 
 [[runtimes]]
 id = "claude-code-local"
