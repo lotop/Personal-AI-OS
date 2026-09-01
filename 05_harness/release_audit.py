@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import re
 import subprocess
 import sys
@@ -69,8 +70,19 @@ class Gate:
     evidence: str
 
 
-def run(root: Path, *args: str, text: bool = True) -> subprocess.CompletedProcess:
-    return subprocess.run(args, cwd=root, text=text, capture_output=True, check=False)
+GIT_ENV = {
+    **os.environ,
+    "HOME": "/dev/null",
+    "GIT_CONFIG_GLOBAL": "/dev/null",
+    "GIT_CONFIG_SYSTEM": "/dev/null",
+    "GIT_CONFIG_NOSYSTEM": "1",
+    "XDG_CONFIG_HOME": "/dev/null",
+}
+
+
+def run(root: Path, *args: str, text: bool = True, env: dict | None = None) -> subprocess.CompletedProcess:
+    sub_env = env if env is not None else (GIT_ENV if args and args[0] == "git" else None)
+    return subprocess.run(args, cwd=root, text=text, capture_output=True, check=False, env=sub_env)
 
 
 def load_gate_contract(root: Path = ROOT) -> list[tuple[str, str]]:

@@ -7,10 +7,20 @@ import argparse
 import ast
 import hashlib
 import json
+import os
 import re
 import subprocess
 import sys
 from pathlib import Path
+
+GIT_ENV = {
+    **os.environ,
+    "HOME": "/dev/null",
+    "GIT_CONFIG_GLOBAL": "/dev/null",
+    "GIT_CONFIG_SYSTEM": "/dev/null",
+    "GIT_CONFIG_NOSYSTEM": "1",
+    "XDG_CONFIG_HOME": "/dev/null",
+}
 
 from schema_validation import unsupported_keywords, validate_instance
 
@@ -442,6 +452,7 @@ def validate_git(report: Report) -> None:
     status = subprocess.run(
         ["git", "status", "--porcelain"],
         cwd=ROOT,
+        env=GIT_ENV,
         text=True,
         capture_output=True,
         check=False,
@@ -452,7 +463,7 @@ def validate_git(report: Report) -> None:
         report.warn("Git Working Tree 尚未形成干净 Baseline")
 
     remote = subprocess.run(
-        ["git", "remote"], cwd=ROOT, text=True, capture_output=True, check=False
+        ["git", "remote"], cwd=ROOT, env=GIT_ENV, text=True, capture_output=True, check=False
     )
     if "origin" not in remote.stdout.split():
         report.warn("尚未配置 origin")

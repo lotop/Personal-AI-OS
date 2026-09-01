@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import shutil
 import re
 import subprocess
@@ -13,6 +14,15 @@ import sys
 import uuid
 from dataclasses import dataclass
 from pathlib import Path
+
+GIT_ENV = {
+    **os.environ,
+    "HOME": "/dev/null",
+    "GIT_CONFIG_GLOBAL": "/dev/null",
+    "GIT_CONFIG_SYSTEM": "/dev/null",
+    "GIT_CONFIG_NOSYSTEM": "1",
+    "XDG_CONFIG_HOME": "/dev/null",
+}
 
 try:
     import tomllib
@@ -254,7 +264,7 @@ def write_project(target: Path, files: list[PlannedFile], manifest: dict, init_g
         )
         if init_git:
             result = subprocess.run(
-                ["git", "init", "-b", "main"], cwd=staging, text=True, capture_output=True
+                ["git", "init", "-b", "main"], cwd=staging, text=True, capture_output=True, env=GIT_ENV
             )
             if result.returncode != 0:
                 raise ValueError(f"Git 初始化失败: {result.stderr.strip()}")

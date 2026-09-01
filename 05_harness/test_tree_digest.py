@@ -3,26 +3,33 @@
 
 from __future__ import annotations
 
+import os
 import subprocess
 import sys
 import tempfile
 import unittest
-import os
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from tree_digest import calculate, calculate_commit
 
+GIT_ENV = {**os.environ, "HOME": "/dev/null", "GIT_CONFIG_GLOBAL": "/dev/null", "GIT_CONFIG_SYSTEM": "/dev/null", "GIT_CONFIG_NOSYSTEM": "1", "XDG_CONFIG_HOME": "/dev/null"}
+
+
+def git(*args: str, cwd: Path, **kwargs) -> subprocess.CompletedProcess:
+    env = kwargs.pop("env", GIT_ENV)
+    return subprocess.run(["git", *args], cwd=cwd, env=env, check=True, **kwargs)
+
 
 class TreeDigestTest(unittest.TestCase):
     def test_deterministic_and_detects_change(self) -> None:
         with tempfile.TemporaryDirectory() as raw:
             root = Path(raw)
-            subprocess.run(["git", "init", "-q"], cwd=root, check=True)
+            git("init", "-q", cwd=root)
             (root / "b.txt").write_text("B\n", encoding="utf-8")
             (root / "a.txt").write_text("A\n", encoding="utf-8")
-            subprocess.run(["git", "add", "a.txt", "b.txt"], cwd=root, check=True)
+            git("add", "a.txt", "b.txt", cwd=root)
             first, records = calculate(root)
             second, _ = calculate(root)
             self.assertEqual(first, second)
@@ -34,13 +41,13 @@ class TreeDigestTest(unittest.TestCase):
     def test_digest_detects_executable_mode(self) -> None:
         with tempfile.TemporaryDirectory() as raw:
             root = Path(raw)
-            subprocess.run(["git", "init", "-q"], cwd=root, check=True)
+            git("init", "-q", cwd=root)
             script = root / "run.sh"
             script.write_text("#!/bin/sh\n", encoding="utf-8")
-            subprocess.run(["git", "add", "run.sh"], cwd=root, check=True)
+            git("add", "run.sh", cwd=root)
             regular, _ = calculate(root)
             script.chmod(0o755)
-            subprocess.run(["git", "add", "run.sh"], cwd=root, check=True)
+            git("add", "run.sh", cwd=root)
             executable, records = calculate(root)
             self.assertNotEqual(regular, executable)
             self.assertEqual(records[0]["mode"], "100755")
@@ -49,16 +56,16 @@ class TreeDigestTest(unittest.TestCase):
     def test_digest_distinguishes_symlink(self) -> None:
         with tempfile.TemporaryDirectory() as raw:
             root = Path(raw)
-            subprocess.run(["git", "init", "-q"], cwd=root, check=True)
+            git("init", "-q", cwd=root)
             target = root / "target.txt"
             link = root / "item"
             target.write_text("payload\n", encoding="utf-8")
             link.write_text("target.txt", encoding="utf-8")
-            subprocess.run(["git", "add", "target.txt", "item"], cwd=root, check=True)
+            git("add", "target.txt", "item", cwd=root)
             regular, _ = calculate(root)
             link.unlink()
             os.symlink("target.txt", link)
-            subprocess.run(["git", "add", "item"], cwd=root, check=True)
+            git("add", "item", cwd=root)
             symlink, records = calculate(root)
             self.assertNotEqual(regular, symlink)
             self.assertEqual({item["path"]: item["object_kind"] for item in records}["item"], "symlink")
@@ -66,13 +73,13 @@ class TreeDigestTest(unittest.TestCase):
     def test_working_and_commit_use_same_v02_algorithm(self) -> None:
         with tempfile.TemporaryDirectory() as raw:
             root = Path(raw)
-            subprocess.run(["git", "init", "-q"], cwd=root, check=True)
-            subprocess.run(["git", "config", "user.name", "PAOS Test"], cwd=root, check=True)
-            subprocess.run(["git", "config", "user.email", "paos@example.invalid"], cwd=root, check=True)
+            git("init", "-q", cwd=root)
+            git("config", "user.name", "PAOS Test", cwd=root)
+            git("config", "user.email", "paos@example.invalid", cwd=root)
             (root / "a.txt").write_text("A\n", encoding="utf-8")
-            subprocess.run(["git", "add", "a.txt"], cwd=root, check=True)
-            subprocess.run(["git", "commit", "-m", "test"], cwd=root, check=True, capture_output=True)
-            commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip()
+            git("add", "a.txt", cwd=root)
+            git("commit", "-m", "test", cwd=root, capture_output=True)
+            commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, env=GIT_ENV, text=True).strip()
             self.assertEqual(calculate(root)[0], calculate_commit(root, commit)[0])
 
 

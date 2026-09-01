@@ -3,11 +3,12 @@
 
 from __future__ import annotations
 
-import sys
+import hashlib
+import os
 import subprocess
+import sys
 import tempfile
 import unittest
-import hashlib
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -32,6 +33,20 @@ except ModuleNotFoundError:  # pragma: no cover - Python 3.10 兼容
         import pip._vendor.tomli as tomllib  # type: ignore[no-redef,import-not-found]
 
 _AUDIT_CACHE: list | None = None
+
+GIT_ENV = {
+    **os.environ,
+    "HOME": "/dev/null",
+    "GIT_CONFIG_GLOBAL": "/dev/null",
+    "GIT_CONFIG_SYSTEM": "/dev/null",
+    "GIT_CONFIG_NOSYSTEM": "1",
+    "XDG_CONFIG_HOME": "/dev/null",
+}
+
+
+def git(*args: str, cwd: Path, **kwargs) -> subprocess.CompletedProcess:
+    env = kwargs.pop("env", GIT_ENV)
+    return subprocess.run(["git", *args], cwd=cwd, env=env, check=True, **kwargs)
 
 
 def cached_audit() -> list:
@@ -98,37 +113,49 @@ class ReleaseAuditTest(unittest.TestCase):
         self.assertFalse(is_recovery_followup("07_working/reviews/UNRELATED.md"))
         self.assertFalse(is_recovery_followup("07_working/reviews/payload.py"))
 
+    def test_factory_gate_checks_apply_git(self) -> None:
+        gate = template_factory_gate()
+        self.assertIn(gate.status, {"PASS", "FAIL"})
+        self.assertIn("apply_git_e2e=", gate.evidence)
+
     def test_template_gate_counts_only_instantiable_project_packs(self) -> None:
         with tempfile.TemporaryDirectory() as raw:
             root = Path(raw)
-            project_pack = root / "01_templates/project-pack"
-            artifact_pack = root / "01_templates/artifact-pack"
-            project_pack.mkdir(parents=True)
-            artifact_pack.mkdir(parents=True)
-            (project_pack / "template.toml").write_text(
-                'pack_id = "project-pack"\n'
-                'version = "1.0"\nartifact_state = "APPROVED"\napproval_reference = "APPROVED-1"\n',
-                encoding="utf-8",
-            )
-            (artifact_pack / "template.toml").write_text(
-                'pack_id = "artifact-pack"\n'
-                'version = "1.0"\nartifact_state = "APPROVED"\napproval_reference = "APPROVED-2"\n',
-                encoding="utf-8",
-            )
+            templates = root / "01_templates"
             factory = root / "04_project_factory"
+            templates.mkdir()
             factory.mkdir()
+            (templates / "project-pack").mkdir()
+            (templates / "project-pack/template.toml").write_text(
+                'pack_id = "project-pack"\n'
+                'artifact_state = "APPROVED"\n'
+                'approval_reference = "APPROVED-1"\n'
+                '[[files]]\nsource = "a.txt"\ndestination = "a.txt"\n',
+                encoding="utf-8",
+            )
+            (templates / "artifact-pack").mkdir()
+            (templates / "artifact-pack/template.toml").write_text(
+                'pack_id = "artifact-pack"\n'
+                'artifact_state = "APPROVED"\n'
+                'approval_reference = "APPROVED-2"\n'
+                '[[files]]\nsource = "a.txt"\ndestination = "a.txt"\n',
+                encoding="utf-8",
+            )
             (factory / "create_project.py").write_text(
-                "import argparse,json,subprocess\n"
+                "import argparse,json,subprocess,os,hashlib\n"
                 "from pathlib import Path\n"
                 "p=argparse.ArgumentParser()\n"
                 "p.add_argument('--template-pack');p.add_argument('--target');p.add_argument('--project-id')\n"
                 "p.add_argument('--name');p.add_argument('--owner');p.add_argument('--primary-type')\n"
                 "p.add_argument('--apply',action='store_true');p.add_argument('--git',action='store_true')\n"
-                "a=p.parse_args(); t=Path(a.target); t.mkdir()\n"
+                "a=p.parse_args(); t=Path(a.target); t.mkdir(parents=True, exist_ok=True)\n"
+                "(t/'a.txt').write_text('')\n"
                 "m={'schema_version':'0.2.0','project_status':'PROVISIONAL','template_pack':'project-pack',"
-                "'template_approval_reference':'APPROVED-1','template_pack_digest':'digest','files':[]}\n"
+                "'template_approval_reference':'APPROVED-1','template_pack_digest':'digest',"
+                "'files':[{'path':'a.txt','sha256':hashlib.sha256(b'').hexdigest()}]}\n"
                 "(t/'.paos-init.json').write_text(json.dumps(m))\n"
-                "subprocess.run(['git','init','-b','main'],cwd=t,check=True,capture_output=True)\n"
+                "env={**os.environ,'HOME':'/dev/null','GIT_CONFIG_GLOBAL':'/dev/null','GIT_CONFIG_SYSTEM':'/dev/null','GIT_CONFIG_NOSYSTEM':'1','XDG_CONFIG_HOME':'/dev/null'}\n"
+                "subprocess.run(['git','init','-b','main'],cwd=t,check=True,capture_output=True,env=env)\n"
                 "print(json.dumps(m))\n",
                 encoding="utf-8",
             )
@@ -144,13 +171,13 @@ class ReleaseAuditTest(unittest.TestCase):
             self.assertIn("apply_git_e2e=PASS", gate.evidence)
 
     def init_repo(self, root: Path) -> str:
-        subprocess.run(["git", "init", "-b", "main"], cwd=root, check=True, capture_output=True)
-        subprocess.run(["git", "config", "user.name", "PAOS Test"], cwd=root, check=True)
-        subprocess.run(["git", "config", "user.email", "paos-test@example.invalid"], cwd=root, check=True)
+        git("init", "-b", "main", cwd=root, capture_output=True)
+        git("config", "user.name", "PAOS Test", cwd=root)
+        git("config", "user.email", "paos-test@example.invalid", cwd=root)
         (root / "payload.txt").write_text("verified\n", encoding="utf-8")
-        subprocess.run(["git", "add", "payload.txt"], cwd=root, check=True)
-        subprocess.run(["git", "commit", "-m", "verified payload"], cwd=root, check=True, capture_output=True)
-        return subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip()
+        git("add", "payload.txt", cwd=root)
+        git("commit", "-m", "verified payload", cwd=root, capture_output=True)
+        return subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, env=GIT_ENV, text=True).strip()
 
     def write_recovery_evidence(self, root: Path, commit: str) -> None:
         review = root / "07_working/reviews"
@@ -158,12 +185,7 @@ class ReleaseAuditTest(unittest.TestCase):
         artifact_root = root / "06_deployment/recovery_artifacts"
         artifact_root.mkdir(parents=True)
         bundle = artifact_root / "test.bundle"
-        subprocess.run(
-            ["git", "bundle", "create", str(bundle), "main"],
-            cwd=root,
-            check=True,
-            capture_output=True,
-        )
+        git("bundle", "create", str(bundle), "main", cwd=root, capture_output=True)
         bundle_sha = hashlib.sha256(bundle.read_bytes()).hexdigest()
         digest = commit_tree_digest(root, commit)
         (review / "recovery_evidence.toml").write_text(
@@ -192,8 +214,8 @@ class ReleaseAuditTest(unittest.TestCase):
             commit = self.init_repo(root)
             self.write_recovery_evidence(root, commit)
             (root / "implementation.py").write_text("changed = True\n", encoding="utf-8")
-            subprocess.run(["git", "add", "implementation.py"], cwd=root, check=True)
-            subprocess.run(["git", "commit", "-m", "implementation changed"], cwd=root, check=True, capture_output=True)
+            git("add", "implementation.py", cwd=root)
+            git("commit", "-m", "implementation changed", cwd=root, capture_output=True)
             gate = recovery_gate(root)
             self.assertEqual(gate.status, "STALE")
             self.assertIn("implementation.py", gate.evidence)
@@ -215,14 +237,10 @@ class ReleaseAuditTest(unittest.TestCase):
             "### PAOS-REL-002｜Personal AI OS V1.1.1 正式发布批准\n\n- 状态：`APPROVED`\n",
             encoding="utf-8",
         )
-        subprocess.run(["git", "add", "DECISIONS.md"], cwd=root, check=True)
-        subprocess.run(["git", "commit", "-m", "release approval"], cwd=root, check=True, capture_output=True)
-        subprocess.run(
-            ["git", "tag", "-a", "v1.1.1", "-m", "PAOS-REL-002 Release Personal AI OS V1.1.1"],
-            cwd=root,
-            check=True,
-        )
-        return subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip()
+        git("add", "DECISIONS.md", cwd=root)
+        git("commit", "-m", "release approval", cwd=root, capture_output=True)
+        git("tag", "-a", "v1.1.1", "-m", "PAOS-REL-002 Release Personal AI OS V1.1.1", cwd=root)
+        return subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, env=GIT_ENV, text=True).strip()
 
     def write_system(self, root: Path, include_baseline: bool) -> None:
         baseline = ""
@@ -282,13 +300,9 @@ class ReleaseAuditTest(unittest.TestCase):
                 "### PAOS-REL-002｜Personal AI OS V1.1.1 正式发布批准\n\n- 状态：`APPROVED`\n",
                 encoding="utf-8",
             )
-            subprocess.run(["git", "add", "SYSTEM.toml", "DECISIONS.md"], cwd=root, check=True)
-            subprocess.run(["git", "commit", "-m", "release approval"], cwd=root, check=True, capture_output=True)
-            subprocess.run(
-                ["git", "tag", "-a", "v1.1.1", "-m", "PAOS-REL-002 Release Personal AI OS V1.1.1"],
-                cwd=root,
-                check=True,
-            )
+            git("add", "SYSTEM.toml", "DECISIONS.md", cwd=root)
+            git("commit", "-m", "release approval", cwd=root, capture_output=True)
+            git("tag", "-a", "v1.1.1", "-m", "PAOS-REL-002 Release Personal AI OS V1.1.1", cwd=root)
             gate = approval_gate(root)
             self.assertEqual(gate.status, "FAIL")
             self.assertIn("approved_baseline.version", gate.evidence)
@@ -301,9 +315,9 @@ class ReleaseAuditTest(unittest.TestCase):
                 "### PAOS-REL-002｜Personal AI OS V1.1.1 正式发布批准\n\n- 状态：`APPROVED`\n",
                 encoding="utf-8",
             )
-            subprocess.run(["git", "add", "DECISIONS.md"], cwd=root, check=True)
-            subprocess.run(["git", "commit", "-m", "release"], cwd=root, check=True, capture_output=True)
-            subprocess.run(["git", "tag", "-a", "v1.1.1", "-m", "PAOS-REL-002 release"], cwd=root, check=True)
+            git("add", "DECISIONS.md", cwd=root)
+            git("commit", "-m", "release", cwd=root, capture_output=True)
+            git("tag", "-a", "v1.1.1", "-m", "PAOS-REL-002 release", cwd=root)
             self.write_system(root, True)
             gate = approval_gate(root)
             self.assertEqual(gate.status, "FAIL")

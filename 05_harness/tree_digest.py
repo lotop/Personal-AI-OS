@@ -16,9 +16,19 @@ from pathlib import Path
 ALGORITHM_VERSION = "0.2"
 
 
+GIT_ENV = {
+    **os.environ,
+    "HOME": "/dev/null",
+    "GIT_CONFIG_GLOBAL": "/dev/null",
+    "GIT_CONFIG_SYSTEM": "/dev/null",
+    "GIT_CONFIG_NOSYSTEM": "1",
+    "XDG_CONFIG_HOME": "/dev/null",
+}
+
+
 def tracked_entries(root: Path) -> list[tuple[str, str]]:
     result = subprocess.run(
-        ["git", "ls-files", "-s", "-z"], cwd=root, capture_output=True, check=False
+        ["git", "ls-files", "-s", "-z"], cwd=root, env=GIT_ENV, capture_output=True, check=False
     )
     if result.returncode != 0:
         raise ValueError("无法读取 Git tracked files")
@@ -88,6 +98,7 @@ def calculate_commit(
     listing = subprocess.run(
         ["git", "ls-tree", "-rz", "--full-tree", commit],
         cwd=root,
+        env=GIT_ENV,
         capture_output=True,
         check=False,
     )
@@ -104,6 +115,7 @@ def calculate_commit(
         blob = subprocess.run(
             ["git", "cat-file", "blob", object_id],
             cwd=root,
+            env=GIT_ENV,
             capture_output=True,
             check=False,
         )
