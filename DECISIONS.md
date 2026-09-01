@@ -252,6 +252,21 @@
 - Integration：在 `codex/v1.2-canonical-promotion` 分支形成批准实现与 Promotion Evidence；默认 Canonical 生效等待最终合并与 V1.2 Release Evidence。
 - Founder Approval：用户明确批准“Pack 03 按审计建议修正并 Promotion”。
 
+### PAOS-019｜V1.2 Harness + Hooks Pack 批准
+
+- 状态：`APPROVED`
+- 日期：`2026-09-01`
+- Owner：Founder / `paos-19-v1-2-canonical-promotion-audit`
+- Decision：批准 20 个 Harness Rule/Config/Schema 文件与 10 个实现/测试文件组成 V1.2 Approval Pack 04，并按审计记录的七组修正完成实施与 Promotion。
+- Release Gate Boundary：`release_gates.toml` 成为 M1–M6 顺序、ID 与名称的真实配置源；M2 执行无递归基础检查，M3 对 Approved Project Pack 执行真实 `--apply --git` E2E，不依赖历史 Working Review。
+- Evidence Boundary：Tree Digest V0.2 纳入 Git path、mode、object kind 与 blob SHA-256；V1.1.4 V0.1 Recovery Evidence 保持历史原文，V1.2 必须重新生成 V0.2 Evidence。
+- GC Boundary：Apply 必须校验受管 Plan 路径、固定 Plan ID、Retention、真实引用扫描、嵌套文件类型与 Founder 单次授权引用；仍只允许可恢复 Quarantine，不永久删除。
+- Hook Boundary：只批准 Hook Implementation Boundary；当前实现数与启用数均为 0，`02_registry/hooks.toml` 保持 `WORKING`/Disabled，不生成配置、不执行 Trust、不启用 Hook。
+- Scope：仅限 `V1.2_APPROVAL_PACK_04_HARNESS_HOOKS.md` 明列的 Pack 文件及其审计、Decision、Task/Evidence 记录。
+- Boundary：不修改 Adapter、不刷新 Recovery Evidence、不构成 Merge、V1.2 Release、Tag、Push、Hook Enable、外部部署或数据授权。
+- Integration：在 `codex/v1.2-canonical-promotion` 分支形成批准实现与 Promotion Evidence；默认 Canonical 生效等待最终合并与 V1.2 Release Evidence。
+- Founder Approval：用户明确回复“批准”。
+
 ## Candidate Decisions
 
 - 当前无待确认 Candidate Decision。

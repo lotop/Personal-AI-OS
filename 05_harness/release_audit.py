@@ -13,6 +13,9 @@ import tempfile
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
+from ci_gate import run_base_checks
+from tree_digest import calculate_commit
+
 try:
     import tomllib
 except ModuleNotFoundError:
@@ -28,6 +31,15 @@ ROOT = Path(__file__).resolve().parents[1]
 PYTHON = sys.executable
 RECOVERY_EVIDENCE = Path("07_working/reviews/recovery_evidence.toml")
 RECOVERY_ARTIFACT_ROOT = Path("06_deployment/recovery_artifacts")
+RELEASE_GATE_CONFIG = Path("05_harness/release_gates.toml")
+EXPECTED_GATES = [
+    ("M1", "Repository"),
+    ("M2", "Validation"),
+    ("M3", "Template & Factory"),
+    ("M4", "Adapter & Deployment"),
+    ("M5", "Recovery"),
+    ("M6", "Founder Release Approval"),
+]
 
 # 恢复演练之后只允许已声明的证据与任务账本类文件继续变化；实现文件变化必须重新演练。
 RECOVERY_FOLLOWUP_PATHS = {
@@ -61,6 +73,34 @@ def run(root: Path, *args: str, text: bool = True) -> subprocess.CompletedProces
     return subprocess.run(args, cwd=root, text=text, capture_output=True, check=False)
 
 
+def load_gate_contract(root: Path = ROOT) -> list[tuple[str, str]]:
+    path = root / RELEASE_GATE_CONFIG
+    try:
+        data = tomllib.loads(path.read_text(encoding="utf-8"))
+    except (OSError, tomllib.TOMLDecodeError) as exc:
+        raise ValueError(f"Release Gate Config 无法解析: {exc}") from exc
+    required = {
+        "schema_version": "0.4.0",
+        "artifact_class": "CONFIG",
+        "maturity_state": "APPROVED",
+        "canonical_authority": "FOUNDER_APPROVED",
+        "approval_reference": "PAOS-019",
+        "readiness_script": "release_audit.py",
+    }
+    for key, expected in required.items():
+        if data.get(key) != expected:
+            raise ValueError(f"Release Gate Config {key} 漂移")
+    if "promotion" in data:
+        raise ValueError("Release Gate Config 不得把 Promotion 声明为 Gate")
+    gates = data.get("gates")
+    if not isinstance(gates, list):
+        raise ValueError("Release Gate Config 缺少 gates")
+    actual = [(item.get("id"), item.get("name")) for item in gates if isinstance(item, dict)]
+    if actual != EXPECTED_GATES:
+        raise ValueError("Release Gate Config 的顺序、ID 或名称漂移")
+    return actual
+
+
 def repository_gate(root: Path = ROOT) -> Gate:
     head = run(root, "git", "rev-parse", "HEAD")
     status = run(root, "git", "status", "--porcelain")
@@ -72,9 +112,14 @@ def repository_gate(root: Path = ROOT) -> Gate:
 
 
 def validation_gate(root: Path = ROOT) -> Gate:
-    result = run(root, PYTHON, "05_harness/validate_repository.py")
-    output = (result.stdout + result.stderr).strip().splitlines()
-    return Gate("M2", "Validation", "PASS" if result.returncode == 0 else "FAIL", output[-1] if output else "validator produced no output")
+    checks = run_base_checks(root)
+    evidence = "; ".join(f"{item['id']}={item['status']}" for item in checks)
+    return Gate(
+        "M2",
+        "Validation",
+        "PASS" if all(item["status"] == "PASS" for item in checks) else "FAIL",
+        evidence,
+    )
 
 
 def template_factory_gate(root: Path = ROOT) -> Gate:
@@ -97,11 +142,8 @@ def template_factory_gate(root: Path = ROOT) -> Gate:
             and pack_kinds.get(data.get("pack_id")) == "PROJECT_SCAFFOLD"
         ):
             approved_project_packs.append(manifest.parent)
-    acceptance = root / "07_working/reviews/PROJECT_FACTORY_ACCEPTANCE.md"
     if not approved_project_packs:
         return Gate("M3", "Template & Factory", "BLOCKED", "没有 Approved PROJECT_SCAFFOLD Template Pack")
-    if not acceptance.is_file() or "结论：`PASS`" not in acceptance.read_text(encoding="utf-8"):
-        return Gate("M3", "Template & Factory", "BLOCKED", "缺少 Formal Factory E2E")
     with tempfile.TemporaryDirectory(prefix="paos-m3-") as raw:
         for pack in approved_project_packs:
             target = Path(raw) / pack.name
@@ -121,6 +163,8 @@ def template_factory_gate(root: Path = ROOT) -> Gate:
                 "paos-release-audit",
                 "--primary-type",
                 "SOFTWARE_PRODUCT",
+                "--apply",
+                "--git",
             )
             if result.returncode != 0:
                 detail = (result.stderr or result.stdout).strip().splitlines()
@@ -130,11 +174,42 @@ def template_factory_gate(root: Path = ROOT) -> Gate:
                     "FAIL",
                     f"Approved Project Pack 无法实例化: {pack.name}: {detail[-1] if detail else 'unknown error'}",
                 )
+            init_path = target / ".paos-init.json"
+            try:
+                init = json.loads(init_path.read_text(encoding="utf-8"))
+                pack_manifest = tomllib.loads((pack / "template.toml").read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError) as exc:
+                return Gate("M3", "Template & Factory", "FAIL", f"初始化 Manifest 无效: {pack.name}: {exc}")
+            except tomllib.TOMLDecodeError as exc:
+                return Gate("M3", "Template & Factory", "FAIL", f"Template Manifest 无效: {pack.name}: {exc}")
+            expected_digest = factory_config.get("approved_template_pack_digests", {}).get(init.get("template_pack"))
+            if (
+                init.get("schema_version") != "0.2.0"
+                or init.get("project_status") != "PROVISIONAL"
+                or init.get("template_pack") != pack_manifest.get("pack_id")
+                or init.get("template_approval_reference") != pack_manifest.get("approval_reference")
+                or init.get("template_pack_digest") != expected_digest
+            ):
+                return Gate("M3", "Template & Factory", "FAIL", f"初始化 Manifest 证据不完整: {pack.name}")
+            records = init.get("files", [])
+            if not isinstance(records, list):
+                return Gate("M3", "Template & Factory", "FAIL", f"初始化文件证据不是数组: {pack.name}")
+            expected_paths = {item.get("destination") for item in pack_manifest.get("files", [])}
+            actual_paths = {item.get("path") for item in records if isinstance(item, dict)}
+            if len(records) != len(actual_paths) or actual_paths != expected_paths:
+                return Gate("M3", "Template & Factory", "FAIL", f"初始化文件证据覆盖不完整: {pack.name}")
+            for record in records:
+                materialized = target / record.get("path", "")
+                if not materialized.is_file() or hashlib.sha256(materialized.read_bytes()).hexdigest() != record.get("sha256"):
+                    return Gate("M3", "Template & Factory", "FAIL", f"初始化文件 Hash 不一致: {pack.name}")
+            branch = run(target, "git", "branch", "--show-current")
+            if branch.returncode != 0 or branch.stdout.strip() != "main":
+                return Gate("M3", "Template & Factory", "FAIL", f"初始化 Git 分支不是 main: {pack.name}")
     return Gate(
         "M3",
         "Template & Factory",
         "PASS",
-        f"approved_project_packs={len(approved_project_packs)}; dry_run=PASS",
+        f"approved_project_packs={len(approved_project_packs)}; apply_git_e2e=PASS",
     )
 
 
@@ -182,25 +257,8 @@ def adapter_deployment_gate(root: Path = ROOT) -> Gate:
 
 
 def commit_tree_digest(root: Path, commit: str) -> str:
-    listing = run(root, "git", "ls-tree", "-rz", "--full-tree", commit, text=False)
-    if listing.returncode != 0:
-        raise ValueError("无法读取 evidence commit tree")
-    records: list[tuple[str, str]] = []
-    for raw in listing.stdout.split(b"\0"):
-        if not raw:
-            continue
-        metadata, path_raw = raw.split(b"\t", 1)
-        _mode, kind, object_id = metadata.decode("ascii").split()
-        if kind != "blob":
-            raise ValueError(f"不支持的 Git tree object: {kind}")
-        blob = run(root, "git", "cat-file", "blob", object_id, text=False)
-        if blob.returncode != 0:
-            raise ValueError("无法读取 evidence commit blob")
-        records.append((path_raw.decode("utf-8"), hashlib.sha256(blob.stdout).hexdigest()))
-    digest = hashlib.sha256()
-    for path, file_hash in sorted(records):
-        digest.update(path.encode("utf-8") + b"\0" + file_hash.encode("ascii") + b"\n")
-    return digest.hexdigest()
+    """兼容旧测试/证据的 V0.1 Commit Digest。"""
+    return calculate_commit(root, commit, algorithm="0.1")[0]
 
 
 def recovery_gate(root: Path = ROOT) -> Gate:
@@ -218,6 +276,11 @@ def recovery_gate(root: Path = ROOT) -> Gate:
     bundle_sha = evidence.get("bundle_sha256", "")
     bundle_path_value = evidence.get("bundle_path", "")
     expected_tree = evidence.get("tree_sha256", "")
+    if not all(
+        isinstance(value, str)
+        for value in (tested, recovered, bundle_head, bundle_sha, bundle_path_value, expected_tree)
+    ):
+        return Gate("M5", "Recovery", "FAIL", "恢复证据字段类型无效")
     if evidence.get("status") != "PASS":
         return Gate("M5", "Recovery", "BLOCKED", "恢复证据状态不是 PASS")
     if not re.fullmatch(r"[0-9a-f]{40}", tested) or tested != recovered or tested != bundle_head:
@@ -248,8 +311,11 @@ def recovery_gate(root: Path = ROOT) -> Gate:
         if line.strip()
     ):
         return Gate("M5", "Recovery", "FAIL", "Bundle Artifact 不包含 Evidence Head")
+    tree_algorithm = evidence.get("tree_digest_version", "0.1")
+    if not isinstance(tree_algorithm, str) or tree_algorithm not in {"0.1", "0.2"}:
+        return Gate("M5", "Recovery", "FAIL", "未知 Tree Digest Version")
     try:
-        actual_tree = commit_tree_digest(root, tested)
+        actual_tree = calculate_commit(root, tested, algorithm=tree_algorithm)[0]
     except ValueError as exc:
         return Gate("M5", "Recovery", "FAIL", str(exc))
     if actual_tree != expected_tree:
@@ -269,10 +335,15 @@ def recovery_gate(root: Path = ROOT) -> Gate:
 
 
 def approval_gate(root: Path = ROOT) -> Gate:
-    system = tomllib.loads((root / "SYSTEM.toml").read_text(encoding="utf-8"))
+    try:
+        system = tomllib.loads((root / "SYSTEM.toml").read_text(encoding="utf-8"))
+        decisions = (root / "DECISIONS.md").read_text(encoding="utf-8")
+    except (OSError, tomllib.TOMLDecodeError) as exc:
+        return Gate("M6", "Founder Release Approval", "FAIL", f"Release Approval 输入无法解析: {exc}")
     version = system.get("target_version", "")
+    if not isinstance(version, str) or not re.fullmatch(r"[0-9]+\.[0-9]+(?:\.[0-9]+)?", version):
+        return Gate("M6", "Founder Release Approval", "FAIL", "target_version 格式无效")
     tag_name = f"v{version}"
-    decisions = (root / "DECISIONS.md").read_text(encoding="utf-8")
     match = re.search(
         rf"### (PAOS-REL-[0-9]+)[^\n]*{re.escape(version)}[^\n]*\n\n- 状态：`APPROVED`",
         decisions,
@@ -286,10 +357,13 @@ def approval_gate(root: Path = ROOT) -> Gate:
     tag_commit = run(root, "git", "rev-parse", f"{tag_name}^{{}}").stdout.strip()
     head = run(root, "git", "rev-parse", "HEAD").stdout.strip()
     tag_body = run(root, "git", "cat-file", "-p", f"refs/tags/{tag_name}").stdout
+    tag_message = tag_body.partition("\n\n")[2]
     if tag_commit != head:
         return Gate("M6", "Founder Release Approval", "BLOCKED", f"{tag_name} 未绑定当前 HEAD")
-    if approval_ref not in tag_body:
+    if approval_ref not in tag_message:
         return Gate("M6", "Founder Release Approval", "FAIL", f"{tag_name} 缺少 {approval_ref}")
+    if tag_name not in tag_message and not re.search(rf"(?<![0-9.])V?{re.escape(version)}(?![0-9.])", tag_message):
+        return Gate("M6", "Founder Release Approval", "FAIL", f"{tag_name} message 缺少版本 {version}")
     baseline = system.get("approved_baseline", {})
     if baseline.get("version") != version:
         return Gate("M6", "Founder Release Approval", "FAIL", "approved_baseline.version 与 target_version 不一致")
@@ -301,7 +375,11 @@ def approval_gate(root: Path = ROOT) -> Gate:
 
 
 def audit(root: Path = ROOT) -> list[Gate]:
-    return [
+    try:
+        contract = load_gate_contract(root)
+    except ValueError as exc:
+        return [Gate(gate_id, name, "FAIL", str(exc)) for gate_id, name in EXPECTED_GATES]
+    gates = [
         repository_gate(root),
         validation_gate(root),
         template_factory_gate(root),
@@ -309,6 +387,9 @@ def audit(root: Path = ROOT) -> list[Gate]:
         recovery_gate(root),
         approval_gate(root),
     ]
+    if [(gate.id, gate.name) for gate in gates] != contract:
+        return [Gate(gate_id, name, "FAIL", "Release Audit 实现与 Gate Config 漂移") for gate_id, name in contract]
+    return gates
 
 
 def main() -> int:

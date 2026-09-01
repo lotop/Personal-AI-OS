@@ -1,6 +1,8 @@
 # Workflows
 
-> 状态：`WORKING`
+> 状态：`APPROVED`
+>
+> Approval Reference：`PAOS-019`
 
 每个复杂工作流必须明确输入、Owner、允许写路径、验收条件和失败状态；只有发生真实交接时才要求 Handoff。
 

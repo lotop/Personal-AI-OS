@@ -76,6 +76,30 @@ class SchemaValidationTest(unittest.TestCase):
         self.assertTrue(unsupported_keywords({"additionalProperties": {"type": "string"}}))
         self.assertEqual(unsupported_keywords({"additionalProperties": False}), [])
 
+    def test_invalid_schema_keyword_types_fail_closed(self) -> None:
+        schema = {
+            "type": "array",
+            "minItems": "one",
+            "uniqueItems": "yes",
+            "required": "id",
+            "items": [],
+        }
+        errors = unsupported_keywords(schema)
+        self.assertTrue(any("minItems" in error for error in errors))
+        self.assertTrue(any("uniqueItems" in error for error in errors))
+        self.assertTrue(any("required" in error for error in errors))
+        self.assertTrue(any("items" in error for error in errors))
+
+    def test_invalid_regex_is_reported_without_crash(self) -> None:
+        schema = {"type": "string", "pattern": "["}
+        self.assertTrue(any("正则无效" in error for error in unsupported_keywords(schema)))
+        self.assertTrue(any("pattern" in error and "无效" in error for error in validate_instance("x", schema)))
+
+    def test_unique_items_uses_structural_canonicalization(self) -> None:
+        schema = {"type": "array", "uniqueItems": True}
+        instance = [{"a": 1, "b": 2}, {"b": 2, "a": 1}]
+        self.assertTrue(any("不唯一" in error for error in validate_instance(instance, schema)))
+
     def test_repository_schemas_stay_within_supported_subset(self) -> None:
         schema_root = Path(__file__).resolve().parents[1] / "00_system/schemas"
         for path in sorted(schema_root.glob("*.schema.json")):
@@ -103,6 +127,7 @@ class SchemaValidationTest(unittest.TestCase):
         errors = validate_instance(incomplete, schema)
         self.assertTrue(any("缺少必填字段 matcher" in error for error in errors))
         self.assertTrue(any("缺少必填字段 owner" in error for error in errors))
+        self.assertTrue(any("缺少必填字段 platform" in error for error in errors))
 
     def test_all_registry_files_have_schema_bindings(self) -> None:
         root = Path(__file__).resolve().parents[1]

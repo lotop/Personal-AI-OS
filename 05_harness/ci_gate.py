@@ -12,20 +12,22 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 PYTHON = sys.executable
 
-LOCAL_CHECKS = [
+BASE_CHECKS = [
     ("repository", [PYTHON, "05_harness/validate_repository.py"]),
     ("factory", [PYTHON, "04_project_factory/test_factory.py"]),
     ("schema", [PYTHON, "05_harness/test_schema_validation.py"]),
-    ("release-audit", [PYTHON, "05_harness/test_release_audit.py"]),
     ("deployment", [PYTHON, "06_deployment/test_deployment.py"]),
     ("tree-digest", [PYTHON, "05_harness/test_tree_digest.py"]),
     ("temp-cleanup", [PYTHON, "05_harness/test_temp_cleanup.py"]),
     ("adapters", [PYTHON, "05_harness/generate_adapters.py", "--check"]),
 ]
+LOCAL_CHECKS = BASE_CHECKS[:3] + [
+    ("release-audit", [PYTHON, "05_harness/test_release_audit.py"]),
+] + BASE_CHECKS[3:]
 
 
-def run_check(name: str, command: list[str]) -> dict:
-    result = subprocess.run(command, cwd=ROOT, text=True, capture_output=True, check=False)
+def run_check(name: str, command: list[str], root: Path = ROOT) -> dict:
+    result = subprocess.run(command, cwd=root, text=True, capture_output=True, check=False)
     combined = (result.stdout + result.stderr).strip().splitlines()
     return {
         "id": name,
@@ -33,6 +35,11 @@ def run_check(name: str, command: list[str]) -> dict:
         "exit_code": result.returncode,
         "summary": combined[-1] if combined else "no output",
     }
+
+
+def run_base_checks(root: Path = ROOT) -> list[dict]:
+    """供 M2 与外层 CI 复用；不包含 Release Audit 自身，避免递归。"""
+    return [run_check(name, command, root) for name, command in BASE_CHECKS]
 
 
 def build_report(profile: str) -> tuple[dict, int]:

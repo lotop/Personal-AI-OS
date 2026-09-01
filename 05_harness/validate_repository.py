@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import ast
+import hashlib
 import json
 import re
 import subprocess
@@ -54,17 +55,12 @@ REQUIRED_FILES = [
     ".codex/config.toml",
     ".claude/settings.json",
     ".gemini/settings.json",
-    "07_working/specs/PHYSICAL_ARCHITECTURE.md",
-    "07_working/reviews/CONSOLIDATION_V1.1.md",
-    "08_history/V1.0_BASELINE_NOTE.md",
     "04_project_factory/FACTORY_SPEC.md",
     "06_deployment/CODEX_DEPLOYMENT.md",
     "06_deployment/CLAUDE_CODE_DEPLOYMENT.md",
     "06_deployment/GEMINI_DEPLOYMENT.md",
     "00_system/security/EXTERNAL_DATA_POLICY.md",
     "00_system/compatibility/capabilities.toml",
-    "07_working/reviews/FOUNDER_REVIEW_PACK.md",
-    "07_working/reviews/PROJECT_FACTORY_PROVISIONAL_ACCEPTANCE.md",
 ]
 
 SECRET_PATTERNS = [
@@ -105,14 +101,22 @@ def validate_required(report: Report) -> None:
 
 def validate_structured_files(report: Report) -> dict[Path, dict]:
     parsed: dict[Path, dict] = {}
-    for path in sorted(ROOT.rglob("*.toml")):
+    def operational(path: Path) -> bool:
+        relative = path.relative_to(ROOT)
+        if relative.parts[0] in {".git", "08_history", "09_archive", "99_temp"}:
+            return False
+        if relative.parts[0] == "07_working" and relative.parts[1:2] != ("candidates",):
+            return False
+        return True
+
+    for path in sorted(item for item in ROOT.rglob("*.toml") if operational(item)):
         parsed[path] = load_toml(path, report)
-    for path in sorted(ROOT.rglob("*.json")):
+    for path in sorted(item for item in ROOT.rglob("*.json") if operational(item)):
         try:
             json.loads(path.read_text(encoding="utf-8"))
         except Exception as exc:  # noqa: BLE001
             report.error(f"JSON 解析失败: {path.relative_to(ROOT)}: {exc}")
-    for path in sorted(ROOT.rglob("*.py")):
+    for path in sorted(item for item in ROOT.rglob("*.py") if operational(item)):
         try:
             ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
         except SyntaxError as exc:
@@ -240,6 +244,11 @@ def validate_registry_references(parsed: dict[Path, dict], report: Report) -> No
         owner = hook.get("owner")
         if owner not in task_ids:
             report.error(f"Hook {hook.get('id', '<unknown>')} owner 未登记为 Task: {owner}")
+        if hook.get("implementation_status") == "NOT_IMPLEMENTED":
+            if hook.get("enabled") is not False or hook.get("config_load") != "NOT_RUN" or hook.get("runtime_test") != "NOT_RUN":
+                report.error(f"未实现 Hook 不得启用或声明已加载/运行: {hook.get('id', '<unknown>')}")
+        if hook.get("blocking") is False and any("DENY" in effect for effect in hook.get("side_effects", [])):
+            report.error(f"Non-blocking Hook 不得声明 DENY 副作用: {hook.get('id', '<unknown>')}")
 
     runtimes = parsed.get(ROOT / "02_registry/runtimes.toml", {}).get("runtimes", [])
     runtime_versions = {item.get("platform"): item.get("version") for item in runtimes}
@@ -305,7 +314,9 @@ def validate_lifecycle(parsed: dict[Path, dict], report: Report) -> None:
 def validate_template_packs(parsed: dict[Path, dict], report: Report) -> None:
     factory_config = parsed.get(ROOT / "04_project_factory/factory.toml", {})
     pack_kinds = factory_config.get("template_pack_kinds", {})
+    approved_digests = factory_config.get("approved_template_pack_digests", {})
     known_pack_ids: set[str] = set()
+    approved_pack_ids: set[str] = set()
     for base in (ROOT / "01_templates", ROOT / "07_working/candidates"):
         for manifest_path in sorted(base.glob("*/template.toml")):
             data = parsed.get(manifest_path, load_toml(manifest_path, report))
@@ -319,6 +330,8 @@ def validate_template_packs(parsed: dict[Path, dict], report: Report) -> None:
             state = data.get("artifact_state")
             if base.name == "01_templates" and (state != "APPROVED" or not data.get("approval_reference")):
                 report.error(f"正式 Template Pack 缺少可验证批准: {manifest_path.relative_to(ROOT)}")
+            if base.name == "01_templates" and pack_id:
+                approved_pack_ids.add(pack_id)
             if base.name == "candidates" and state != "WORKING":
                 report.error(f"Working 区 Template Pack 状态越权: {manifest_path.relative_to(ROOT)}")
             records = data.get("files", [])
@@ -326,16 +339,43 @@ def validate_template_packs(parsed: dict[Path, dict], report: Report) -> None:
             destinations = [record.get("destination") for record in records]
             if len(destinations) != len(set(destinations)):
                 report.error(f"Template Pack 目标路径重复: {manifest_path.relative_to(ROOT)}")
-            actual = {str(path.relative_to(manifest_path.parent)) for path in manifest_path.parent.rglob("*") if path.is_file() and path.name != "template.toml"}
+            entries = sorted(manifest_path.parent.rglob("*"))
+            for path in entries:
+                relative = path.relative_to(manifest_path.parent)
+                if path.is_symlink():
+                    report.error(f"Template Pack 不得包含 symlink: {manifest_path.relative_to(ROOT)}: {relative}")
+                elif not path.is_dir() and not path.is_file():
+                    report.error(f"Template Pack 包含特殊文件: {manifest_path.relative_to(ROOT)}: {relative}")
+            actual = {
+                str(path.relative_to(manifest_path.parent))
+                for path in entries
+                if path.is_file() and not path.is_symlink() and path.name != "template.toml"
+            }
             undeclared = sorted(actual - set(sources))
             if undeclared:
                 report.error(f"Template Pack 存在未登记文件: {manifest_path.relative_to(ROOT)}: {', '.join(undeclared)}")
             for source in sources:
                 if not source or not (manifest_path.parent / source).is_file():
                     report.error(f"Template Pack 来源缺失: {manifest_path.relative_to(ROOT)}: {source}")
+            if base.name == "01_templates" and pack_id:
+                digest = hashlib.sha256()
+                for path in entries:
+                    if path.is_symlink() or path.is_dir() or not path.is_file():
+                        continue
+                    relative = path.relative_to(manifest_path.parent).as_posix()
+                    file_hash = hashlib.sha256(path.read_bytes()).hexdigest()
+                    digest.update(relative.encode("utf-8") + b"\0" + file_hash.encode("ascii") + b"\n")
+                expected = approved_digests.get(pack_id)
+                if not isinstance(expected, str) or not re.fullmatch(r"[0-9a-f]{64}", expected):
+                    report.error(f"Approved Template Pack 缺少 Digest 登记: {pack_id}")
+                elif digest.hexdigest() != expected:
+                    report.error(f"Approved Template Pack Digest 不匹配: {pack_id}")
     unknown_routes = sorted(set(pack_kinds) - known_pack_ids)
     if unknown_routes:
         report.error("Factory 存在无对应 Template Pack 的用途路由: " + ", ".join(unknown_routes))
+    extra_digests = sorted(set(approved_digests) - approved_pack_ids)
+    if extra_digests:
+        report.error("Factory 存在无对应 Approved Pack 的 Digest: " + ", ".join(extra_digests))
 
 
 def validate_secrets(report: Report) -> None:

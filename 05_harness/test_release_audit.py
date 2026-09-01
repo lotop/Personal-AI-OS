@@ -18,6 +18,7 @@ from release_audit import (
     audit,
     commit_tree_digest,
     is_recovery_followup,
+    load_gate_contract,
     recovery_gate,
     template_factory_gate,
 )
@@ -45,6 +46,18 @@ class ReleaseAuditTest(unittest.TestCase):
     def test_exactly_six_minimum_gates(self) -> None:
         self.assertEqual([gate.id for gate in cached_audit()], ["M1", "M2", "M3", "M4", "M5", "M6"])
 
+    def test_gate_config_is_real_contract(self) -> None:
+        self.assertEqual(load_gate_contract(), [(gate.id, gate.name) for gate in cached_audit()])
+
+    def test_gate_config_drift_fails_closed(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            config = root / "05_harness/release_gates.toml"
+            config.parent.mkdir(parents=True)
+            config.write_text('schema_version = "0.4.0"\n', encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "漂移"):
+                load_gate_contract(root)
+
     def test_ids_are_unique(self) -> None:
         ids = [gate.id for gate in cached_audit()]
         self.assertEqual(len(ids), len(set(ids)))
@@ -57,6 +70,11 @@ class ReleaseAuditTest(unittest.TestCase):
         gate = {item.id: item for item in cached_audit()}["M4"]
         if gate.status == "PASS":
             self.assertIn("CONDITIONAL", gate.evidence)
+
+    def test_m2_evidence_lists_base_check_ids(self) -> None:
+        evidence = {item.id: item.evidence for item in cached_audit()}["M2"]
+        for check_id in ("repository", "factory", "schema", "deployment", "tree-digest", "temp-cleanup", "adapters"):
+            self.assertIn(f"{check_id}=", evidence)
 
     def test_runtime_registry_does_not_overclaim(self) -> None:
         """直接断言 Registry 事实，不依赖工作区是否干净等门禁前置条件。"""
@@ -97,20 +115,33 @@ class ReleaseAuditTest(unittest.TestCase):
                 'version = "1.0"\nartifact_state = "APPROVED"\napproval_reference = "APPROVED-2"\n',
                 encoding="utf-8",
             )
-            reviews = root / "07_working/reviews"
-            reviews.mkdir(parents=True)
-            (reviews / "PROJECT_FACTORY_ACCEPTANCE.md").write_text("结论：`PASS`\n", encoding="utf-8")
             factory = root / "04_project_factory"
             factory.mkdir()
-            (factory / "create_project.py").write_text("raise SystemExit(0)\n", encoding="utf-8")
+            (factory / "create_project.py").write_text(
+                "import argparse,json,subprocess\n"
+                "from pathlib import Path\n"
+                "p=argparse.ArgumentParser()\n"
+                "p.add_argument('--template-pack');p.add_argument('--target');p.add_argument('--project-id')\n"
+                "p.add_argument('--name');p.add_argument('--owner');p.add_argument('--primary-type')\n"
+                "p.add_argument('--apply',action='store_true');p.add_argument('--git',action='store_true')\n"
+                "a=p.parse_args(); t=Path(a.target); t.mkdir()\n"
+                "m={'schema_version':'0.2.0','project_status':'PROVISIONAL','template_pack':'project-pack',"
+                "'template_approval_reference':'APPROVED-1','template_pack_digest':'digest','files':[]}\n"
+                "(t/'.paos-init.json').write_text(json.dumps(m))\n"
+                "subprocess.run(['git','init','-b','main'],cwd=t,check=True,capture_output=True)\n"
+                "print(json.dumps(m))\n",
+                encoding="utf-8",
+            )
             (factory / "factory.toml").write_text(
                 '[template_pack_kinds]\nproject-pack = "PROJECT_SCAFFOLD"\n'
-                'artifact-pack = "ARTIFACT_LIBRARY"\n',
+                'artifact-pack = "ARTIFACT_LIBRARY"\n'
+                '[approved_template_pack_digests]\nproject-pack = "digest"\n',
                 encoding="utf-8",
             )
             gate = template_factory_gate(root)
             self.assertEqual(gate.status, "PASS")
             self.assertIn("approved_project_packs=1", gate.evidence)
+            self.assertIn("apply_git_e2e=PASS", gate.evidence)
 
     def init_repo(self, root: Path) -> str:
         subprocess.run(["git", "init", "-b", "main"], cwd=root, check=True, capture_output=True)
@@ -261,6 +292,22 @@ class ReleaseAuditTest(unittest.TestCase):
             gate = approval_gate(root)
             self.assertEqual(gate.status, "FAIL")
             self.assertIn("approved_baseline.version", gate.evidence)
+
+    def test_approval_rejects_tag_message_without_version(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            self.init_repo(root)
+            (root / "DECISIONS.md").write_text(
+                "### PAOS-REL-002｜Personal AI OS V1.1.1 正式发布批准\n\n- 状态：`APPROVED`\n",
+                encoding="utf-8",
+            )
+            subprocess.run(["git", "add", "DECISIONS.md"], cwd=root, check=True)
+            subprocess.run(["git", "commit", "-m", "release"], cwd=root, check=True, capture_output=True)
+            subprocess.run(["git", "tag", "-a", "v1.1.1", "-m", "PAOS-REL-002 release"], cwd=root, check=True)
+            self.write_system(root, True)
+            gate = approval_gate(root)
+            self.assertEqual(gate.status, "FAIL")
+            self.assertIn("缺少版本", gate.evidence)
 
 
 if __name__ == "__main__":

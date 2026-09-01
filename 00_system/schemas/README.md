@@ -1,6 +1,8 @@
 # Schemas
 
-> 状态：`WORKING`
+> 状态：`APPROVED`
+>
+> Approval Reference：`PAOS-019`
 
 当前已建立：
 
@@ -15,4 +17,4 @@
 - `template-pack.schema.json`
 - `bindings.toml`
 
-`05_harness/schema_validation.py` 实现无第三方依赖的必要 JSON Schema 子集。该子集只支持 `type`、`enum`、`minLength`、`pattern`、`minItems`、`uniqueItems`、`items`、`required`、`properties` 与布尔 `additionalProperties`；`pattern` 遵循 Draft 2020-12 的非隐式锚定语义，需要整串匹配时由 Schema 显式写入 `^...$`。使用未实现关键字的 Schema 会被 `validate_repository.py` 直接判定失败，不会静默通过。`02_registry/` 当前六个 TOML Registry 均已绑定 Schema；Schema 验证通过不代表字段语义已经获得 Founder Approval。
+`05_harness/schema_validation.py` 实现无第三方依赖的必要 JSON Schema 子集。该子集只支持 `type`、`enum`、`minLength`、`pattern`、`minItems`、`uniqueItems`、`items`、`required`、`properties` 与布尔 `additionalProperties`；Schema 关键字类型和正则表达式本身也必须合法。`uniqueItems` 使用稳定 JSON 规范化，不依赖 Python `repr`。使用未实现或无效关键字的 Schema 会 Fail Closed。`02_registry/` 当前六个 TOML Registry 均已绑定 Schema。

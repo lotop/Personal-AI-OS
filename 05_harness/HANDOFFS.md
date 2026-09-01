@@ -1,6 +1,8 @@
 # Handoffs
 
-> 状态：`WORKING`
+> 状态：`APPROVED`
+>
+> Approval Reference：`PAOS-019`
 
 Handoff 只在跨 Owner、跨 Agent、跨 Worktree、跨设备或长时间暂停后需要他人恢复工作时要求。普通任务完成不强制生成独立 Handoff 文件。
 

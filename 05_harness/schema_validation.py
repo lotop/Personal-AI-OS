@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import json
 import re
 from typing import Any
 
@@ -45,14 +46,42 @@ def unsupported_keywords(schema: Any, path: str = "$") -> list[str]:
             errors.append(f"{path}: 未实现的 Schema 关键字 {keyword}")
 
     expected = schema.get("type")
-    if expected is not None and expected not in TYPE_MAP:
+    if expected is not None and (not isinstance(expected, str) or expected not in TYPE_MAP):
         errors.append(f"{path}: 不支持的 Schema type {expected}")
+
+    if "enum" in schema and not isinstance(schema["enum"], list):
+        errors.append(f"{path}: enum 必须是数组")
+    for keyword in ("minLength", "minItems"):
+        if keyword in schema and (
+            not isinstance(schema[keyword], int)
+            or isinstance(schema[keyword], bool)
+            or schema[keyword] < 0
+        ):
+            errors.append(f"{path}: {keyword} 必须是非负整数")
+    if "uniqueItems" in schema and not isinstance(schema["uniqueItems"], bool):
+        errors.append(f"{path}: uniqueItems 必须是布尔值")
+    if "required" in schema and (
+        not isinstance(schema["required"], list)
+        or any(not isinstance(item, str) for item in schema["required"])
+    ):
+        errors.append(f"{path}: required 必须是字符串数组")
+    if "pattern" in schema:
+        if not isinstance(schema["pattern"], str):
+            errors.append(f"{path}: pattern 必须是字符串")
+        else:
+            try:
+                re.compile(schema["pattern"])
+            except re.error as exc:
+                errors.append(f"{path}: pattern 正则无效: {exc}")
 
     if "additionalProperties" in schema and not isinstance(schema["additionalProperties"], bool):
         errors.append(f"{path}: additionalProperties 只支持布尔值")
 
     if "items" in schema:
-        errors.extend(unsupported_keywords(schema["items"], f"{path}.items"))
+        if not isinstance(schema["items"], dict):
+            errors.append(f"{path}.items: 必须是对象")
+        else:
+            errors.extend(unsupported_keywords(schema["items"], f"{path}.items"))
 
     properties = schema.get("properties")
     if properties is not None:
@@ -66,6 +95,9 @@ def unsupported_keywords(schema: Any, path: str = "$") -> list[str]:
 
 
 def validate_instance(instance: Any, schema: dict[str, Any], path: str = "$") -> list[str]:
+    shape_errors = unsupported_keywords(schema, path)
+    if shape_errors:
+        return shape_errors
     errors: list[str] = []
     expected = schema.get("type")
     if expected:
@@ -86,14 +118,27 @@ def validate_instance(instance: Any, schema: dict[str, Any], path: str = "$") ->
         if len(instance) < schema.get("minLength", 0):
             errors.append(f"{path}: 字符串长度不足")
         # JSON Schema Draft 2020-12 的 pattern 不隐式锚定；整串约束由 Schema 显式使用 ^...$。
-        if "pattern" in schema and not re.search(schema["pattern"], instance):
-            errors.append(f"{path}: 不匹配 pattern {schema['pattern']}")
+        if "pattern" in schema:
+            try:
+                matched = re.search(schema["pattern"], instance)
+            except (re.error, TypeError) as exc:
+                errors.append(f"{path}: Schema pattern 无效: {exc}")
+            else:
+                if not matched:
+                    errors.append(f"{path}: 不匹配 pattern {schema['pattern']}")
 
     if isinstance(instance, list):
         if len(instance) < schema.get("minItems", 0):
             errors.append(f"{path}: 数组项目不足")
         if schema.get("uniqueItems"):
-            normalized = [repr(item) for item in instance]
+            try:
+                normalized = [
+                    json.dumps(item, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+                    for item in instance
+                ]
+            except (TypeError, ValueError) as exc:
+                errors.append(f"{path}: 无法规范化 uniqueItems: {exc}")
+                normalized = []
             if len(normalized) != len(set(normalized)):
                 errors.append(f"{path}: 数组项目不唯一")
         item_schema = schema.get("items")

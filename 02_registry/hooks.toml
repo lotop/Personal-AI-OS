@@ -4,6 +4,11 @@ phase = 1
 
 [[hooks]]
 id = "session-start-context-check"
+platform = "codex"
+implementation_status = "NOT_IMPLEMENTED"
+config_load = "NOT_RUN"
+runtime_test = "NOT_RUN"
+runtime_evidence = "NONE"
 event = "SessionStart"
 matcher = "*"
 scope = "PROJECT_CONTEXT"
@@ -20,14 +25,19 @@ blocking = false
 
 [[hooks]]
 id = "pre-tool-safety-check"
+platform = "codex"
+implementation_status = "NOT_IMPLEMENTED"
+config_load = "NOT_RUN"
+runtime_test = "NOT_RUN"
+runtime_evidence = "NONE"
 event = "PreToolUse"
 matcher = "*"
 scope = "TOOL_REQUEST_METADATA"
 permissions = ["READ_TOOL_METADATA"]
-side_effects = ["FIXED_POLICY_DENY_OR_WORKING_REPORT"]
+side_effects = ["WORKING_REPORT_ONLY"]
 idempotency_key = "pre-tool-safety-check:{session_id}:{tool_call_id}"
 timeout_ms = 5000
-failure_policy = "FAIL_CLOSED_FOR_HIGH_RISK_ONLY"
+failure_policy = "WARN_ONLY"
 retry_policy = "NO_RETRY"
 log_scope = "METADATA_ONLY"
 owner = "paos-07-harness"
@@ -36,6 +46,11 @@ blocking = false
 
 [[hooks]]
 id = "stop-completion-check"
+platform = "codex"
+implementation_status = "NOT_IMPLEMENTED"
+config_load = "NOT_RUN"
+runtime_test = "NOT_RUN"
+runtime_evidence = "NONE"
 event = "Stop"
 matcher = "*"
 scope = "TASK_VALIDATION_METADATA"
@@ -52,6 +67,11 @@ blocking = false
 
 [[hooks]]
 id = "session-end-close-marker"
+platform = "codex"
+implementation_status = "NOT_IMPLEMENTED"
+config_load = "NOT_RUN"
+runtime_test = "NOT_RUN"
+runtime_evidence = "NONE"
 event = "SessionEnd"
 matcher = "*"
 scope = "SESSION_METADATA"

@@ -1,13 +1,15 @@
 # Validators
 
 - `validate_repository.py`：仓库、Schema、生命周期、Template Pack 与 Adapter 一致性。
-- `tree_digest.py`：对 Git tracked working tree 生成确定性 SHA-256。
+- `tree_digest.py`：使用 V0.2 算法对 Git tracked working tree 的 path、mode、object kind 与 blob SHA-256 生成确定性摘要。
 - `ci_gate.py --profile local-offline`：统一运行全部本地、无网络验证。
 - `ci_gate.py --profile release-readiness`：在本地验证后要求 M1–M6 全部通过；Blocked 返回 exit code `14`。
 
 统一约定：`0=PASS`、`10=LOCAL_VALIDATION_FAIL`、`14=READINESS_BLOCKED_OR_STALE`。外部授权缺失不得记录为 PASS，也不得由本地 profile 触发外发。
 
-> 状态：`WORKING`
+> 状态：`APPROVED`
+>
+> Approval Reference：`PAOS-019`
 
 `validate_repository.py` 提供当前可执行的最小验证，包括：
 
@@ -21,7 +23,7 @@
 - Skill 与 Hook Owner 必须是已登记 Task；Capability 的版本证据必须与 Runtime Registry 对齐。
 - `SYSTEM.toml` 已批准基线与 `02_registry/projects.toml` 本仓库记录的跨文件一致性。
 - 资产类别与 V1.1 Minimum 状态集合。
-- Template Pack 未登记文件与来源缺失。
+- Approved Template Pack Digest 完整覆盖与精确匹配，并拒绝 symlink、特殊文件、未登记文件与来源缺失。
 - 高置信度 Secret 模式。
 - `07_working/reviews/*.md` 的日期字段，以及状态取值必须来自已登记词汇表
   （`states.toml` 的 `maturity_states` 与 `tasks.toml` 的 `allowed_statuses`）。

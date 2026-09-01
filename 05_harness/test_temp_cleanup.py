@@ -7,8 +7,13 @@ import tempfile
 import unittest
 import shutil
 import hashlib
+import json
+import os
+import sys
 from pathlib import Path
 from unittest.mock import patch
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from temp_cleanup import apply_plan, build_plan, discover_candidates
 
@@ -21,10 +26,25 @@ POLICY = {
     "plan_ttl_hours": 24,
     "quarantine_root": "99_temp/quarantine",
     "plan_root": "99_temp/plans",
+    "retention": {"temp_days": 0, "cache_days": 0, "logs_days": 30},
+    "protection": {"require_founder_approval": True},
 }
+AUTH = "PAOS-GC-AUTH-TEST"
 
 
 class TempCleanupTest(unittest.TestCase):
+    def apply(self, root: Path, plan: dict, policy: dict = POLICY) -> Path:
+        plan_path = root / policy["plan_root"] / f"{plan['plan_id']}.json"
+        plan_path.parent.mkdir(parents=True, exist_ok=True)
+        plan_path.write_text(json.dumps(plan), encoding="utf-8")
+        return apply_plan(
+            root,
+            policy,
+            plan,
+            plan_path=plan_path,
+            authorization_ref=AUTH,
+        )
+
     def test_scope_only_includes_known_ephemeral_items(self) -> None:
         with tempfile.TemporaryDirectory() as raw:
             root = Path(raw)
@@ -47,7 +67,7 @@ class TempCleanupTest(unittest.TestCase):
             (root / ".DS_Store").write_bytes(b"temp")
             (root / "99_temp/plans").mkdir(parents=True)
             plan = build_plan(root, POLICY)
-            record = apply_plan(root, POLICY, plan)
+            record = self.apply(root, plan)
             self.assertFalse((root / ".DS_Store").exists())
             self.assertTrue((root / "99_temp/quarantine" / plan["plan_id"] / ".DS_Store").is_file())
             self.assertTrue(record.is_file())
@@ -61,7 +81,7 @@ class TempCleanupTest(unittest.TestCase):
             plan = build_plan(root, POLICY)
             target.write_bytes(b"after")
             with self.assertRaisesRegex(ValueError, "STALE"):
-                apply_plan(root, POLICY, plan)
+                self.apply(root, plan)
 
     def test_tampered_plan_cannot_quarantine_canonical_file(self) -> None:
         with tempfile.TemporaryDirectory() as raw:
@@ -83,7 +103,7 @@ class TempCleanupTest(unittest.TestCase):
                 }
             )
             with self.assertRaisesRegex(ValueError, "疑似被篡改"):
-                apply_plan(root, POLICY, plan)
+                self.apply(root, plan)
             self.assertTrue(canonical.is_file())
 
     def test_tampered_classification_is_rejected(self) -> None:
@@ -95,7 +115,7 @@ class TempCleanupTest(unittest.TestCase):
             plan = build_plan(root, POLICY)
             plan["items"][0]["reason_code"] = "PYTHON_BYTECODE_CACHE"
             with self.assertRaisesRegex(ValueError, "疑似被篡改"):
-                apply_plan(root, POLICY, plan)
+                self.apply(root, plan)
             self.assertTrue(target.is_file())
 
     def test_move_failure_rolls_back_prior_items(self) -> None:
@@ -119,9 +139,87 @@ class TempCleanupTest(unittest.TestCase):
 
             with patch("temp_cleanup.shutil.move", side_effect=fail_second):
                 with self.assertRaisesRegex(OSError, "injected"):
-                    apply_plan(root, POLICY, plan)
+                    self.apply(root, plan)
             self.assertTrue(first.is_file())
             self.assertTrue(second.is_file())
+
+    def test_record_write_failure_rolls_back_moved_items(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            target = root / ".DS_Store"
+            target.write_bytes(b"temp")
+            plan = build_plan(root, POLICY)
+            plan_path = root / "99_temp/plans" / f"{plan['plan_id']}.json"
+            plan_path.parent.mkdir(parents=True)
+            plan_path.write_text(json.dumps(plan), encoding="utf-8")
+            with patch("temp_cleanup.Path.write_text", side_effect=OSError("record failed")):
+                with self.assertRaisesRegex(OSError, "record failed"):
+                    apply_plan(root, POLICY, plan, plan_path=plan_path, authorization_ref=AUTH)
+            self.assertTrue(target.is_file())
+
+    def test_plan_id_path_escape_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            (root / ".DS_Store").write_bytes(b"temp")
+            plan = build_plan(root, POLICY)
+            plan["plan_id"] = "../escape"
+            plan_path = root / "99_temp/plans/escape.json"
+            plan_path.parent.mkdir(parents=True)
+            plan_path.write_text(json.dumps(plan), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "plan_id"):
+                apply_plan(root, POLICY, plan, plan_path=plan_path, authorization_ref=AUTH)
+
+    def test_plan_filename_must_match_plan_id(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            (root / ".DS_Store").write_bytes(b"temp")
+            plan = build_plan(root, POLICY)
+            plan_path = root / "99_temp/plans/wrong.json"
+            plan_path.parent.mkdir(parents=True)
+            plan_path.write_text(json.dumps(plan), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "文件名"):
+                apply_plan(root, POLICY, plan, plan_path=plan_path, authorization_ref=AUTH)
+
+    def test_founder_authorization_is_required(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            (root / ".DS_Store").write_bytes(b"temp")
+            plan = build_plan(root, POLICY)
+            plan_path = root / "99_temp/plans" / f"{plan['plan_id']}.json"
+            plan_path.parent.mkdir(parents=True)
+            plan_path.write_text(json.dumps(plan), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "Founder"):
+                apply_plan(root, POLICY, plan, plan_path=plan_path, authorization_ref="")
+
+    def test_retention_excludes_fresh_temp(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            (root / ".DS_Store").write_bytes(b"fresh")
+            policy = {**POLICY, "retention": {"temp_days": 7, "cache_days": 30, "logs_days": 30}}
+            self.assertEqual(build_plan(root, policy)["items"], [])
+
+    def test_referenced_99_temp_item_is_held(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            item = root / "99_temp/needed.tmp"
+            item.parent.mkdir(parents=True)
+            item.write_text("payload", encoding="utf-8")
+            (root / "PROJECT.md").write_text("依赖 99_temp/needed.tmp\n", encoding="utf-8")
+            plan = build_plan(root, POLICY)
+            self.assertTrue(plan["items"][0]["hold"])
+            with self.assertRaisesRegex(ValueError, "授权证据"):
+                self.apply(root, plan)
+
+    @unittest.skipUnless(hasattr(os, "symlink"), "symlink unsupported")
+    def test_nested_symlink_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            item = root / "99_temp/folder"
+            item.mkdir(parents=True)
+            (root / "outside.txt").write_text("outside", encoding="utf-8")
+            os.symlink(root / "outside.txt", item / "link")
+            with self.assertRaisesRegex(ValueError, "嵌套 symlink"):
+                build_plan(root, POLICY)
 
 
 if __name__ == "__main__":

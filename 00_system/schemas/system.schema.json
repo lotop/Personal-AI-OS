@@ -8,18 +8,23 @@
     "target_version",
     "artifact_state",
     "canonical_authority",
+    "default_language",
+    "default_structured_config",
     "repository",
     "promotion",
     "automation",
     "implementation",
+    "deployment_status",
     "approved_baseline"
   ],
   "properties": {
     "schema_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+-working$"},
     "system_name": {"type": "string", "minLength": 1},
-    "target_version": {"type": "string", "enum": ["1.1", "1.1.1", "1.1.2", "1.1.3", "1.1.4"]},
+    "target_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+(?:\\.[0-9]+)?$"},
     "artifact_state": {"type": "string", "enum": ["WORKING", "APPROVED", "ARCHIVED"]},
     "canonical_authority": {"type": "string", "enum": ["NONE", "FOUNDER_APPROVED"]},
+    "default_language": {"type": "string", "minLength": 1},
+    "default_structured_config": {"type": "string", "enum": ["toml"]},
     "repository": {
       "type": "object",
       "required": ["role", "default_branch", "parallel_writes_require_worktree"],
@@ -28,11 +33,61 @@
         "business_projects_embedded": {"type": "boolean"},
         "default_branch": {"type": "string", "enum": ["main"]},
         "parallel_writes_require_worktree": {"type": "boolean"}
-      }
+      },
+      "additionalProperties": false
     },
-    "promotion": {"type": "object"},
-    "automation": {"type": "object"},
-    "implementation": {"type": "object"},
+    "promotion": {
+      "type": "object",
+      "required": ["automatic", "founder_approval_required"],
+      "properties": {
+        "automatic": {"type": "boolean"},
+        "founder_approval_required": {"type": "boolean"}
+      },
+      "additionalProperties": false
+    },
+    "automation": {
+      "type": "object",
+      "required": ["hooks_phase", "hooks_default_enabled", "destructive_gc_enabled", "automatic_deploy_enabled"],
+      "properties": {
+        "hooks_phase": {"type": "integer", "enum": [1]},
+        "hooks_default_enabled": {"type": "boolean"},
+        "destructive_gc_enabled": {"type": "boolean"},
+        "automatic_deploy_enabled": {"type": "boolean"}
+      },
+      "additionalProperties": false
+    },
+    "implementation": {
+      "type": "object",
+      "required": ["physical_architecture", "project_factory", "codex_adapter", "claude_code_adapter", "gemini_adapter", "deployment", "release", "local_git_recovery", "offline_bundle_recovery", "private_remote_recovery"],
+      "properties": {
+        "physical_architecture": {"type": "string"},
+        "project_factory": {"type": "string"},
+        "codex_adapter": {"type": "string"},
+        "claude_code_adapter": {"type": "string"},
+        "gemini_adapter": {"type": "string"},
+        "deployment": {"type": "string"},
+        "release": {"type": "string"},
+        "local_git_recovery": {"type": "string"},
+        "offline_bundle_recovery": {"type": "string"},
+        "private_remote_recovery": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "deployment_status": {
+      "type": "object",
+      "required": ["codex_project_config", "codex_runtime_smoke", "claude_code_project_config", "claude_code_config_load", "claude_code_runtime_smoke", "gemini_project_config", "gemini_runtime_smoke", "hooks_enabled"],
+      "properties": {
+        "codex_project_config": {"type": "string"},
+        "codex_runtime_smoke": {"type": "string"},
+        "claude_code_project_config": {"type": "string"},
+        "claude_code_config_load": {"type": "string"},
+        "claude_code_runtime_smoke": {"type": "string"},
+        "gemini_project_config": {"type": "string"},
+        "gemini_runtime_smoke": {"type": "string"},
+        "hooks_enabled": {"type": "boolean"}
+      },
+      "additionalProperties": false
+    },
     "approved_baseline": {
       "type": "object",
       "required": ["version", "artifact_state", "canonical_authority", "approval_reference", "git_tag", "freeze_commit"],
@@ -43,7 +98,9 @@
         "approval_reference": {"type": "string", "minLength": 1},
         "git_tag": {"type": "string", "minLength": 1},
         "freeze_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"}
-      }
+      },
+      "additionalProperties": false
     }
-  }
+  },
+  "additionalProperties": false
 }

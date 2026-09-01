@@ -1,6 +1,8 @@
-schema_version = "0.1.0-working"
+schema_version = "0.2.0"
 artifact_class = "REGISTRY"
-maturity_state = "WORKING"
+maturity_state = "APPROVED"
+canonical_authority = "FOUNDER_APPROVED"
+approval_reference = "PAOS-019"
 
 [[bindings]]
 path = "SYSTEM.toml"

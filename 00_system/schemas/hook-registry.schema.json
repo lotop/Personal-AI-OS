@@ -12,12 +12,18 @@
       "items": {
         "type": "object",
         "required": [
-          "id", "event", "matcher", "scope", "permissions", "side_effects",
+          "id", "platform", "implementation_status", "config_load", "runtime_test",
+          "runtime_evidence", "event", "matcher", "scope", "permissions", "side_effects",
           "idempotency_key", "timeout_ms", "failure_policy", "retry_policy",
           "log_scope", "owner", "enabled", "blocking"
         ],
         "properties": {
           "id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+          "platform": {"type": "string", "enum": ["codex", "claude-code", "gemini-cli"]},
+          "implementation_status": {"type": "string", "enum": ["NOT_IMPLEMENTED", "IMPLEMENTED"]},
+          "config_load": {"type": "string", "enum": ["NOT_RUN", "PASS", "FAIL", "BLOCKED"]},
+          "runtime_test": {"type": "string", "enum": ["NOT_RUN", "PASS", "FAIL", "BLOCKED"]},
+          "runtime_evidence": {"type": "string", "minLength": 1},
           "event": {"type": "string", "enum": ["SessionStart", "PreToolUse", "Stop", "SessionEnd"]},
           "matcher": {"type": "string", "minLength": 1},
           "scope": {"type": "string", "minLength": 1},
