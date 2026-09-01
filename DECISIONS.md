@@ -2,9 +2,9 @@
 
 > 状态：`APPROVED`
 >
-> 已批准基线：`v1.1.2`（`PAOS-REL-003`）
+> 已批准基线：`v1.1.3`（`PAOS-REL-004`）
 >
-> 当前发布：`v1.1.2`，由本地 annotated tag 与 Release Evidence 绑定
+> 当前发布：`v1.1.3`，由本地 annotated tag 与 Release Evidence 绑定
 
 本索引记录已经由 Founder 明确确认的决策事实。Decision Record 正式结构模板由 `PAOS-TMPL-003` 批准。
 
@@ -187,6 +187,16 @@
 - Authorization：允许直接在本地 `main` 完成 Release Commit，并创建本地 annotated tag `v1.1.3`；不授权 Push、远端 Tag 发布、外部部署、真实项目数据传输或 Dashboard 验收。
 - Runtime Boundary：Codex Runtime Smoke 保持 PASS；Claude Code Config Load 为 PASS 但 Live Runtime 未授权；Gemini Config Load 为 CONDITIONAL PASS 且 Live Runtime 未授权。
 - Evidence：实现冻结 Commit `67486a16630c466a6f46710116eadfbcd0c5fff5`；冻结 Tree SHA-256 `75268a184d145f70886cf81b3d9972b5afbac0f68414dd14ad7d905cbff357d7`；最终 Release Commit 由 annotated tag `v1.1.3` 精确绑定；M1–M6 必须全部 PASS。
+
+### PAOS-015｜V1.1.4 一致性修订与 V1.2.0 Stable 路线
+
+- 状态：`APPROVED`
+- 日期：`2026-09-01`
+- Owner：Founder
+- 决定：先完成不建分支的 V1.1.4 小范围一致性修订，再以 V1.2.0 作为“可创建项目、无未决 Canonical Working、可构建纯净发行包”的 Stable 目标。
+- Approval Mechanism：当前 Working 资产按六个不重叠的 Module Approval Pack 审核确认，不要求对 64 个文件逐一进行独立对话；每个 Pack 仍必须提供用途、层级、维护者、Source-of-Truth 属性、文件清单、风险与 Diff。
+- Boundary：本决定批准路线与审核机制，不等同于批准任一 Pack 内容、Canonical Promotion、V1.1.4/V1.2.0 Release Approval、Tag、Push 或外部发布。
+- Evidence：Founder 指令“启动1，2”。
 - Template Integrity：`project-base-pack` Manifest SHA-256 `9854c574add72b7904d6cb1405b7031da5b12a2ac77b85eaa4c54e0f9279a941`；`core-template-pack` Manifest SHA-256 `46a870b0a4ce6b7d52560c24bbdb9422f93b814055ec8a89792ea4322a7a40d7`，均与 `v1.1.2` 批准基线一致。
 - AI-made Decisions：Pack Kind 属于 Factory 路由而非 Approved Template Manifest；Release Commit 只由 Git annotated tag 绑定；本地 Bundle Artifact 被 Git 忽略但必须由 M5 读取并验证。
 - Approval：Founder / 2026-09-01 / 明确授权修复后直接发布 V1.1.3，本地 Tag，不 Push。

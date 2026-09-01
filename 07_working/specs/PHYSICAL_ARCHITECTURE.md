@@ -89,8 +89,8 @@ Personal-AI-OS/
 
 ## 当前未完成项
 
-- V1.0 原始文件未取得，正式 Diff 尚不可证明。
-- 首个 Project Base Template Pack 已形成可执行 Candidate 并通过 Provisional E2E，但尚未 Founder Approval。
-- Codex/Gemini Candidate Adapter 已生成并部署；Codex Live Runtime 通过，Gemini 仅 Config Load 通过，Live Runtime 等待外部数据授权。
-- 本地 Clean Clone 与 Offline Git Bundle 恢复已验证；Private Remote、外部资产、Credential 与完整 Host Recovery 尚未验证。
-- Release Readiness 已按 PAOS-007 收敛为 M1–M6；旧 R0–R12/P1–P2 模型已归档，当前因 Template、恢复证据刷新与 Release Approval 保持 Blocked。
+- V1.0 原始文件未取得，正式 Diff 尚不可证明；该历史证据缺口不阻塞当前 V1.1.3 基线。
+- Project Base 与 Core Template Pack 均已批准；V1.2.0 仍需完成首个真实业务项目 E2E。
+- Codex Runtime Smoke 通过；Claude Code 与 Gemini Config Load 通过，Live Runtime 等待外部数据授权。
+- 本地 Clean Clone 与 Offline Git Bundle 恢复已验证；Private Remote、异地 Bundle、全新设备、外部资产与 Credential 完整恢复尚未验证。
+- V1.1.3 Release Readiness 的 M1–M6 已全部 PASS；当前活动工作为 V1.1.4 一致性收口与 V1.2.0 Canonical Promotion Audit，二者均不改变现有 Approved Release。

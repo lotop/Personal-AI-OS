@@ -125,8 +125,8 @@ platform_ref = "main"
 [[tasks]]
 id = "paos-15-post-v1-1-2-remediation"
 purpose = "按 V1.1.2 全仓库评审修复状态漂移、文档失真与校验器盲区"
-status = "REVIEW"
-validation = ["scope-confirmed", "founder-authorized", "dashboard-excluded", "baseline-consistency-check-added", "schema-keyword-guard-added", "work-log-state-gate-added", "m5-followup-pattern-generalized", "m6-baseline-binding-added", "local-offline-ci-pass", "direct-main-committed", "handoff-to-codex-complete", "pushed-main-no-tags", "m5-stale-recorded"]
+status = "DONE"
+validation = ["scope-confirmed", "founder-authorized", "dashboard-excluded", "baseline-consistency-check-added", "schema-keyword-guard-added", "work-log-state-gate-added", "m5-followup-pattern-generalized", "m6-baseline-binding-added", "local-offline-ci-pass", "direct-main-committed", "handoff-to-codex-complete", "pushed-main-no-tags", "m5-stale-recorded", "superseded-by-paos-16", "release-evidence-closed-by-paos-17", "excluded-items-preserved"]
 platform = "claude-code"
 platform_ref = "main-working-tree"
 
@@ -143,5 +143,21 @@ id = "paos-17-v1-1-3-local-release"
 purpose = "修复 Approved Manifest 漂移并完成 Personal AI OS V1.1.3 本地正式发布"
 status = "DONE"
 validation = ["scope-confirmed", "founder-release-authorized", "direct-main-authorized", "no-push", "task-card-recorded", "approved-manifests-restored", "factory-routing-pass", "release-self-reference-removed", "release-candidate-24de865", "cold-clone-pass", "bundle-clone-pass", "bundle-artifact-verified", "tree-digest-match", "clean-head-ci-pass", "m1-m5-pass", "cleanup-applied-zero-items", "local-annotated-tag-authorized"]
+platform = "codex"
+platform_ref = "main"
+
+[[tasks]]
+id = "paos-18-v1-1-4-consistency"
+purpose = "修复 V1.1.3 三处确定性状态漂移并形成 V1.1.4 Release Candidate"
+status = "ACTIVE"
+validation = ["scope-confirmed", "direct-main-authorized", "task-card-recorded", "no-tag", "no-push"]
+platform = "codex"
+platform_ref = "main"
+
+[[tasks]]
+id = "paos-19-v1-2-canonical-promotion-audit"
+purpose = "将 Working 资产整理为六个 Canonical Approval Pack 并逐模块确认"
+status = "ACTIVE"
+validation = ["route-confirmed", "module-pack-confirmation-approved", "task-card-recorded", "no-promotion"]
 platform = "codex"
 platform_ref = "main"

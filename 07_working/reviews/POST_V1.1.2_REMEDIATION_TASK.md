@@ -1,6 +1,6 @@
 # Post-V1.1.2 Review Remediation Task
 
-> 状态：`REVIEW`
+> 状态：`DONE`
 >
 > 日期：`2026-09-01`
 >
@@ -85,4 +85,11 @@
 
 ## Validation
 
-见本目录同批次执行记录与 `CHANGELOG.md` 的 `Unreleased` 段。
+见本目录同批次执行记录与 `CHANGELOG.md` 的 V1.1.3 段。
+
+## Closure
+
+- PAOS-015 的确定性缺陷由本任务及后续 PAOS-016 完成修复。
+- M5、M6 与正式发布证据由 PAOS-017/V1.1.3 Release 收口，当前 M1–M6 全部 PASS。
+- Dashboard、差异化 Overlay 与首个真实业务项目仍按原 Scope 作为排除项或未来独立任务，不构成本任务 Blocker。
+- 本任务不再保留未解决 Decision Needed，状态更新为 `DONE`。
