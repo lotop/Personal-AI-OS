@@ -1,14 +1,14 @@
 # Mode System Specification
 
-> 状态：`WORKING`
+> 状态：`APPROVED`
 >
-> Canonical Authority：`NONE`
+> Canonical Authority：`FOUNDER_APPROVED`（`PAOS-017`）
 
 ## 定位
 
 Mode 只描述当前交互的行为边界，不是 Agent、权限、知识库、执行阶段或项目事实来源。V1.1 Minimum 不记录 Mode 切换历史，也不使用多轴 Mode 状态机。
 
-## Mode 候选
+## 正式 Modes
 
 | Mode | 主要产出 | 默认写入 |
 |---|---|---|
@@ -29,9 +29,10 @@ Mode 只描述当前交互的行为边界，不是 Agent、权限、知识库、
 按 Manifest First 顺序加载：
 
 1. Global Governance 与 Security 中直接适用的规则。
-2. 当前项目入口、Decisions 与 Project Memory。
-3. 当前 Task Card。
-4. 与 Read Set 直接相关的 Source 与文件。
+2. 当前 Mode。
+3. 当前项目入口、Decisions 与 Project Memory。
+4. 当前 Task Card。
+5. 与 Read Set 直接相关的 Source、Knowledge 与文件。
 
 不得默认加载全部 Modes、全部项目、完整历史或 Archive。Context Manifest 应记录加载文件、版本、原因和估算大小。
 

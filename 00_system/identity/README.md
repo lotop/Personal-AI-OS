@@ -1,6 +1,8 @@
 # Identity
 
-> 状态：`WORKING`
+> 状态：`APPROVED`
+>
+> Canonical Authority：`FOUNDER_APPROVED`（`PAOS-017`）
 
 Profile、Preferences 与 Communication 的模板已由 `PAOS-TMPL-003` 批准，位于
 `01_templates/core-template-pack/`（`PROFILE_TEMPLATE.md.tmpl`、`PREFERENCES_TEMPLATE.md.tmpl`、

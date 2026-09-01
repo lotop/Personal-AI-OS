@@ -1,5 +1,6 @@
-schema_version = "0.1.0-working"
-artifact_state = "WORKING"
+schema_version = "0.1.0"
+artifact_state = "APPROVED"
+approval_reference = "PAOS-017"
 
 [[modes]]
 id = "chat"

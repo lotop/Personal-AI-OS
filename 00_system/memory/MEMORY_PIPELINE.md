@@ -1,8 +1,8 @@
 # Memory Pipeline Specification
 
-> 状态：`WORKING`
+> 状态：`APPROVED`
 >
-> Canonical Authority：`NONE`
+> Canonical Authority：`FOUNDER_APPROVED`（`PAOS-017`）
 
 ## 分层
 
@@ -33,6 +33,8 @@
 - 来源定位与观察时间；只有在来源内容可能变化或需要完整性证明时才记录 Revision/Hash。
 - 状态：`WORKING | APPROVED | ARCHIVED`。
 - 时效性事实的复核时间或复核条件。
+
+Memory 中的 `DECISION` 只能引用或摘要已经批准的 Decision Record，并保留 Decision ID；不得替代 `DECISIONS.md`、创建平行决定或把 Conversation Summary 当作批准证据。
 
 `confidence`、`extractor_version`、撤回链等字段按风险选用，不作为每条记录的强制负担。
 

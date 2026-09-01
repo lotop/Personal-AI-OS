@@ -224,6 +224,19 @@
 - Integration：本 Pack 在 `codex/v1.2-canonical-promotion` 分支形成批准实现与 Promotion Evidence；合并及 V1.2 Release 仍由总控任务单独执行。
 - Founder Approval：用户明确批准“Pack 01 按审计建议修正并 Promotion”。
 
+### PAOS-017｜V1.2 Mode + Memory + Session Pack 批准
+
+- 状态：`APPROVED`
+- 日期：`2026-09-01`
+- Owner：Founder / `paos-19-v1-2-canonical-promotion-audit`
+- Decision：批准 Identity、Mode、Memory、Conversation、Multi-Agent Sync 共 8 个文件组成 V1.2 Approval Pack 02，并按审计建议完成四组修正和状态 Promotion。
+- Memory Boundary：Memory 中的 Decision 只能引用或摘要已批准 Decision Record，不能替代 `DECISIONS.md` 或从 Conversation 自动产生正式决定。
+- Concurrency Boundary：保留 `PAOS-009` Direct Main 小修订例外；普通或复杂写入仍使用 Branch/Worktree，不扩大并发写入权限。
+- Scope：仅限 `V1.2_APPROVAL_PACK_02_MODE_MEMORY_SESSION.md` 明列的 8 个文件。
+- Boundary：不批准任何个人 Memory/Identity 正文、跨项目读取、自动 Memory/Decision/Task Promotion；不构成 Merge、V1.2 Release、Tag、Push 或外部数据授权。
+- Integration：在 `codex/v1.2-canonical-promotion` 分支形成批准实现与 Promotion Evidence；默认 Canonical 生效等待最终合并与 V1.2 Release Evidence。
+- Founder Approval：用户明确批准“Pack 02 按审计建议修正并 Promotion”。
+
 ## Candidate Decisions
 
 - 当前无待确认 Candidate Decision。

@@ -1,8 +1,8 @@
 # Conversation Naming and Session Close
 
-> 状态：`WORKING`
+> 状态：`APPROVED`
 >
-> Canonical Authority：`NONE`
+> Canonical Authority：`FOUNDER_APPROVED`（`PAOS-017`）
 
 ## Conversation Naming
 
