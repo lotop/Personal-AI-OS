@@ -185,3 +185,11 @@ status = "DONE"
 validation = ["scope-confirmed", "founder-authorized", "direct-main-authorized", "task-card-recorded", "paos-023-recorded", "tag-retag-recorded", "system-toml-drift-fixed", "freeze-commit-corrected", "recovery-artifact-naming-enforced", "m5-bundle-name-assertion-added", "ci-gate-release-state-exposed", "runtime-ledger-evidence-based", "decisions-dangling-ref-fixed", "dashboard-loopback-only", "dashboard-static-root-confined", "dashboard-cors-removed", "dashboard-gates-from-real-audit", "factory-e2e-rehearsal-pass", "eighty-seven-tests-pass", "local-offline-ci-no-fail", "no-tag", "no-push", "no-gc"]
 platform = "claude-code"
 platform_ref = "main"
+
+[[tasks]]
+id = "paos-23-v1-2-2-release"
+purpose = "清理过期过程文件并完成 Personal AI OS V1.2.2 发布与 main 推送"
+status = "ACTIVE"
+validation = ["scope-confirmed", "founder-authorized", "task-card-recorded", "paos-024-recorded", "paos-rel-008-recorded", "temp-cleanup-applied", "deployment-evidence-retained", "version-aligned-v1-2-2"]
+platform = "claude-code"
+platform_ref = "main"

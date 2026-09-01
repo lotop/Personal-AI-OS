@@ -1,10 +1,10 @@
-# Personal AI OS V1.2.1 Approved Local Release
+# Personal AI OS V1.2.2 Approved Local Release
 
 > 状态：`APPROVED`
 >
-> 已批准基线：`v1.2.1`（`PAOS-REL-007`）
+> 已批准基线：`v1.2.2`（`PAOS-REL-008`）
 >
-> 当前发布：`v1.2.1`
+> 当前发布：`v1.2.2`
 
 ## Objective
 
@@ -23,11 +23,11 @@
 
 - 不把业务项目本体存入本仓库。
 - 不以某个 Agent 或聊天平台作为最终知识仓库。
-- 不默认自动批准、自动发布或执行破坏性 GC；V1.2.1 本地发布仅基于 Founder 本轮明确授权，既有模板批准范围不变。
+- 不默认自动批准、自动发布或执行破坏性 GC；V1.2.2 发布与本轮 Temp 清理仅基于 Founder 本轮明确授权，既有模板批准范围不变。
 
 ## Current Phase
 
-`V1.2.1 Approved Local Release`
+`V1.2.2 Approved Local Release`
 
 ## Success Criteria
 

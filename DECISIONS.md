@@ -2,9 +2,9 @@
 
 > 状态：`APPROVED`
 >
-> 已批准基线：`v1.2.1`（`PAOS-REL-007`）
+> 已批准基线：`v1.2.2`（`PAOS-REL-008`）
 >
-> 当前发布：`v1.2.1`，由本地 annotated tag 与 Release Evidence 绑定
+> 当前发布：`v1.2.2`，由本地 annotated tag 与 Release Evidence 绑定
 
 本索引记录已经由 Founder 明确确认的决策事实。Decision Record 正式结构模板由 `PAOS-TMPL-003` 批准。
 
@@ -345,6 +345,30 @@
 - Scope：不发起 V1.2.2 Release，不修改 `approved_baseline.version` 与 `git_tag`，不执行 Push、部署或破坏性 GC。
 - Consequences：本轮变更提交后，M5/M6 将如实转为 `STALE`/`BLOCKED`，直至 Founder 决定是否发起下一次发布。这是正确状态，不得通过重打 tag 消除。
 - Founder Approval：用户明确授权修复上述问题。
+
+### PAOS-024｜Temp 与 Quarantine 单次清理授权
+
+- 状态：`APPROVED`
+- 日期：`2026-09-02`
+- Owner：Founder / `paos-23-v1-2-2-release`
+- Decision：批准对 `99_temp/` 的过期过程文件执行一次性删除，并清除仓库内的 `__pycache__` 与 `.DS_Store`。
+- Scope Boundary：删除 19 个超过 `plan_ttl_hours` 的 GC Plan 与全部 Quarantine 批次（内容为 9 个 `.DS_Store`、12 个 `.pyc` 与 1 个可由 Adapter Generator 重新生成的 `CLAUDE.md` 备份）。全部目标均在 `.gitignore` 覆盖范围内，未进入任何 Commit、Tree Digest 或 Release Bundle。
+- Retention Boundary：`99_temp/deploy_records/`、`99_temp/deployment_records/` 与 `99_temp/deployment_backups/` 属于部署证据与回滚材料，**不在本次清理范围内**，全部保留。
+- Tool Boundary：`00_system/lifecycle/gc.toml` 保持 `destructive_delete = false` 与 `execution_mode = "QUARANTINE_ONLY"` 不变；本次删除是工具之外的 Founder 单次授权动作，不改变 GC 默认安全策略，也不构成后续自动清理授权。
+- Consequences：被删除 Quarantine 项的恢复路径同时消失；因内容均为可重新生成的 OS 与 Python 缓存产物，判定为可接受损失。
+- Founder Approval：用户明确指示清理无用过程文件。
+
+### PAOS-REL-008｜Personal AI OS 1.2.2 Release 批准
+
+- 状态：`APPROVED`
+- 日期：`2026-09-02`
+- Owner：Founder / `paos-23-v1-2-2-release`
+- Decision：批准 Personal AI OS V1.2.2 正式发布，内容为 `PAOS-023` 的证据完整性与门禁盲区整改、`PAOS-024` 的 Temp 清理，以及双路径恢复演练与 annotated tag `v1.2.2`。
+- Baseline Boundary：已批准基线正式晋升为 `v1.2.2 / PAOS-REL-008`。
+- Release Gate Boundary：M1~M6 全部门禁通过；Release Evidence 由 annotated tag 与本地 Bundle 共同证明。Bundle 文件名内嵌 Tested Commit 前缀，不覆盖 v1.2.1 的物证。
+- Tag Boundary：`v1.2.2` 为新建 annotated tag，绑定本次 Release Commit；不移动、不重写任何既有 tag，`v1.2.1` 保持指向 `15cfee2`。
+- Synchronization Boundary：Founder 本轮明确授权 `git push`，范围经确认后限定为 **只推送 `main`**。annotated tag `v1.2.2` 与既有本地 tag 一律不 push，`SYSTEM.toml` 的 `release = "APPROVED_LOCAL_TAG_NOT_PUSHED"` 继续成立。
+- Founder Approval：用户明确指示发布 1.2.2 并推送。
 
 ## Candidate Decisions
 
