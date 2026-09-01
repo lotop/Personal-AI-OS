@@ -173,7 +173,7 @@ platform_ref = "main"
 [[tasks]]
 id = "paos-21-antigravity-platform-migration"
 purpose = "将历史 gemini-cli 全面更正为 antigravity-cli 并发布 V1.2.1"
-status = "ACTIVE"
-validation = ["scope-confirmed", "founder-authorized", "task-card-recorded", "compatibility-profiles-updated", "adapters-regenerated-and-deployed", "runtime-evidence-refreshed", "schemas-updated", "deployment-docs-aligned", "unit-and-harness-tests-pass"]
+status = "DONE"
+validation = ["scope-confirmed", "founder-authorized", "task-card-recorded", "compatibility-profiles-updated", "adapters-regenerated-and-deployed", "runtime-evidence-refreshed", "schemas-updated", "deployment-docs-aligned", "unit-and-harness-tests-pass", "cold-clone-pass", "bundle-clone-pass", "bundle-artifact-verified", "tree-digest-match", "local-annotated-tag-authorized", "no-push"]
 platform = "antigravity-cli"
 platform_ref = "main"
