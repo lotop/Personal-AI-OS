@@ -4,7 +4,7 @@
 >
 > 执行日期：`2026-09-02`
 >
-> Source Commit：`c8e3ecc5b9a8cfd6f83ec555a6d59bdf11467438`
+> Source Commit：`c8e3ecc04a4dbc5a5d4f6995f10e97a9dd6aa42a`
 >
 > Machine Evidence：`07_working/reviews/recovery_evidence.toml`
 
@@ -15,7 +15,7 @@
 ## 冷克隆结果
 
 - 命令：`git clone --no-local /Users/lotop/Personal-AI-OS`。
-- 恢复 Commit：`c8e3ecc5b9a8cfd6f83ec555a6d59bdf11467438`。
+- 恢复 Commit：`c8e3ecc04a4dbc5a5d4f6995f10e97a9dd6aa42a`。
 - Local Offline CI：`PASS`（8/8 PASS）。
 - Adapter Generator `--check`：`ADAPTERS_OK`。
 - `git fsck --full`：退出码 `0`。
@@ -23,10 +23,10 @@
 ## 离线 Bundle 结果
 
 - Bundle Path：`06_deployment/recovery_artifacts/v1.2.1.bundle`（本地、Git Ignored）。
-- Bundle Head：`c8e3ecc5b9a8cfd6f83ec555a6d59bdf11467438`。
+- Bundle Head：`c8e3ecc04a4dbc5a5d4f6995f10e97a9dd6aa42a`。
 - Bundle SHA-256：`4fbcc965afabf2727cc199a0a674601621713ce1c3916723942616b9e15bcf98`。
 - `git bundle verify`：退出码 `0`。
-- Bundle 恢复 Commit：`c8e3ecc5b9a8cfd6f83ec555a6d59bdf11467438`。
+- Bundle 恢复 Commit：`c8e3ecc04a4dbc5a5d4f6995f10e97a9dd6aa42a`。
 - Local Offline CI：`PASS`（8/8 PASS）。
 - Adapter Generator `--check`：`ADAPTERS_OK`。
 - `git fsck --full`：退出码 `0`。
