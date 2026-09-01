@@ -29,6 +29,7 @@ except ModuleNotFoundError:
 OS_ROOT = Path(__file__).resolve().parents[1]
 SLUG_PATTERN = re.compile(r"^[a-z0-9][a-z0-9-]{1,62}$")
 TOKEN_PATTERN = re.compile(r"\{\{([A-Z0-9_]+)\}\}")
+GENERATOR_ID = "paos-project-factory"
 
 
 @dataclass(frozen=True)
@@ -76,11 +77,35 @@ def validate_rendered_content(destination: Path, content: str) -> None:
         raise ValueError(f"渲染后的结构化文件无效 {destination}: {exc}") from exc
 
 
+def calculate_pack_digest(pack: Path) -> str:
+    """按相对路径和逐文件 SHA-256 计算稳定的 Template Pack Digest。"""
+    digest = hashlib.sha256()
+    entries = sorted(
+        pack.rglob("*"),
+        key=lambda path: path.relative_to(pack).as_posix(),
+    )
+    for path in entries:
+        relative = path.relative_to(pack).as_posix()
+        if path.is_symlink():
+            raise ValueError(f"Template Pack 文件不得是符号链接: {relative}")
+        if path.is_dir():
+            continue
+        if not path.is_file():
+            raise ValueError(f"Template Pack 包含不支持的文件类型: {relative}")
+        file_sha256 = hashlib.sha256(path.read_bytes()).hexdigest()
+        digest.update(relative.encode("utf-8"))
+        digest.update(b"\0")
+        digest.update(file_sha256.encode("ascii"))
+        digest.update(b"\n")
+    return digest.hexdigest()
+
+
 def load_plan(
     pack: Path,
     target: Path,
     variables: dict[str, str],
     pack_kinds: dict[str, str],
+    approved_pack_digests: dict[str, str] | None = None,
 ) -> tuple[dict, list[PlannedFile]]:
     manifest_path = pack / "template.toml"
     if not manifest_path.is_file():
@@ -133,6 +158,16 @@ def load_plan(
     if declared != actual:
         extras = sorted(str(path.relative_to(pack.resolve())) for path in actual - declared)
         raise ValueError(f"Template Pack 存在未登记文件: {', '.join(extras)}")
+    pack_digest = calculate_pack_digest(pack)
+    if state == "APPROVED":
+        expected_digest = (approved_pack_digests or {}).get(manifest["pack_id"])
+        if not expected_digest:
+            raise ValueError(f"APPROVED Template Pack 未登记内容 Digest: {manifest['pack_id']}")
+        if pack_digest != expected_digest:
+            raise ValueError(
+                f"APPROVED Template Pack 内容 Digest 不匹配: {manifest['pack_id']}"
+            )
+    manifest["_pack_digest"] = pack_digest
     return manifest, files
 
 
@@ -140,8 +175,10 @@ def validate_target(target: Path) -> None:
     resolved = target.resolve()
     if resolved == OS_ROOT or OS_ROOT in resolved.parents:
         raise ValueError("业务项目不得创建在 Personal AI OS 仓库内部")
-    if target.exists():
+    if target.exists() or target.is_symlink():
         raise ValueError("目标路径已经存在；Factory 不执行隐式合并")
+    if not target.parent.exists() or not target.parent.is_dir():
+        raise ValueError("目标父目录必须预先存在；Factory 不隐式创建多级父目录")
     for parent in (resolved.parent, *resolved.parents):
         if (parent / ".git").exists():
             raise ValueError(f"业务项目不得嵌套在现有 Git Repository 内: {parent}")
@@ -153,18 +190,38 @@ def build_manifest(
     variables: dict[str, str],
     files: list[PlannedFile],
     provisional: bool,
+    factory_version: str,
+    paos_version: str,
 ) -> dict:
+    template_state = pack_manifest.get("artifact_state")
     return {
-        "schema_version": "0.1.0-working",
+        "schema_version": "0.2.0",
+        "generator": GENERATOR_ID,
+        "factory_version": factory_version,
+        "paos_version": paos_version,
         "project_id": variables["PROJECT_ID"],
         "project_name": variables["PROJECT_NAME"],
         "owner": variables["OWNER"],
         "primary_type": variables["PRIMARY_TYPE"],
         "overlays": variables["OVERLAYS"].split(",") if variables["OVERLAYS"] else [],
-        "project_status": "PROVISIONAL" if provisional else "GENERATED",
+        "project_status": "PROVISIONAL",
+        "creation_mode": (
+            "WORKING_TEMPLATE_DRY_RUN" if template_state == "WORKING" else "APPROVED_TEMPLATE"
+        ),
         "template_pack": pack_manifest.get("pack_id"),
         "template_version": pack_manifest.get("version"),
+        "template_state": template_state,
+        "template_approval_reference": pack_manifest.get("approval_reference"),
+        "template_pack_digest": pack_manifest.get("_pack_digest"),
         "target": str(target.resolve()),
+        "registry_candidate": {
+            "id": variables["PROJECT_ID"],
+            "name": variables["PROJECT_NAME"],
+            "kind": variables["PRIMARY_TYPE"],
+            "status": "PROVISIONAL",
+            "repository_ref": str(target.resolve()),
+            "business_project": True,
+        },
         "files": [
             {
                 "path": str(item.destination.relative_to(target)),
@@ -175,9 +232,15 @@ def build_manifest(
     }
 
 
+def finalize_staging(staging: Path, target: Path) -> None:
+    """原子落地前再次保护后来出现的目标路径。"""
+    if target.exists() or target.is_symlink():
+        raise ValueError("目标路径在生成期间出现；已停止落地且不会覆盖")
+    staging.replace(target)
+
+
 def write_project(target: Path, files: list[PlannedFile], manifest: dict, init_git: bool) -> None:
     validate_target(target)
-    target.parent.mkdir(parents=True, exist_ok=True)
     staging = target.parent / f".{target.name}.paos-staging-{uuid.uuid4().hex}"
     try:
         staging.mkdir()
@@ -195,7 +258,7 @@ def write_project(target: Path, files: list[PlannedFile], manifest: dict, init_g
             )
             if result.returncode != 0:
                 raise ValueError(f"Git 初始化失败: {result.stderr.strip()}")
-        staging.replace(target)
+        finalize_staging(staging, target)
     except Exception:
         if staging.exists():
             shutil.rmtree(staging)
@@ -222,6 +285,8 @@ def main() -> int:
     try:
         if not SLUG_PATTERN.fullmatch(args.project_id):
             raise ValueError("project-id 必须是 2-63 位小写字母、数字或连字符")
+        if args.provisional and args.apply:
+            raise ValueError("Working Template Pack 只允许 Dry Run；--provisional 不能与 --apply 同用")
         validate_target(args.target)
         config = tomllib.loads((Path(__file__).with_name("factory.toml")).read_text())
         if args.primary_type not in config["primary_types"]:
@@ -242,11 +307,21 @@ def main() -> int:
             args.target,
             variables,
             config["template_pack_kinds"],
+            config.get("approved_template_pack_digests", {}),
         )
         state = pack_manifest.get("artifact_state")
         if state != "APPROVED" and not args.provisional:
             raise ValueError("正式创建只允许 APPROVED Template Pack")
-        manifest = build_manifest(pack_manifest, args.target, variables, files, args.provisional)
+        system = tomllib.loads((OS_ROOT / "SYSTEM.toml").read_text(encoding="utf-8"))
+        manifest = build_manifest(
+            pack_manifest,
+            args.target,
+            variables,
+            files,
+            args.provisional,
+            str(config["factory_version"]),
+            str(system["approved_baseline"]["version"]),
+        )
         print(json.dumps(manifest, ensure_ascii=False, indent=2))
         if args.apply:
             write_project(args.target, files, manifest, args.git)

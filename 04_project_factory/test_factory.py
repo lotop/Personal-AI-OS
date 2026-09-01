@@ -7,6 +7,7 @@ import tempfile
 import unittest
 import sys
 import subprocess
+import json
 from pathlib import Path
 from unittest.mock import patch
 
@@ -15,6 +16,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from create_project import (
     PlannedFile,
     build_manifest,
+    calculate_pack_digest,
+    finalize_staging,
     load_plan,
     render,
     validate_rendered_content,
@@ -107,11 +110,101 @@ class ProjectFactoryTest(unittest.TestCase):
                 "OVERLAYS": "ai,software",
             }
             pack_manifest, files = load_plan(pack, target, variables, self.PROJECT_PACK_KINDS)
-            init_manifest = build_manifest(pack_manifest, target, variables, files, True)
+            init_manifest = build_manifest(
+                pack_manifest, target, variables, files, True, "1.2.0", "1.1.4"
+            )
             write_project(target, files, init_manifest, init_git=True)
             self.assertTrue((target / "PROJECT.md").is_file())
             self.assertTrue((target / ".paos-init.json").is_file())
             self.assertTrue((target / ".git").is_dir())
+
+    def test_pack_digest_fixed_vector_and_mismatch_rejected(self) -> None:
+        pack = Path(__file__).resolve().parents[1] / "01_templates/project-base-pack"
+        expected = "2d63a47bbbb0a2f8f00773b247acc295a25f1a1bde7c7a9ecd526334861bf3dc"
+        self.assertEqual(calculate_pack_digest(pack), expected)
+        with tempfile.TemporaryDirectory() as raw:
+            variables = {
+                "PROJECT_ID": "digest-test",
+                "PROJECT_NAME": "Digest Test",
+                "OWNER": "Founder",
+                "PRIMARY_TYPE": "SOFTWARE_PRODUCT",
+                "OVERLAYS": "",
+            }
+            with self.assertRaisesRegex(ValueError, "Digest 不匹配"):
+                load_plan(
+                    pack,
+                    Path(raw) / "output",
+                    variables,
+                    {"paos-project-base": "PROJECT_SCAFFOLD"},
+                    {"paos-project-base": "0" * 64},
+                )
+
+    def test_manifest_v02_records_install_baseline_and_candidate(self) -> None:
+        target = Path("/tmp/project-candidate")
+        source = Path("/tmp/source.md")
+        files = [PlannedFile(source, target / "PROJECT.md", "# Demo\n")]
+        variables = {
+            "PROJECT_ID": "demo-project",
+            "PROJECT_NAME": "Demo",
+            "OWNER": "Founder",
+            "PRIMARY_TYPE": "SOFTWARE_PRODUCT",
+            "OVERLAYS": "ai",
+        }
+        pack_manifest = {
+            "pack_id": "test",
+            "version": "1.0.0",
+            "artifact_state": "APPROVED",
+            "approval_reference": "PAOS-TEST",
+            "_pack_digest": "abc123",
+        }
+        manifest = build_manifest(
+            pack_manifest, target, variables, files, False, "1.2.0", "1.1.4"
+        )
+        self.assertEqual(manifest["schema_version"], "0.2.0")
+        self.assertEqual(manifest["generator"], "paos-project-factory")
+        self.assertEqual(manifest["project_status"], "PROVISIONAL")
+        self.assertEqual(manifest["template_state"], "APPROVED")
+        self.assertEqual(manifest["template_approval_reference"], "PAOS-TEST")
+        self.assertEqual(manifest["template_pack_digest"], "abc123")
+        self.assertEqual(manifest["registry_candidate"]["status"], "PROVISIONAL")
+
+    def test_reject_provisional_apply(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            command = [
+                sys.executable,
+                str(Path(__file__).resolve().parent / "create_project.py"),
+                "--template-pack", str(root / "working-pack"),
+                "--target", str(root / "candidate"),
+                "--project-id", "candidate",
+                "--name", "Candidate",
+                "--owner", "Founder",
+                "--primary-type", "SOFTWARE_PRODUCT",
+                "--provisional",
+                "--apply",
+            ]
+            result = subprocess.run(command, text=True, capture_output=True, check=False)
+            self.assertEqual(result.returncode, 2)
+            self.assertIn("只允许 Dry Run", result.stderr)
+            self.assertFalse((root / "candidate").exists())
+
+    def test_reject_missing_target_parent(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            target = Path(raw) / "missing-parent" / "candidate"
+            with self.assertRaisesRegex(ValueError, "父目录必须预先存在"):
+                validate_target(target)
+
+    def test_finalize_rejects_target_created_during_generation(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            staging = root / ".staging"
+            target = root / "candidate"
+            staging.mkdir()
+            target.mkdir()
+            with self.assertRaisesRegex(ValueError, "生成期间出现"):
+                finalize_staging(staging, target)
+            self.assertTrue(staging.is_dir())
+            self.assertTrue(target.is_dir())
 
     def test_reject_nonempty_target(self) -> None:
         with tempfile.TemporaryDirectory() as raw:
@@ -218,6 +311,10 @@ class ProjectFactoryTest(unittest.TestCase):
             self.assertTrue(
                 (target / "CLAUDE.md").read_text(encoding="utf-8").startswith("@AGENTS.md")
             )
+            init_manifest = json.loads((target / ".paos-init.json").read_text(encoding="utf-8"))
+            self.assertEqual(init_manifest["schema_version"], "0.2.0")
+            self.assertEqual(init_manifest["project_status"], "PROVISIONAL")
+            self.assertEqual(init_manifest["template_state"], "APPROVED")
 
 
 if __name__ == "__main__":

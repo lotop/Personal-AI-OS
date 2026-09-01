@@ -237,6 +237,21 @@
 - Integration：在 `codex/v1.2-canonical-promotion` 分支形成批准实现与 Promotion Evidence；默认 Canonical 生效等待最终合并与 V1.2 Release Evidence。
 - Founder Approval：用户明确批准“Pack 02 按审计建议修正并 Promotion”。
 
+### PAOS-018｜V1.2 Factory + Templates Pack 批准
+
+- 状态：`APPROVED`
+- 日期：`2026-09-01`
+- Owner：Founder / `paos-19-v1-2-canonical-promotion-audit`
+- Decision：批准 Approved Templates 与 Project Factory 组成 V1.2 Approval Pack 03；Approved Template Pack 保持字节不变，Factory 按六组审计建议修正并 Promotion。
+- Integrity Boundary：Approved Pack 的用途和内容 Digest 由 `04_project_factory/factory.toml` 外部登记；Factory 在 Dry Run/Apply 前按排序后的相对路径与逐文件 SHA-256 校验，不改写 Approved Template Manifest。
+- Installation Baseline：`.paos-init.json` V0.2 记录 PAOS/Factory/Template 版本、Approval Reference、Pack Digest、生成器、逐文件 SHA-256 和 Registry Candidate，作为未来 Upgrade/Migration 基线；不自动上传或回写 AI OS。
+- Creation Boundary：Working Pack 永远只能 Dry Run；Approved Pack 生成的项目在 Owner 验收前统一为 `PROVISIONAL`；Factory 不自动写 OS Registry，也不预填首张正式 Task Card。
+- Filesystem Boundary：目标父目录必须预先存在；最终 staging 替换前再次确认目标不存在，不隐式创建多级父目录或覆盖后来出现的目标。
+- Scope：仅限 `V1.2_APPROVAL_PACK_03_FACTORY_TEMPLATES.md` 明列的 Approved Templates 和 7 个 Factory 文件；Template 内容零漂移。
+- Boundary：不创建真实业务项目，不实现 Upgrade Engine、自动反馈上传或差异化 Overlay；不构成 Merge、V1.2 Release、Tag、Push 或外部部署授权。
+- Integration：在 `codex/v1.2-canonical-promotion` 分支形成批准实现与 Promotion Evidence；默认 Canonical 生效等待最终合并与 V1.2 Release Evidence。
+- Founder Approval：用户明确批准“Pack 03 按审计建议修正并 Promotion”。
+
 ## Candidate Decisions
 
 - 当前无待确认 Candidate Decision。

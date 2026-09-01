@@ -1,5 +1,8 @@
-schema_version = "0.1.0-working"
-artifact_state = "WORKING"
+schema_version = "0.2.0"
+artifact_state = "APPROVED"
+canonical_authority = "FOUNDER_APPROVED"
+approval_reference = "PAOS-018"
+factory_version = "1.2.0"
 dry_run_default = true
 require_approved_template_pack = true
 default_branch = "main"
@@ -27,3 +30,9 @@ allowed_overlays = [
 [template_pack_kinds]
 paos-project-base = "PROJECT_SCAFFOLD"
 paos-core-templates = "ARTIFACT_LIBRARY"
+
+# Digest = SHA-256(sorted(relative_path + NUL + file_sha256 + LF))。
+# 该登记位于 Factory 外部，避免改写已批准 Template Manifest。
+[approved_template_pack_digests]
+paos-project-base = "2d63a47bbbb0a2f8f00773b247acc295a25f1a1bde7c7a9ecd526334861bf3dc"
+paos-core-templates = "bb5b690fdd4aef1dded0b8d0941b0c97c2a1287dbfdb2beeb09392bfb27b8fd0"
