@@ -1,6 +1,8 @@
 # Change Control
 
-> 状态：`WORKING`
+> 状态：`APPROVED`
+>
+> Canonical Authority：`FOUNDER_APPROVED`（`PAOS-016`）
 
 ## 变更等级
 

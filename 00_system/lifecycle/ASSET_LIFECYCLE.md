@@ -1,6 +1,8 @@
 # Asset Lifecycle Specification
 
-> 状态：`WORKING`
+> 状态：`APPROVED`
+>
+> Canonical Authority：`FOUNDER_APPROVED`（`PAOS-016`）
 
 ## 两个独立维度
 

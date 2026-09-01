@@ -212,6 +212,18 @@
 - Evidence：实现冻结 Commit `4405931d54d40f9567017be0c3bc3891b7c2f838`；最终 Release Commit 由 annotated tag `v1.1.4` 精确绑定；M1–M6 必须全部 PASS。
 - Founder Approval：用户明确批准“本地发布 v1.1.4，不 Push”。
 
+### PAOS-016｜V1.2 Governance + Security Pack 批准
+
+- 状态：`APPROVED`
+- 日期：`2026-09-01`
+- Owner：Founder / `paos-19-v1-2-canonical-promotion-audit`
+- Decision：批准 Governance、Security、Lifecycle 共 16 个文件组成 V1.2 Approval Pack 01，并按审计建议完成四项修正和状态 Promotion。
+- Evidence Model：批准证据可以绑定文件 SHA-256，也可以绑定固定 Git Commit 与不可变 Git Tree/Manifest Digest；最终 V1.2 Canonical Authority 仍必须由 Release Evidence 激活。
+- Scope：仅限 `V1.2_APPROVAL_PACK_01_GOVERNANCE_SECURITY.md` 明列的 16 个文件。
+- Boundary：不启用 Hooks、外部数据传输、Push、Deploy、破坏性 GC；不批准其他五个 Pack，也不构成 V1.2.0 Release Approval。
+- Integration：本 Pack 在 `codex/v1.2-canonical-promotion` 分支形成批准实现与 Promotion Evidence；合并及 V1.2 Release 仍由总控任务单独执行。
+- Founder Approval：用户明确批准“Pack 01 按审计建议修正并 Promotion”。
+
 ## Candidate Decisions
 
 - 当前无待确认 Candidate Decision。

@@ -1,6 +1,8 @@
 # Configuration Formats
 
-> 状态：`WORKING`
+> 状态：`APPROVED`
+>
+> Canonical Authority：`FOUNDER_APPROVED`（`PAOS-016`）
 
 - Markdown：规则、说明、决策、知识和模板。
 - TOML：人工维护的 Canonical Config 与 Registry。

@@ -1,6 +1,8 @@
 # Secrets Policy
 
-> 状态：`WORKING`
+> 状态：`APPROVED`
+>
+> Canonical Authority：`FOUNDER_APPROVED`（`PAOS-016`）
 
 - 仓库不得保存密码、Token、API Key、私钥或生产凭据。
 - 配置只能保存环境变量名、钥匙串引用或 Secret Manager 引用。

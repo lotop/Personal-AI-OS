@@ -1,6 +1,8 @@
 # Hooks Policy
 
-> 状态：`WORKING`
+> 状态：`APPROVED`
+>
+> Canonical Authority：`FOUNDER_APPROVED`（`PAOS-016`）
 
 Phase 1 Hooks 默认 `enabled = false`。
 

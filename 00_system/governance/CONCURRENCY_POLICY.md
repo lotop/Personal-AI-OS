@@ -1,6 +1,8 @@
 # Concurrency Policy
 
-> 状态：`WORKING`
+> 状态：`APPROVED`
+>
+> Canonical Authority：`FOUNDER_APPROVED`（`PAOS-016`）
 
 ## 最小协议
 
@@ -26,4 +28,4 @@
 
 ## 冲突处理
 
-发生写入重叠、决策矛盾或 Schema 不一致时，任务转为 `BLOCKED` 或 `READY_FOR_REVIEW`，交回总控任务处理。
+发生写入重叠、决策矛盾或 Schema 不一致时，任务转为 `BLOCKED` 或 `REVIEW`，交回总控任务处理。

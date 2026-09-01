@@ -1,6 +1,8 @@
 # Permissions Policy
 
-> 状态：`WORKING`
+> 状态：`APPROVED`
+>
+> Canonical Authority：`FOUNDER_APPROVED`（`PAOS-016`）
 
 - 使用完成当前 Task Card 所需的最小权限。
 - Subagent 继承权限时不得扩大父任务授权范围。

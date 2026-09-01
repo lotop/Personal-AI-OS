@@ -1,6 +1,8 @@
 # Source Protection
 
-> 状态：`WORKING`
+> 状态：`APPROVED`
+>
+> Canonical Authority：`FOUNDER_APPROVED`（`PAOS-016`）
 
 - Original Source 默认只读，并保留来源、日期、Owner 和校验和。
 - 转换、摘要、OCR、翻译和提取结果属于 Derived Working，不覆盖 Source。

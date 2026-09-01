@@ -1,5 +1,6 @@
-schema_version = "0.3.0-working"
-artifact_state = "WORKING"
+schema_version = "0.3.0"
+artifact_state = "APPROVED"
+approval_reference = "PAOS-016"
 destructive_gc_enabled = false
 
 artifact_classes = ["SOURCE", "RULE", "TEMPLATE", "CONFIG", "REGISTRY", "GENERATED", "TEMP", "CACHE", "LOG", "ARCHIVE"]

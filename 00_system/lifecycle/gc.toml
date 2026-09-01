@@ -1,6 +1,7 @@
-schema_version = "0.1.0-working"
+schema_version = "0.1.0"
 artifact_class = "CONFIG"
-maturity_state = "WORKING"
+maturity_state = "APPROVED"
+approval_reference = "PAOS-016"
 enabled = true
 dry_run_only = false
 destructive_delete = false

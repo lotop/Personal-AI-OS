@@ -1,6 +1,8 @@
 # Approval Policy
 
-> 状态：`WORKING`
+> 状态：`APPROVED`
+>
+> Canonical Authority：`FOUNDER_APPROVED`（`PAOS-016`）
 
 ## 原则
 
@@ -24,6 +26,6 @@
 
 ## 批准证据
 
-批准记录必须绑定：Artifact Stable ID、版本或 Git Commit、内容 SHA-256、批准人、批准时间、批准范围和附带条件。仅口头同意、移动目录或修改 `artifact_state` 不构成可验证批准。
+批准记录必须绑定：Artifact Stable ID、版本或固定 Git Commit、内容 SHA-256 或不可变 Git Tree/Manifest Digest、批准人、批准时间、批准范围和附带条件。仅口头同意、移动目录或修改 `artifact_state` 不构成可验证批准。
 
 涉及外部数据传输、外部发布、不可逆删除、Secret/Credential 或权限升级时，模板批准不能替代单次操作授权。

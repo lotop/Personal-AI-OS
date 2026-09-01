@@ -1,8 +1,10 @@
 # Governance
 
-> 状态：`WORKING`
+> 状态：`APPROVED`
+>
+> Canonical Authority：`FOUNDER_APPROVED`（`PAOS-016`）
 
-本目录保存经过批准后可成为 Canonical 的全局治理规则。当前文件只定义骨架，不授予任何自动 Promotion 权限。
+本目录是 Personal AI OS 的 Canonical 全局治理规则入口。规则获得 Founder Approval 不会自动授予 Agent、Hook 或 Harness 执行 Promotion、高风险写入或外部操作的权限。
 
 - `APPROVAL_POLICY.md`：审批与状态晋升
 - `CONFIG_FORMATS.md`：文件和配置格式

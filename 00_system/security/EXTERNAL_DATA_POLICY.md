@@ -1,8 +1,8 @@
 # External Data Policy
 
-> 状态：`WORKING`
+> 状态：`APPROVED`
 >
-> Canonical Authority：`NONE`
+> Canonical Authority：`FOUNDER_APPROVED`（`PAOS-016`）
 
 ## 用途
 
