@@ -13,7 +13,7 @@ canonical_authority = "FOUNDER_APPROVED"
 approval_reference = "PAOS-REL-006"
 git_tag = "v1.2.0"
 # freeze_commit 是实现冻结提交；最终 Release Commit 由 annotated tag 直接绑定。
-freeze_commit = "9681f6c77bb326759c9527ecb872b7ce11e138a3"
+freeze_commit = "5e1053eb6710378a7065b07775582bf4fd70694b"
 
 [repository]
 role = "canonical-control-plane-repository"
