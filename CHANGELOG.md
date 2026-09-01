@@ -1,5 +1,12 @@
 # Changelog
 
+## V1.1.4 Local Release
+
+- 修正 Decision Index、Physical Architecture 与 PAOS-015 Task Registry 的 V1.1.3 状态漂移。
+- 登记 V1.1.4 → V1.2.0 Stable 路线，并建立六个 Module Approval Pack 审核机制。
+- 本版本只发布一致性修订和审核入口，不执行 V1.2 Canonical Promotion。
+- Founder 授权本地 annotated tag `v1.1.4`；不 Push。
+
 ## V1.1.3 Local Release
 
 - 修复 PAOS-016 对两个 Approved Template Manifest 的原地元数据修改，将 Pack Kind 迁移到 Factory 自有配置。

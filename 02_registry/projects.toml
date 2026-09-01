@@ -8,5 +8,5 @@ kind = "CONTROL_PLANE"
 status = "ACTIVE"
 repository_ref = "self"
 business_project = false
-approved_version = "1.1.3"
-approved_tag = "v1.1.3"
+approved_version = "1.1.4"
+approved_tag = "v1.1.4"

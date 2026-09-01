@@ -2,9 +2,9 @@
 
 > 状态：`APPROVED`
 >
-> 已批准基线：`v1.1.3`（`PAOS-REL-004`）
+> 已批准基线：`v1.1.4`（`PAOS-REL-005`）
 >
-> 当前发布：`v1.1.3`，由本地 annotated tag 与 Release Evidence 绑定
+> 当前发布：`v1.1.4`，由本地 annotated tag 与 Release Evidence 绑定
 
 本索引记录已经由 Founder 明确确认的决策事实。Decision Record 正式结构模板由 `PAOS-TMPL-003` 批准。
 
@@ -200,6 +200,17 @@
 - Approval Mechanism：当前 Working 资产按六个不重叠的 Module Approval Pack 审核确认，不要求对 64 个文件逐一进行独立对话；每个 Pack 仍必须提供用途、层级、维护者、Source-of-Truth 属性、文件清单、风险与 Diff。
 - Boundary：本决定批准路线与审核机制，不等同于批准任一 Pack 内容、Canonical Promotion、V1.1.4/V1.2.0 Release Approval、Tag、Push 或外部发布。
 - Evidence：Founder 指令“启动1，2”。
+
+### PAOS-REL-005｜Personal AI OS V1.1.4 本地正式发布批准
+
+- 状态：`APPROVED`
+- 日期：`2026-09-01`
+- Owner：`paos-18-v1-1-4-consistency`
+- Decision：批准 Personal AI OS V1.1.4 作为状态一致性 Patch Release。
+- Scope：修正 Decision Index、Physical Architecture 与 PAOS-015 Task 状态漂移；纳入 V1.2 Approval Pack 审核入口，但不执行任何 V1.2 Pack Promotion。
+- Authorization：允许在本地 `main` 完成 Release Commit、刷新恢复证据并创建 annotated tag `v1.1.4`；不授权 Push、外部部署、Dashboard、真实项目数据传输或 V1.2 Canonical Promotion。
+- Evidence：实现冻结 Commit `4405931d54d40f9567017be0c3bc3891b7c2f838`；最终 Release Commit 由 annotated tag `v1.1.4` 精确绑定；M1–M6 必须全部 PASS。
+- Founder Approval：用户明确批准“本地发布 v1.1.4，不 Push”。
 
 ## Candidate Decisions
 
