@@ -123,7 +123,7 @@
 - Evidence：模板包 Manifest 完整，候选模板已归档，仓库验证与 CI Gate 必须通过。
 - Consequences：`07_working/candidates/` 不再承载当前待确认模板；后续项目和任务可直接引用 Approved Core Template Pack。
 - Alternatives：继续逐项确认模板；因 Founder 明确要求交付完整成品，本轮不采用。
-- Supersedes：`07_working/candidates/CORE_TEMPLATE_CANDIDATES.md`
+- Supersedes：`09_archive/v1.1.2-template-candidates/CORE_TEMPLATE_CANDIDATES.md`（批准时位于 `07_working/candidates/`，已随本决定归档）
 - Approval：Founder / 2026-08-31 / 批准模板批量完成并通过校验后进入 Approved。
 
 ### PAOS-REL-003｜Personal AI OS V1.1.2 正式发布批准
@@ -330,6 +330,21 @@
 - Release Gate Boundary：M1~M6 全部门禁通过；Release Evidence 由 annotated tag 与本地 Bundle 共同证明。
 - Synchronization Boundary：本发布仅限本地 Control Plane，不执行 `git push`；远端同步由 Founder 自行在 VS Code 独立操作。
 - Founder Approval：用户明确批准发版推进。
+
+### PAOS-023｜V1.2.1 发布后证据完整性与门禁盲区整改批准
+
+- 状态：`APPROVED`
+- 日期：`2026-09-02`
+- Owner：Founder / `paos-22-v1-2-1-post-release-remediation`
+- Decision：批准修复 V1.2.1 发布后遗留与新引入的证据完整性、门禁盲区与 Dashboard 安全缺陷，并补齐 tag 重新指向的治理记录。
+- Tag Boundary：确认 annotated tag `v1.2.1` 已于 `2026-09-02` 由 `299f25a` 重新指向 `15cfee2`；本决定只补记该事实，不再移动、删除或重建任何 tag。原发布提交 `299f25a` 保留在历史中但不再有 ref 指向。
+- Evidence Boundary：Recovery Artifact 文件名必须内嵌 Tested Commit 前缀；M5 增加对应断言，重复演练不得原地覆盖上一次物证。`SYSTEM.toml` 的 `freeze_commit` 更正为 `c8e3ecc0`，恢复状态更正为 `PASS_V1.2.1`。
+- Gate Boundary：`ci_gate.py` 默认 profile 增加真实 `release_audit.py` 调用并暴露 `overall`；`release_audit.py` 以 exit 0 返回 BLOCKED 的行为不再被显示成 PASS。BLOCKED/STALE 属开发期正常状态，不使 local-offline profile 失败。
+- Runtime Boundary：`claude-code` 运行时账本按实测更正为 `INSTALLED` / `runtime_smoke = PASS` 并附证据；对应测试改为"PASS 必须带证据"的通用断言，不再钉死平台字面量。
+- Security Boundary：`dashboard/` 只监听 `127.0.0.1`、静态根收紧至 `dashboard/`、移除 `Access-Control-Allow-Origin: *`、门禁面板改为真实审计数据；该目录仍为 `GENERATED` / `WORKING`，不参与 Canonical Promotion。
+- Scope：不发起 V1.2.2 Release，不修改 `approved_baseline.version` 与 `git_tag`，不执行 Push、部署或破坏性 GC。
+- Consequences：本轮变更提交后，M5/M6 将如实转为 `STALE`/`BLOCKED`，直至 Founder 决定是否发起下一次发布。这是正确状态，不得通过重打 tag 消除。
+- Founder Approval：用户明确授权修复上述问题。
 
 ## Candidate Decisions
 

@@ -749,7 +749,7 @@
         <tr>
           <td><strong style="color: var(--primary);">${g.id}</strong></td>
           <td><strong>${g.name}</strong></td>
-          <td style="color: var(--text-dim);">${g.desc}</td>
+          <td style="color: var(--text-dim);">${g.evidence || ''}</td>
           <td><span class="badge-status ${g.status === 'PASS' ? 'badge-pass' : 'badge-wait'}">${g.status}</span></td>
         </tr>
       `).join('');

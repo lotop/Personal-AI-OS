@@ -92,14 +92,27 @@ class ReleaseAuditTest(unittest.TestCase):
             self.assertIn(f"{check_id}=", evidence)
 
     def test_runtime_registry_does_not_overclaim(self) -> None:
-        """直接断言 Registry 事实，不依赖工作区是否干净等门禁前置条件。"""
+        """任何 PASS 都必须带证据字段；不把具体平台状态钉死成字面量。"""
         data = tomllib.loads((ROOT / "02_registry/runtimes.toml").read_text(encoding="utf-8"))
         records = {item["platform"]: item for item in data["runtimes"]}
-        self.assertEqual(records["claude-code"]["config_load"], "PASS")
-        self.assertEqual(records["claude-code"]["runtime_smoke"], "NOT_RUN")
-        self.assertEqual(records["antigravity-cli"]["config_load"], "PASS")
-        self.assertEqual(records["antigravity-cli"]["runtime_smoke"], "PASS")
-        self.assertEqual(records["codex"]["runtime_smoke"], "PASS")
+        for platform in ("codex", "claude-code", "antigravity-cli"):
+            self.assertIn(platform, records)
+        for platform, record in records.items():
+            if record.get("config_load") == "PASS":
+                self.assertTrue(
+                    record.get("config_evidence", "").strip(),
+                    f"{platform} config_load=PASS 但缺少 config_evidence",
+                )
+            if record.get("runtime_smoke") == "PASS":
+                self.assertTrue(
+                    record.get("smoke_evidence", "").strip(),
+                    f"{platform} runtime_smoke=PASS 但缺少 smoke_evidence",
+                )
+            if record.get("runtime_smoke") == "BLOCKED":
+                self.assertTrue(
+                    record.get("blocked_reasons"),
+                    f"{platform} runtime_smoke=BLOCKED 但缺少 blocked_reasons",
+                )
 
     def test_recovery_followup_accepts_evidence_and_ledger_only(self) -> None:
         self.assertTrue(is_recovery_followup("07_working/reviews/RECOVERY_DRILL.md"))
@@ -184,7 +197,8 @@ class ReleaseAuditTest(unittest.TestCase):
         review.mkdir(parents=True)
         artifact_root = root / "06_deployment/recovery_artifacts"
         artifact_root.mkdir(parents=True)
-        bundle = artifact_root / "test.bundle"
+        bundle_name = f"test-{commit[:8]}.bundle"
+        bundle = artifact_root / bundle_name
         git("bundle", "create", str(bundle), "main", cwd=root, capture_output=True)
         bundle_sha = hashlib.sha256(bundle.read_bytes()).hexdigest()
         digest = commit_tree_digest(root, commit)
@@ -192,7 +206,7 @@ class ReleaseAuditTest(unittest.TestCase):
             'schema_version = "0.1.0-working"\nstatus = "PASS"\n'
             f'tested_commit = "{commit}"\nrecovered_commit = "{commit}"\n'
             f'bundle_head = "{commit}"\nbundle_sha256 = "{bundle_sha}"\n'
-            'bundle_path = "06_deployment/recovery_artifacts/test.bundle"\n'
+            f'bundle_path = "06_deployment/recovery_artifacts/{bundle_name}"\n'
             f'tree_sha256 = "{digest}"\nexecuted_at = "2026-08-31"\n',
             encoding="utf-8",
         )
@@ -225,11 +239,30 @@ class ReleaseAuditTest(unittest.TestCase):
             root = Path(raw)
             commit = self.init_repo(root)
             self.write_recovery_evidence(root, commit)
-            bundle = root / "06_deployment/recovery_artifacts/test.bundle"
+            bundle = root / f"06_deployment/recovery_artifacts/test-{commit[:8]}.bundle"
             bundle.write_bytes(bundle.read_bytes() + b"tampered")
             gate = recovery_gate(root)
             self.assertEqual(gate.status, "FAIL")
             self.assertIn("SHA-256", gate.evidence)
+
+    def test_recovery_rejects_bundle_name_without_commit_prefix(self) -> None:
+        """Bundle 文件名不内嵌 Tested Commit 时，重复演练会原地覆盖上一次物证。"""
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            commit = self.init_repo(root)
+            self.write_recovery_evidence(root, commit)
+            artifact_root = root / "06_deployment/recovery_artifacts"
+            (artifact_root / f"test-{commit[:8]}.bundle").rename(artifact_root / "release.bundle")
+            evidence = root / "07_working/reviews/recovery_evidence.toml"
+            evidence.write_text(
+                evidence.read_text(encoding="utf-8").replace(
+                    f"test-{commit[:8]}.bundle", "release.bundle"
+                ),
+                encoding="utf-8",
+            )
+            gate = recovery_gate(root)
+            self.assertEqual(gate.status, "FAIL")
+            self.assertIn("Tested Commit 前缀", gate.evidence)
 
     def tag_release(self, root: Path) -> str:
         """提交 Release Approval 并打 annotated tag，返回 tag 指向的 Commit。"""

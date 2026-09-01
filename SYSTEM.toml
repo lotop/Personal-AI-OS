@@ -13,7 +13,8 @@ canonical_authority = "FOUNDER_APPROVED"
 approval_reference = "PAOS-REL-007"
 git_tag = "v1.2.1"
 # freeze_commit 是实现冻结提交；最终 Release Commit 由 annotated tag 直接绑定。
-freeze_commit = "69b75a9601156c374c42b75cd594a279be7ae6b2"
+# 2026-09-02：annotated tag v1.2.1 由 299f25a 重新指向 15cfee2，冻结点同步更正为 c8e3ecc0；见 PAOS-023。
+freeze_commit = "c8e3ecc04a4dbc5a5d4f6995f10e97a9dd6aa42a"
 
 [repository]
 role = "canonical-control-plane-repository"
@@ -38,9 +39,9 @@ codex_adapter = "GENERATED_WORKING"
 claude_code_adapter = "GENERATED_WORKING"
 antigravity_adapter = "GENERATED_WORKING"
 deployment = "APPROVED_LOCAL"
-release = "APPROVED_LOCAL_NO_PUSH"
-local_git_recovery = "PASS_V1.2.0"
-offline_bundle_recovery = "PASS_V1.2.0"
+release = "APPROVED_LOCAL_TAG_NOT_PUSHED"
+local_git_recovery = "PASS_V1.2.1"
+offline_bundle_recovery = "PASS_V1.2.1"
 private_remote_recovery = "NOT_TESTED"
 
 [deployment_status]
@@ -48,7 +49,7 @@ codex_project_config = "DEPLOYED_WORKING"
 codex_runtime_smoke = "PASS_CURRENT_TASK"
 claude_code_project_config = "DEPLOYED_WORKING"
 claude_code_config_load = "PASS_ISOLATED"
-claude_code_runtime_smoke = "NOT_RUN_EXTERNAL_DATA_NOT_AUTHORIZED"
+claude_code_runtime_smoke = "PASS_CURRENT_TASK"
 antigravity_project_config = "DEPLOYED_WORKING"
 antigravity_runtime_smoke = "PASS_CURRENT_TASK"
 hooks_enabled = false

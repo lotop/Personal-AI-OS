@@ -1,5 +1,19 @@
 # Changelog
 
+## Post-V1.2.1 Working（本地继续修订，尚未发布）
+
+由 `paos-22-v1-2-1-post-release-remediation` 实施，Decision `PAOS-023`。
+
+- **补记 tag 重新指向**：annotated tag `v1.2.1` 于 `2026-09-02` 由 `299f25a` 重新指向 `15cfee2`，原发布提交不再有 ref 指向。该事实此前无任何记录，现由 `PAOS-023` 与 Task Card 固化；本轮不再移动任何 tag。
+- **harness git 环境隔离**（`c8e3ecc0`，由 Antigravity 会话实施）：`release_audit.py`、`tree_digest.py`、`validate_repository.py`、`create_project.py` 的 git 子进程改用受控 `GIT_ENV`，消除跨平台沙箱下的用户级 git 配置干扰。
+- **恢复物证不再可被原地覆盖**：Recovery Artifact 文件名必须内嵌 Tested Commit 前缀，M5 增加断言并补充单元测试；`v1.2.1.bundle` 重命名为 `v1.2.1-c8e3ecc0.bundle`。
+- **修复 CI Gate 漏报**：`release_audit.py` 无论 overall 为 PASS/STALE/BLOCKED 都返回 exit 0，此前默认 profile 把 BLOCKED 显示成 PASS。`ci_gate.py` 增加 `release-state` 项，直接解析 JSON 并如实暴露 `overall` 与未通过的 Gate。
+- **状态漂移更正**：`SYSTEM.toml` 的 `freeze_commit` 更正为 `c8e3ecc0`；恢复状态由 `PASS_V1.2.0` 更正为 `PASS_V1.2.1`；`release` 更正为 `APPROVED_LOCAL_TAG_NOT_PUSHED`（main 由 Founder 自行同步至 origin，Release Tag 保持本地）。
+- **运行时账本按实测更正**：`claude-code` 由 `TRANSIENT_AVAILABLE` / `NOT_RUN` 更正为 `INSTALLED` / `PASS` 并附证据；对应测试改为"PASS 必须带证据"的通用断言，不再钉死平台字面量。`antigravity-cli` 的 `version = "CURRENT"` 记入待办。
+- **Dashboard 安全整改**：只监听 `127.0.0.1`（原 `0.0.0.0`）；静态根由仓库根收紧至 `dashboard/`（`.git/` 不再可下载）；移除 `Access-Control-Allow-Origin: *`；门禁面板由硬编码的 `WAITING_V1.1.2` 改为真实 `release_audit.py` 输出；`/guide` 缺失时明确 404。
+- **悬空引用更正**：`DECISIONS.md` 中 `CORE_TEMPLATE_CANDIDATES.md` 的路径更正为归档后的实际位置。
+- 本轮不发起 Release：`approved_baseline` 仍为 `v1.2.1 / 15cfee2`，M5/M6 在提交后如实转为 `STALE`/`BLOCKED`。
+
 ## V1.2.1 Platform Migration Release
 
 - **平台标识与运行时全面更正**：将历史 `gemini-cli` 全面迁移更正为 **`antigravity-cli` (Google DeepMind Antigravity CLI / AGY)**。

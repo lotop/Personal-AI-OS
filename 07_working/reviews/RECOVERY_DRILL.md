@@ -22,7 +22,7 @@
 
 ## 离线 Bundle 结果
 
-- Bundle Path：`06_deployment/recovery_artifacts/v1.2.1.bundle`（本地、Git Ignored）。
+- Bundle Path：`06_deployment/recovery_artifacts/v1.2.1-c8e3ecc0.bundle`（本地、Git Ignored）。文件名内嵌 Tested Commit 前缀，避免重复演练原地覆盖上一次物证。
 - Bundle Head：`c8e3ecc04a4dbc5a5d4f6995f10e97a9dd6aa42a`。
 - Bundle SHA-256：`4fbcc965afabf2727cc199a0a674601621713ce1c3916723942616b9e15bcf98`。
 - `git bundle verify`：退出码 `0`。

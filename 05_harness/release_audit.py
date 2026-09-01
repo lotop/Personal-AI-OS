@@ -307,6 +307,9 @@ def recovery_gate(root: Path = ROOT) -> Gate:
         or bundle_relative.parts[:2] != RECOVERY_ARTIFACT_ROOT.parts
     ):
         return Gate("M5", "Recovery", "FAIL", "Bundle Artifact 路径不在受管目录")
+    # Bundle 文件名必须内嵌 Tested Commit 前缀，否则重复演练会原地覆盖上一次的恢复物证。
+    if tested[:8] not in bundle_relative.name:
+        return Gate("M5", "Recovery", "FAIL", "Bundle Artifact 文件名未内嵌 Tested Commit 前缀")
     bundle_artifact = root / bundle_relative
     if not bundle_artifact.is_file() or bundle_artifact.is_symlink():
         return Gate("M5", "Recovery", "BLOCKED", "Bundle Artifact 缺失或为 symlink")

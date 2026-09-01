@@ -27,15 +27,21 @@ config_load = "PASS"
 runtime_smoke = "PASS"
 config_evidence = "Antigravity IDE / CLI 环境已成功加载项目 AGENTS.md 与 .gemini/settings.json"
 smoke_evidence = "Antigravity IDE / CLI 当前会话成功执行工具、读取 Task Card 与项目规则"
+issues = [
+  "version = CURRENT 不是可复核的版本证据；本机观察到 Antigravity IDE.app CFBundleShortVersionString=2.5.5（内部 package.json 1.107.0 为 VS Code 基线）与 Antigravity.app 2.11.0，尚未确认哪一项对应 antigravity-cli，待下轮以官方版本命令固化",
+]
 
 [[runtimes]]
 id = "claude-code-local"
 platform = "claude-code"
-availability = "TRANSIENT_AVAILABLE"
+availability = "INSTALLED"
 version = "2.1.252"
-verified_on = "2026-09-01"
+verified_on = "2026-09-02"
 project_config = "DEPLOYED_WORKING"
 config_load = "PASS"
-runtime_smoke = "NOT_RUN"
-config_evidence = "Claude Code 2.1.252 在隔离 CLAUDE_CONFIG_DIR 下执行 claude doctor exit=0；未登录、未发送 Prompt；Managed Settings 因无凭据未获取"
-blocked_reasons = ["BLOCKED_EXTERNAL_DATA_AUTHORIZATION"]
+runtime_smoke = "PASS"
+config_evidence = "Claude Code 2.1.252 在隔离 CLAUDE_CONFIG_DIR 下执行 claude doctor exit=0；2026-09-02 复核 /Users/lotop/.local/bin/claude --version = 2.1.252"
+smoke_evidence = "Claude Code 于 2026-09-02 在本仓库执行 Live 会话：加载 AGENTS.md 与 CLAUDE.md、运行 ci_gate 8/8 PASS 与 86 项单测、完成 Factory 端到端创建演练；未扩大为外部数据授权"
+issues = [
+  "本轮 Live 会话由 Claude Desktop 内置 Claude Code 2.1.247 承载，独立 CLI 为 2.1.252；两者版本不同，本记录以独立 CLI 版本为准",
+]

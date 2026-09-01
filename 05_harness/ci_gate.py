@@ -42,8 +42,53 @@ def run_base_checks(root: Path = ROOT) -> list[dict]:
     return [run_check(name, command, root) for name, command in BASE_CHECKS]
 
 
+def run_release_state(root: Path = ROOT) -> dict:
+    """真实运行 Release Audit 并暴露 overall。
+
+    `release_audit.py` 无论 overall 为 PASS/STALE/BLOCKED 都返回 exit 0，
+    因此不能用退出码判断；此处直接解析 JSON，避免默认 profile 把 BLOCKED 显示成 PASS。
+    BLOCKED/STALE 是开发期的正常状态，不使本 profile 失败；只有 FAIL 才失败。
+    """
+    result = subprocess.run(
+        [PYTHON, "05_harness/release_audit.py"],
+        cwd=root,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    if result.returncode != 0:
+        return {
+            "id": "release-state",
+            "status": "FAIL",
+            "exit_code": result.returncode,
+            "summary": "release_audit.py 无法执行",
+        }
+    try:
+        report = json.loads(result.stdout)
+    except json.JSONDecodeError:
+        return {
+            "id": "release-state",
+            "status": "FAIL",
+            "exit_code": result.returncode,
+            "summary": "release_audit.py 输出不是合法 JSON",
+        }
+    overall = report.get("overall", "UNKNOWN")
+    blocking = [
+        f"{gate.get('id')}={gate.get('status')}"
+        for gate in report.get("gates", [])
+        if gate.get("status") != "PASS"
+    ]
+    return {
+        "id": "release-state",
+        "status": "FAIL" if overall == "FAIL" else overall,
+        "exit_code": result.returncode,
+        "summary": f"overall={overall}" + (f"; {', '.join(blocking)}" if blocking else ""),
+    }
+
+
 def build_report(profile: str) -> tuple[dict, int]:
     checks = [run_check(name, command) for name, command in LOCAL_CHECKS]
+    checks.append(run_release_state())
     if any(check["status"] == "FAIL" for check in checks):
         return {"profile": profile, "status": "FAIL", "checks": checks}, 10
     if profile == "release-readiness":
