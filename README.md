@@ -116,10 +116,18 @@ python3 06_deployment/deploy_adapter.py --manifest 03_adapters/antigravity-cli/m
 ```
 
 ### 3. 创建你的第一个独立业务项目
-* **方式 A：在聊天窗口呼叫 Skill（推荐）**
+* **方式 A：交互式向导（手动操作最省心）**
+  ```bash
+  python3 04_project_factory/new_project.py
+  ```
+  逐步选择或输入，自动完成预演 → 确认 → 创建 → 注入 Codex/Antigravity 适配器 → 验收 → 首次提交。
+  正式创建前不写入任何文件，随时 `Ctrl+C` 退出。向导只是已批准工具的交互外壳，
+  取值范围与校验规则全部从 `factory.toml` 与既有脚本读取，不构成第二套规则。
+
+* **方式 B：在聊天窗口呼叫 Skill**
   > `@create-paos-project 帮我创建一个名为 my-tool 的软件项目，打上 ai 和 software 分类标签`
 
-* **方式 B：通过命令行运行脚手架**
+* **方式 C：通过命令行一次性传参**
   ```bash
   python3 04_project_factory/create_project.py \
     --template-pack 01_templates/project-base-pack \

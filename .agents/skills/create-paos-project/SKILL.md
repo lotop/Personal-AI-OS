@@ -38,7 +38,13 @@ description: >-
 
 ## 2. 标准执行流程
 
-确认参数后，按以下步骤严格执行：
+若用户希望自己在终端逐步操作，可直接引导其运行交互向导，本 Skill 的 A~D 步骤已封装在内：
+
+```bash
+python3 /Users/lotop/Personal-AI-OS/04_project_factory/new_project.py
+```
+
+由 Agent 代为执行时，按以下步骤严格执行：
 
 ### 步骤 A：执行 Dry Run（预检与方案展示）
 
@@ -78,7 +84,13 @@ python3 /Users/lotop/Personal-AI-OS/04_project_factory/create_project.py \
 ### 步骤 C：部署 Codex 与 Antigravity 适配器
 
 Claude Code 入口（`CLAUDE.md` 与 `.claude/settings.json`）已由 Approved Project Base Pack 直接生成，
-无需额外部署。此处只为新建项目注入 Codex 与 Antigravity 的平台适配器配置。部署仅限目标项目，必须附带单次授权引用（如 `PAOS-INIT-<PROJECT_ID>`），若目标存在同名文件需提供 `--backup-dir`：
+无需额外部署。此处只为新建项目注入 Codex 与 Antigravity 的平台适配器配置。部署仅限目标项目，必须附带单次授权引用，若目标存在同名文件需提供 `--backup-dir`。
+
+> **授权引用必须全大写。** `deploy_adapter.py` 的 `AUTHORIZATION_PATTERN` 为
+> `^[A-Z0-9][A-Z0-9._:-]{2,127}$`，而 `project-id` 按定义是小写，因此必须转成大写后再拼接：
+> `project-id = smart-doc-analyzer` → `--authorization-ref PAOS-INIT-SMART-DOC-ANALYZER`。
+> 直接使用小写会在 `--apply` 阶段以 `ERROR: 缺少有效 Deployment 单次授权引用` 退出码 `2` 失败
+> （Dry Run 不校验该字段，因此问题只在正式部署时暴露）。
 
 ```bash
 # 部署 Codex 适配器
@@ -86,7 +98,7 @@ python3 /Users/lotop/Personal-AI-OS/06_deployment/deploy_adapter.py \
   --manifest /Users/lotop/Personal-AI-OS/03_adapters/codex/manifest.toml \
   --target <TARGET_PATH> \
   --scope PROJECT \
-  --authorization-ref PAOS-INIT-<PROJECT_ID> \
+  --authorization-ref PAOS-INIT-<PROJECT_ID_UPPERCASE> \
   --record-dir 99_temp/deploy_records \
   --apply
 
@@ -95,7 +107,7 @@ python3 /Users/lotop/Personal-AI-OS/06_deployment/deploy_adapter.py \
   --manifest /Users/lotop/Personal-AI-OS/03_adapters/antigravity-cli/manifest.toml \
   --target <TARGET_PATH> \
   --scope PROJECT \
-  --authorization-ref PAOS-INIT-<PROJECT_ID> \
+  --authorization-ref PAOS-INIT-<PROJECT_ID_UPPERCASE> \
   --record-dir 99_temp/deploy_records \
   --apply
 ```
