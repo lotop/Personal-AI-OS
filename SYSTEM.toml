@@ -14,7 +14,7 @@ approval_reference = "PAOS-REL-008"
 git_tag = "v1.2.2"
 # freeze_commit 是实现冻结提交；最终 Release Commit 由 annotated tag 直接绑定。
 # v1.2.1 历史：tag 曾由 299f25a 重新指向 15cfee2，冻结点为 c8e3ecc0；见 PAOS-023。
-freeze_commit = "0000000000000000000000000000000000000000"
+freeze_commit = "6b2641c9aa97cdadb7cd643288515b412deb2633"
 
 [repository]
 role = "canonical-control-plane-repository"
