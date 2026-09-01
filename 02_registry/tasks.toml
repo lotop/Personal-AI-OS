@@ -189,7 +189,7 @@ platform_ref = "main"
 [[tasks]]
 id = "paos-23-v1-2-2-release"
 purpose = "清理过期过程文件并完成 Personal AI OS V1.2.2 发布与 main 推送"
-status = "ACTIVE"
-validation = ["scope-confirmed", "founder-authorized", "task-card-recorded", "paos-024-recorded", "paos-rel-008-recorded", "temp-cleanup-applied", "deployment-evidence-retained", "version-aligned-v1-2-2"]
+status = "DONE"
+validation = ["scope-confirmed", "founder-authorized", "task-card-recorded", "paos-024-recorded", "paos-rel-008-recorded", "temp-cleanup-applied", "deployment-evidence-retained", "version-aligned-v1-2-2", "freeze-commit-locked", "cold-clone-pass", "bundle-clone-pass", "bundle-artifact-verified", "bundle-name-embeds-commit", "v1-2-1-artifact-preserved", "tree-digest-match", "eighty-seven-tests-pass", "m1-m5-pass-before-tag", "local-annotated-tag-authorized", "head-equals-tag", "push-main-only", "no-tag-push", "existing-tags-untouched"]
 platform = "claude-code"
 platform_ref = "main"
