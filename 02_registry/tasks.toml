@@ -158,6 +158,6 @@ platform_ref = "main"
 id = "paos-19-v1-2-canonical-promotion-audit"
 purpose = "将 Working 资产整理为六个 Canonical Approval Pack 并逐模块确认"
 status = "ACTIVE"
-validation = ["route-confirmed", "module-pack-confirmation-approved", "task-card-recorded", "working-marker-scan-64", "six-pack-routing-recorded", "pack-01-content-audited", "pack-01-founder-approved", "pack-01-four-fixes-applied", "pack-01-sixteen-files-promoted", "pack-01-implementation-f459255", "pack-01-tree-digest-recorded", "pack-01-local-offline-ci-pass", "working-markers-64-to-49", "pack-02-eight-files-audited", "pack-02-founder-approved", "pack-02-four-fix-groups-applied", "pack-02-eight-files-promoted", "v1-2-branch-isolated", "remaining-packs-not-promoted"]
+validation = ["route-confirmed", "module-pack-confirmation-approved", "task-card-recorded", "working-marker-scan-64", "six-pack-routing-recorded", "pack-01-content-audited", "pack-01-founder-approved", "pack-01-four-fixes-applied", "pack-01-sixteen-files-promoted", "pack-01-implementation-f459255", "pack-01-tree-digest-recorded", "pack-01-local-offline-ci-pass", "working-markers-64-to-49", "pack-02-eight-files-audited", "pack-02-founder-approved", "pack-02-four-fix-groups-applied", "pack-02-eight-files-promoted", "pack-02-implementation-7658910", "pack-02-tree-digest-recorded", "pack-02-local-offline-ci-pass", "canonical-working-markers-42-to-34", "v1-2-branch-isolated", "remaining-packs-not-promoted"]
 platform = "codex"
 platform_ref = "main"
