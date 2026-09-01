@@ -11,6 +11,7 @@
 *.swp
 __pycache__/
 *.py[cod]
+.venv/
 
 # Local release recovery artifacts; evidence stores path and SHA-256, artifact is not pushed.
 06_deployment/recovery_artifacts/
