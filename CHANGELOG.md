@@ -1,5 +1,11 @@
 # Changelog
 
+## Post-V1.2.2 Working（本地继续修订，尚未发布）
+
+- **新增项目创建交互向导**（`04_project_factory/new_project.py`）：逐步选择/输入参数，自动完成预演 → 确认 → 创建 → 注入 Codex/Antigravity 适配器 → 验收 → 首次提交。取值范围从 `factory.toml` 读取，`SLUG_PATTERN` 与 `AUTHORIZATION_PATTERN` 直接从既有脚本导入复用，不形成第二份规则定义。
+- **修正 Skill 文档缺陷**：`deploy_adapter.py` 的 `AUTHORIZATION_PATTERN` 为 `^[A-Z0-9][A-Z0-9._:-]{2,127}$` 只接受大写，而 `project-id` 按定义是小写，原 `create-paos-project` Skill 文档给出的 `PAOS-INIT-<PROJECT_ID>` 在 `--apply` 阶段必然以 exit 2 失败。Dry Run 不校验该字段，问题只在正式部署时暴露。
+- **移除 `dashboard/`**（`PAOS-025`）：Founder 确认该组件不再需要。该目录自 `paos-13` 起长期排除在治理与验收之外，内容保留在 Git 历史与既有 tag、Bundle 中。相关历史评审记录与 `PAOS-023` 的安全整改记录一并保留，不改写。
+
 ## V1.2.2 Evidence Integrity Release
 
 由 `paos-22-v1-2-1-post-release-remediation` 与 `paos-23-v1-2-2-release` 实施，Decisions `PAOS-023`、`PAOS-024`、`PAOS-REL-008`。

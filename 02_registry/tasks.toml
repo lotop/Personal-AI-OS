@@ -193,3 +193,11 @@ status = "DONE"
 validation = ["scope-confirmed", "founder-authorized", "task-card-recorded", "paos-024-recorded", "paos-rel-008-recorded", "temp-cleanup-applied", "deployment-evidence-retained", "version-aligned-v1-2-2", "freeze-commit-locked", "cold-clone-pass", "bundle-clone-pass", "bundle-artifact-verified", "bundle-name-embeds-commit", "v1-2-1-artifact-preserved", "tree-digest-match", "eighty-seven-tests-pass", "m1-m5-pass-before-tag", "local-annotated-tag-authorized", "head-equals-tag", "push-main-only", "no-tag-push", "existing-tags-untouched"]
 platform = "claude-code"
 platform_ref = "main"
+
+[[tasks]]
+id = "paos-24-dashboard-removal"
+purpose = "新增项目创建交互向导、修正部署授权引用文档缺陷并移除 Dashboard 组件"
+status = "DONE"
+validation = ["scope-confirmed", "founder-authorized", "paos-025-recorded", "wizard-added", "wizard-e2e-pass", "wizard-reuses-canonical-patterns", "skill-authorization-ref-doc-fixed", "dashboard-removed", "dashboard-history-preserved", "harness-references-none", "local-offline-ci-no-fail", "no-tag", "no-push"]
+platform = "claude-code"
+platform_ref = "main"

@@ -370,6 +370,18 @@
 - Synchronization Boundary：Founder 本轮明确授权 `git push`，范围经确认后限定为 **只推送 `main`**。annotated tag `v1.2.2` 与既有本地 tag 一律不 push，`SYSTEM.toml` 的 `release = "APPROVED_LOCAL_TAG_NOT_PUSHED"` 继续成立。
 - Founder Approval：用户明确指示发布 1.2.2 并推送。
 
+### PAOS-025｜移除 Dashboard 组件
+
+- 状态：`APPROVED`
+- 日期：`2026-09-02`
+- Owner：Founder / `paos-24-dashboard-removal`
+- Decision：从仓库中移除 `dashboard/`（`README.md`、`index.html`、`server.py`）。Founder 确认该组件不再需要。
+- Background：该目录自 `paos-13` 起长期按 Founder 指令排除在治理与验收之外，`HANDOFF_TO_CODEX_POST_V1.1.2.md` 已记录"Founder 表示后续会删除"。`PAOS-023` 曾对其执行安全整改并随 `v1.2.2` 发布，本决定在其之后生效，不改写该发布内容。
+- Scope Boundary：只删除 `dashboard/` 三个文件。`07_working/reviews/**` 中关于该组件的评审记录、`CHANGELOG.md` 的历史条目、`PAOS-023` 的 Security Boundary 以及 `02_registry/tasks.toml` 中含 `dashboard` 字样的任务 ID 与验证标记全部保留，作为历史证据不得改写。
+- Dependency Boundary：Harness 与 Release Gate 从未引用该目录，删除不影响 `validate_repository.py`、`release_audit.py`、`ci_gate.py` 或任何测试；`02_registry/skills.toml` 中的 `owner = "paos-13-session-manager-and-dashboard"` 是任务 ID 而非路径，保持不变。
+- Recovery Boundary：内容保留在 Git 历史与 `v1.2.2` 及更早的 tag、Bundle 中，可随时取回。
+- Founder Approval：用户明确说明该组件由本人删除且不再需要。
+
 ## Candidate Decisions
 
 - 当前无待确认 Candidate Decision。
