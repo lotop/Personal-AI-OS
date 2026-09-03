@@ -117,14 +117,22 @@ python3 /Users/lotop/Personal-AI-OS/06_deployment/deploy_adapter.py \
 
 ### 步骤 D：完成验证与报告
 
-1. 验证目标目录下是否存在以下核心文件：
-   - `<TARGET_PATH>/AGENTS.md`
-   - `<TARGET_PATH>/PROJECT.md`
-   - `<TARGET_PATH>/DECISIONS.md`
-   - `<TARGET_PATH>/CLAUDE.md`（首行必须是 `@AGENTS.md`）
-   - `<TARGET_PATH>/.claude/settings.json`
-   - `<TARGET_PATH>/.codex/config.toml`
-   - `<TARGET_PATH>/.gemini/settings.json`
-   - `<TARGET_PATH>/.git`
-2. 检查 `.paos-init.json` 中的 Template 版本和逐文件 SHA-256。
-3. 分别报告已创建、已验证、已部署到目标项目和尚未完成的事项。
+1. **运行项目随附的校验器**，不要在此维护第二份验收清单（那会随模板演进而漂移）：
+
+   ```bash
+   cd <TARGET_PATH> && python3 05_harness/validate_project.py
+   ```
+
+   它检查结构完整性、`CLAUDE.md` 入口、模板残留、占位内容、状态一致性、
+   类型框架匹配、`[stack]` 完整性、首张 Task Card、只读边界与明文 Secret。
+   **新项目的正常结果是 `ERRORS=0` 加若干 `WARN`**（占位内容与空 Task Card
+   本来就该等 Owner 填写）；出现 `ERROR` 才是缺陷。
+
+2. 额外确认本 Skill 自己部署的两个文件存在：`<TARGET_PATH>/.codex/config.toml`
+   与 `<TARGET_PATH>/.gemini/settings.json`（校验器不管这两个，它们由步骤 C 注入）。
+
+3. 检查 `.paos-init.json` 中的 Template 版本、Pack Digest 与逐文件 SHA-256。
+
+4. 分别报告已创建、已验证、已部署到目标项目和尚未完成的事项，并明确告知
+   Owner 接下来要填写 `PROJECT.md` 的四个小节、类型框架中"待 Owner 补全"
+   的部分，以及（软件开发类）`project.toml` 的 `[stack]` 表。

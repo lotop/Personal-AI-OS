@@ -355,34 +355,36 @@ def report_plan(stdout: str) -> None:
     ok(f"计划写入 {len(plan.get('files', []))} 个文件，项目状态 {plan.get('project_status')}")
 
 
+PROJECT_VALIDATOR = Path("05_harness/validate_project.py")
+
+
 def verify(target: Path) -> bool:
-    expected = [
-        "AGENTS.md",
-        "CLAUDE.md",
-        "PROJECT.md",
-        "DECISIONS.md",
-        "TASKS.md",
-        "HANDOFF.md",
-        "SESSION_CLOSE.md",
-        "project.toml",
-        ".paos-init.json",
-        ".claude/settings.json",
-    ]
+    """委托给项目随附的校验器，避免向导维护第二份会漂移的验收清单。"""
     everything_ok = True
-    for relative in expected:
-        if (target / relative).is_file():
-            ok(relative)
-        else:
-            fail(f"{relative}（缺失）")
+    validator = target / PROJECT_VALIDATOR
+    if not validator.is_file():
+        fail(f"{PROJECT_VALIDATOR}（缺失）：模板包未提供项目校验器")
+        return False
+
+    code, stdout, stderr = run([sys.executable, str(PROJECT_VALIDATOR)], target)
+    output = (stdout + stderr).strip()
+    for line in output.splitlines():
+        if line.startswith("ERROR:"):
+            fail(line[len("ERROR:") :].strip())
             everything_ok = False
-    claude_md = target / "CLAUDE.md"
-    if claude_md.is_file():
-        first_line = claude_md.read_text(encoding="utf-8").splitlines()[0].strip()
-        if first_line == "@AGENTS.md":
-            ok("CLAUDE.md 首行为 @AGENTS.md")
-        else:
-            fail(f"CLAUDE.md 首行异常：{first_line!r}")
-            everything_ok = False
+        elif line.startswith("WARN:"):
+            warn(line[len("WARN:") :].strip())
+        elif line.startswith("ERRORS="):
+            (ok if code == 0 else fail)(f"项目自校验 {line}")
+    if code != 0 and everything_ok:
+        fail("项目自校验未通过")
+        everything_ok = False
+
+    framework = target / "00_governance/PROJECT_TYPE_FRAMEWORK.md"
+    if framework.is_file():
+        header = framework.read_text(encoding="utf-8").splitlines()
+        title_line = next((line for line in header if line.startswith("# ")), "")
+        ok(f"类型框架：{title_line.lstrip('# ').strip() or framework.name}")
     return everything_ok
 
 
