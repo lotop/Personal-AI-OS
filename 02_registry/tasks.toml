@@ -217,3 +217,11 @@ status = "DONE"
 validation = ["scope-confirmed", "founder-authorized", "paos-tmpl-005-recorded", "overlay-removed-everywhere", "wizard-reduced-to-six-steps", "handoff-and-session-close-as-append-only-logs", "rules-moved-to-agents-md", "project-changelog-added", "release-convention-added", "init-manifest-schema-0-3-0", "validator-requires-changelog", "four-type-e2e-creation-pass", "twenty-two-factory-tests-pass", "local-offline-ci-no-fail", "demo-test-removed"]
 platform = "claude-code"
 platform_ref = "main"
+
+[[tasks]]
+id = "paos-27-v1-3-0-release"
+purpose = "收敛向导、Dashboard 移除与两次模板包升级，完成 Personal AI OS V1.3.0 发布与 main 推送"
+status = "DONE"
+validation = ["scope-confirmed", "founder-release-authorized", "task-card-recorded", "paos-rel-009-recorded", "minor-version-justified", "version-aligned-v1-3-0", "freeze-commit-locked", "cold-clone-pass", "bundle-clone-pass", "bundle-artifact-verified", "bundle-name-embeds-commit", "tree-digest-match", "m1-m6-pass", "local-annotated-tag-authorized", "head-equals-tag", "push-main-only", "no-tag-push", "existing-tags-untouched", "projects-not-migrated"]
+platform = "claude-code"
+platform_ref = "main"

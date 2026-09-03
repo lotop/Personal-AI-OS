@@ -412,6 +412,19 @@
 - Evidence：四种类型各完成一次 `--apply --git` 创建并通过随附校验器；22 项 Factory 测试通过；`validate_repository` `ERRORS=0`。
 - Founder Approval：用户明确指示按既有评估建议全部执行。
 
+### PAOS-REL-009｜Personal AI OS 1.3.0 Release 批准
+
+- 状态：`APPROVED`
+- 日期：`2026-09-03`
+- Owner：Founder / `paos-27-v1-3-0-release`
+- Decision：批准 Personal AI OS V1.3.0 本地正式发布，并按既有惯例将 `main` 同步至 `origin`。
+- Scope：本次发布收敛四批已完成工作——项目创建交互向导、移除 `dashboard/`、Project Base Pack `1.2.0`（四类类型框架、编号目录、项目自带 Harness、`[stack]` 约定）与 `1.3.0`（移除 overlay、交接日志改为追加式、项目发布约定）。
+- Baseline Boundary：已批准基线由 `v1.2.2 / PAOS-REL-008` 晋升为 `v1.3.0 / PAOS-REL-009`。
+- Release Gate Boundary：M1~M6 全部门禁通过；Release Evidence 由 annotated tag 与本地 Bundle 共同证明。
+- Synchronization Boundary：按 `PAOS-013` 既有授权推送 `main`；**annotated tag 保持本地**，与 `SYSTEM.toml` 的 `release = "APPROVED_LOCAL_TAG_NOT_PUSHED"` 一致。推送 tag 需要 Founder 另行授权。
+- Version Boundary：本次为次版本升级而非补丁，因为模板包发生两次不向后兼容的结构变更（目录编号、类型枚举收敛、overlay 移除、`.paos-init.json` schema 0.2.0 → 0.3.0），`1.2.x` 生成的项目不与新工厂兼容。
+- Founder Approval：用户明确指示按既有评估建议全部执行，含发布。
+
 ## Candidate Decisions
 
 - 当前无待确认 Candidate Decision。

@@ -1,6 +1,10 @@
 # Changelog
 
-## Post-V1.2.2 Working（本地继续修订，尚未发布）
+## V1.3.0 Project Template Overhaul Release
+
+由 `paos-24` ~ `paos-27` 实施，Decisions `PAOS-025`、`PAOS-TMPL-004`、`PAOS-TMPL-005`、`PAOS-REL-009`。
+
+本次为**次版本升级**：模板包发生两次不向后兼容的结构变更，`1.2.x` 生成的项目不与新工厂兼容。
 
 - **Project Base Pack 升级至 `1.3.0`**（`PAOS-TMPL-005`）：
   - **移除 overlay 概念**：它不改变任何生成内容也无消费方，保留只造成误解。`--overlay`、`allowed_overlays`、`overlays_csv` 与 `.paos-init.json` 的 `overlays` 一并移除；差异化职责已由类型框架承担。向导相应从 7 步简化为 6 步。

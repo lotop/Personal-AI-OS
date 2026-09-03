@@ -1,20 +1,20 @@
 schema_version = "0.4.0-working"
 system_name = "Personal AI OS"
-target_version = "1.2.2"
+target_version = "1.3.0"
 artifact_state = "APPROVED"
 canonical_authority = "FOUNDER_APPROVED"
 default_language = "zh-CN"
 default_structured_config = "toml"
 
 [approved_baseline]
-version = "1.2.2"
+version = "1.3.0"
 artifact_state = "APPROVED"
 canonical_authority = "FOUNDER_APPROVED"
-approval_reference = "PAOS-REL-008"
-git_tag = "v1.2.2"
+approval_reference = "PAOS-REL-009"
+git_tag = "v1.3.0"
 # freeze_commit 是实现冻结提交；最终 Release Commit 由 annotated tag 直接绑定。
 # v1.2.1 历史：tag 曾由 299f25a 重新指向 15cfee2，冻结点为 c8e3ecc0；见 PAOS-023。
-freeze_commit = "6b2641c9aa97cdadb7cd643288515b412deb2633"
+freeze_commit = "7bc6097cfe046ffd21180cec73e916a8bb4518f2"
 
 [repository]
 role = "canonical-control-plane-repository"
@@ -40,8 +40,8 @@ claude_code_adapter = "GENERATED_WORKING"
 antigravity_adapter = "GENERATED_WORKING"
 deployment = "APPROVED_LOCAL"
 release = "APPROVED_LOCAL_TAG_NOT_PUSHED"
-local_git_recovery = "PASS_V1.2.2"
-offline_bundle_recovery = "PASS_V1.2.2"
+local_git_recovery = "PASS_V1.3.0"
+offline_bundle_recovery = "PASS_V1.3.0"
 private_remote_recovery = "NOT_TESTED"
 
 [deployment_status]
