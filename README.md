@@ -125,7 +125,7 @@ python3 06_deployment/deploy_adapter.py --manifest 03_adapters/antigravity-cli/m
   取值范围与校验规则全部从 `factory.toml` 与既有脚本读取，不构成第二套规则。
 
 * **方式 B：在聊天窗口呼叫 Skill**
-  > `@create-paos-project 帮我创建一个名为 my-tool 的软件项目，打上 ai 和 software 分类标签`
+  > `@create-paos-project 帮我创建一个名为 my-tool 的软件开发项目`
 
 * **方式 C：通过命令行一次性传参**
   ```bash
@@ -136,13 +136,12 @@ python3 06_deployment/deploy_adapter.py --manifest 03_adapters/antigravity-cli/m
     --name "My Tool" \
     --owner lotop \
     --primary-type SOFTWARE_DEVELOPMENT \
-    --overlay software --overlay ai \
     --git \
     --apply
   ```
   创建后直接进入新项目：`cd /Users/lotop/Projects/my-tool` 即可开始开发。
 
-  > **关于 `--overlay`**：当前版本的 overlay 是**项目分类标签**，只做取值校验并记录到 `project.toml` 的 `overlays_csv` 与 `.paos-init.json`，不会改变生成的文件内容。差异化模板内容属于后续 Template Pack 工作，尚未实现。
+  > **关于 `--primary-type`**：四个取值各自决定项目拿到哪一份类型约定框架，权威来源是 `04_project_factory/factory.toml` 的 `primary_types`。
 
 ---
 

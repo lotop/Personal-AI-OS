@@ -2,6 +2,12 @@
 
 ## Post-V1.2.2 Working（本地继续修订，尚未发布）
 
+- **Project Base Pack 升级至 `1.3.0`**（`PAOS-TMPL-005`）：
+  - **移除 overlay 概念**：它不改变任何生成内容也无消费方，保留只造成误解。`--overlay`、`allowed_overlays`、`overlays_csv` 与 `.paos-init.json` 的 `overlays` 一并移除；差异化职责已由类型框架承担。向导相应从 7 步简化为 6 步。
+  - **`HANDOFF.md` 与 `SESSION_CLOSE.md` 改为纯追加式日志**，规则正文上移至 `AGENTS.md` 的「交接与会话收尾」一节，规则与记录载体分离。
+  - **新增项目级 `CHANGELOG.md` 与「版本与发布」约定**：项目节奏由 Owner 定义，但发布必须绑定 40 位 Commit SHA、校验器退出码 `0`、工作树干净，且须经 Owner 明确授权。
+  - `.paos-init.json` `schema_version` 升至 `0.3.0`；项目校验器必需文件加入 `CHANGELOG.md`。
+
 - **新增项目创建交互向导**（`04_project_factory/new_project.py`）：逐步选择/输入参数，自动完成预演 → 确认 → 创建 → 注入 Codex/Antigravity 适配器 → 验收 → 首次提交。取值范围从 `factory.toml` 读取，`SLUG_PATTERN` 与 `AUTHORIZATION_PATTERN` 直接从既有脚本导入复用，不形成第二份规则定义。
 - **修正 Skill 文档缺陷**：`deploy_adapter.py` 的 `AUTHORIZATION_PATTERN` 为 `^[A-Z0-9][A-Z0-9._:-]{2,127}$` 只接受大写，而 `project-id` 按定义是小写，原 `create-paos-project` Skill 文档给出的 `PAOS-INIT-<PROJECT_ID>` 在 `--apply` 阶段必然以 exit 2 失败。Dry Run 不校验该字段，问题只在正式部署时暴露。
 - **Project Base Pack 升级至 `1.2.0`**（`PAOS-TMPL-004`）：

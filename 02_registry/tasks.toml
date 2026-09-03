@@ -209,3 +209,11 @@ status = "DONE"
 validation = ["scope-confirmed", "founder-authorized", "paos-tmpl-004-recorded", "four-primary-types-defined", "four-type-frameworks-written", "numbered-directories-applied", "project-harness-shipped", "active-gate-implemented", "stack-table-added", "gitignore-and-readme-added", "primary-types-filter-implemented", "schema-updated", "duplicate-destination-check-type-aware", "four-type-e2e-creation-pass", "validator-behaviour-verified", "twenty-two-factory-tests-pass", "local-offline-ci-no-fail", "existing-projects-not-migrated", "no-tag", "no-push"]
 platform = "claude-code"
 platform_ref = "main"
+
+[[tasks]]
+id = "paos-26-project-template-v3"
+purpose = "Project Base Pack 升级至 1.3.0：移除 overlay、交接日志改为追加式、新增项目发布约定"
+status = "DONE"
+validation = ["scope-confirmed", "founder-authorized", "paos-tmpl-005-recorded", "overlay-removed-everywhere", "wizard-reduced-to-six-steps", "handoff-and-session-close-as-append-only-logs", "rules-moved-to-agents-md", "project-changelog-added", "release-convention-added", "init-manifest-schema-0-3-0", "validator-requires-changelog", "four-type-e2e-creation-pass", "twenty-two-factory-tests-pass", "local-offline-ci-no-fail", "demo-test-removed"]
+platform = "claude-code"
+platform_ref = "main"

@@ -196,7 +196,7 @@ def template_factory_gate(root: Path = ROOT) -> Gate:
                 return Gate("M3", "Template & Factory", "FAIL", f"Template Manifest 无效: {pack.name}: {exc}")
             expected_digest = factory_config.get("approved_template_pack_digests", {}).get(init.get("template_pack"))
             if (
-                init.get("schema_version") != "0.2.0"
+                init.get("schema_version") != "0.3.0"
                 or init.get("project_status") != "PROVISIONAL"
                 or init.get("template_pack") != pack_manifest.get("pack_id")
                 or init.get("template_approval_reference") != pack_manifest.get("approval_reference")

@@ -16,17 +16,6 @@ primary_types = [
   "BRAND_MANAGEMENT",
 ]
 
-allowed_overlays = [
-  "software",
-  "data",
-  "ai",
-  "security",
-  "compliance",
-  "content",
-  "finance",
-  "vendor",
-]
-
 # Pack 用途属于 Factory 路由配置，不写入或改动已批准 Template Manifest。
 [template_pack_kinds]
 paos-project-base = "PROJECT_SCAFFOLD"
@@ -35,5 +24,5 @@ paos-core-templates = "ARTIFACT_LIBRARY"
 # Digest = SHA-256(sorted(relative_path + NUL + file_sha256 + LF))。
 # 该登记位于 Factory 外部，避免改写已批准 Template Manifest。
 [approved_template_pack_digests]
-paos-project-base = "778fe664e351ec3e4a6ccea01b56e6e5cbc1bcc2f316c8c3e8346899ea006337"
+paos-project-base = "7937dea28f1f2c7b0504d18617ca0f770a070eed89d94695842cf0bf8fd5179f"
 paos-core-templates = "bb5b690fdd4aef1dded0b8d0941b0c97c2a1287dbfdb2beeb09392bfb27b8fd0"

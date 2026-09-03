@@ -163,7 +163,7 @@ class ReleaseAuditTest(unittest.TestCase):
                 "p.add_argument('--apply',action='store_true');p.add_argument('--git',action='store_true')\n"
                 "a=p.parse_args(); t=Path(a.target); t.mkdir(parents=True, exist_ok=True)\n"
                 "(t/'a.txt').write_text('')\n"
-                "m={'schema_version':'0.2.0','project_status':'PROVISIONAL','template_pack':'project-pack',"
+                "m={'schema_version':'0.3.0','project_status':'PROVISIONAL','template_pack':'project-pack',"
                 "'template_approval_reference':'APPROVED-1','template_pack_digest':'digest',"
                 "'files':[{'path':'a.txt','sha256':hashlib.sha256(b'').hexdigest()}]}\n"
                 "(t/'.paos-init.json').write_text(json.dumps(m))\n"

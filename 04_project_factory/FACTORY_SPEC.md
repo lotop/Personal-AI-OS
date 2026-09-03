@@ -16,7 +16,6 @@
 - `project_id`、名称、Slug 和 Owner。
 - 项目边界、目标和 Non-goals。
 - 一个 Primary Type。
-- 零个或多个 Capability Overlay。
 - 已批准的 Template Pack 版本。
 - 目标路径和 Git 初始化策略。
 
@@ -31,14 +30,14 @@
 
 每个类型都必须在 Template Pack 中提供一份专属约定框架，经 `template.toml` 的 `primary_types` 过滤器产出到目标项目的 `00_governance/PROJECT_TYPE_FRAMEWORK.md`。**新增类型时必须同步提供框架文件**，否则该类型的项目会缺少类型约定，项目自校验器会报错。
 
-复杂项目仍选择一个主要类型，再叠加 `software`、`data`、`ai`、`security`、`compliance`、`content`、`finance` 或 `vendor` Overlay。Overlay 只做分类标签，不改变生成内容。
+每个项目只选一个主要类型。分类标签（overlay）已在 `PAOS-TMPL-005` 中移除：它不改变任何生成内容，也无任何消费方，留着只会造成误解。
 
 ## 输出
 
 - 可选的独立项目目录和 Git Repository；默认只输出 Dry Run。
 - 项目级 `AGENTS.md`、`PROJECT.md`、`project.toml` 和 Decisions 入口。
 - Working、Source、Knowledge、Archive 与 Temp 边界。
-- `.paos-init.json` V0.2 安装基线，包含 Project Registry Candidate 数据，但不直接写入 OS Registry。
+- `.paos-init.json` V0.3 安装基线，包含 Project Registry Candidate 数据，但不直接写入 OS Registry。
 - 空白 `TASKS.md` 任务模板；首张正式 Task Card 只在项目 Objective/Scope 确认后创建。
 - Dry Run Manifest、逐文件 SHA-256 和回滚所需信息。
 

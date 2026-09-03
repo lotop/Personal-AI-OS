@@ -112,7 +112,6 @@ class ProjectFactoryTest(unittest.TestCase):
                 "PROJECT_NAME": "Demo",
                 "OWNER": "Founder",
                 "PRIMARY_TYPE": "SOFTWARE_DEVELOPMENT",
-                "OVERLAYS": "ai,software",
             }
             pack_manifest, files = load_plan(pack, target, variables, self.PROJECT_PACK_KINDS)
             init_manifest = build_manifest(
@@ -126,7 +125,7 @@ class ProjectFactoryTest(unittest.TestCase):
     def test_pack_digest_fixed_vector_and_mismatch_rejected(self) -> None:
         pack = Path(__file__).resolve().parents[1] / "01_templates/project-base-pack"
         # 固定向量：模板包任何改动都必须在此处显式更新，作为静默漂移的减速带。
-        expected = "778fe664e351ec3e4a6ccea01b56e6e5cbc1bcc2f316c8c3e8346899ea006337"
+        expected = "7937dea28f1f2c7b0504d18617ca0f770a070eed89d94695842cf0bf8fd5179f"
         self.assertEqual(calculate_pack_digest(pack), expected)
         # factory.toml 的登记值必须与实际内容一致，防止改了模板却忘记更新登记。
         factory = tomllib.loads(
@@ -141,7 +140,6 @@ class ProjectFactoryTest(unittest.TestCase):
                 "PROJECT_NAME": "Digest Test",
                 "OWNER": "Founder",
                 "PRIMARY_TYPE": "SOFTWARE_DEVELOPMENT",
-                "OVERLAYS": "",
             }
             with self.assertRaisesRegex(ValueError, "Digest 不匹配"):
                 load_plan(
@@ -161,7 +159,6 @@ class ProjectFactoryTest(unittest.TestCase):
             "PROJECT_NAME": "Demo",
             "OWNER": "Founder",
             "PRIMARY_TYPE": "SOFTWARE_DEVELOPMENT",
-            "OVERLAYS": "ai",
         }
         pack_manifest = {
             "pack_id": "test",
@@ -173,7 +170,7 @@ class ProjectFactoryTest(unittest.TestCase):
         manifest = build_manifest(
             pack_manifest, target, variables, files, False, "1.2.0", "1.1.4"
         )
-        self.assertEqual(manifest["schema_version"], "0.2.0")
+        self.assertEqual(manifest["schema_version"], "0.3.0")
         self.assertEqual(manifest["generator"], "paos-project-factory")
         self.assertEqual(manifest["project_status"], "PROVISIONAL")
         self.assertEqual(manifest["template_state"], "APPROVED")
@@ -299,7 +296,6 @@ class ProjectFactoryTest(unittest.TestCase):
                 "--name", "候选项目",
                 "--owner", "Founder",
                 "--primary-type", "SOFTWARE_DEVELOPMENT",
-                "--overlay", "ai",
             ]
             dry_run = subprocess.run(command, text=True, capture_output=True, check=False)
             self.assertEqual(dry_run.returncode, 0, dry_run.stderr)
@@ -325,7 +321,7 @@ class ProjectFactoryTest(unittest.TestCase):
                 (target / "CLAUDE.md").read_text(encoding="utf-8").startswith("@AGENTS.md")
             )
             init_manifest = json.loads((target / ".paos-init.json").read_text(encoding="utf-8"))
-            self.assertEqual(init_manifest["schema_version"], "0.2.0")
+            self.assertEqual(init_manifest["schema_version"], "0.3.0")
             self.assertEqual(init_manifest["project_status"], "PROVISIONAL")
             self.assertEqual(init_manifest["template_state"], "APPROVED")
 
@@ -350,7 +346,6 @@ class ProjectFactoryTest(unittest.TestCase):
                     "PROJECT_NAME": "Filter Test",
                     "OWNER": "Founder",
                     "PRIMARY_TYPE": primary_type,
-                    "OVERLAYS": "",
                 }
                 _, files = load_plan(
                     pack,
@@ -380,7 +375,6 @@ class ProjectFactoryTest(unittest.TestCase):
                 "PROJECT_NAME": "Filter Test",
                 "OWNER": "Founder",
                 "PRIMARY_TYPE": "NOT_A_REAL_TYPE",
-                "OVERLAYS": "",
             }
             _, files = load_plan(
                 pack,

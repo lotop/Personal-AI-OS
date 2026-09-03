@@ -122,29 +122,6 @@ def choose_one(prompt: str, options: list[str], descriptions: dict[str, str] | N
         fail(f"请输入 1-{len(options)} 之间的序号。")
 
 
-def choose_many(prompt: str, options: list[str]) -> list[str]:
-    for index, option in enumerate(options, start=1):
-        print(f"    {paint(str(index).rjust(2), BOLD)}. {option}")
-    while True:
-        raw = ask(prompt, default="")
-        if not raw:
-            return []
-        tokens = [token.strip() for token in raw.replace("，", ",").split(",") if token.strip()]
-        picked: list[str] = []
-        bad = []
-        for token in tokens:
-            if token.isdigit() and 1 <= int(token) <= len(options):
-                picked.append(options[int(token) - 1])
-            elif token in options:
-                picked.append(token)
-            else:
-                bad.append(token)
-        if bad:
-            fail(f"无法识别：{', '.join(bad)}。用逗号分隔序号，或直接回车表示不选。")
-            continue
-        return sorted(set(picked))
-
-
 def load_factory_config() -> dict:
     return tomllib.loads((FACTORY_DIR / "factory.toml").read_text(encoding="utf-8"))
 
@@ -202,7 +179,7 @@ def show_command(command: list[str]) -> None:
 def collect() -> dict:
     config = load_factory_config()
 
-    title("1/7  模板包")
+    title("1/6  模板包")
     packs = discover_scaffold_packs(config)
     approved = [pack for pack in packs if pack[3] == "APPROVED"]
     if not approved:
@@ -216,7 +193,7 @@ def collect() -> dict:
         picked = choose_one("选择模板包", labels)
         pack_id, pack_path, version, state = approved[labels.index(picked)]
 
-    title("2/7  项目标识")
+    title("2/6  项目标识")
     info("2-63 位小写字母、数字或连字符，且必须以字母或数字开头。")
     while True:
         project_id = ask("project-id", default="demo-test")
@@ -224,20 +201,14 @@ def collect() -> dict:
             break
         fail("格式不符合要求（不能有大写、下划线、空格或中文）。")
 
-    title("3/7  基本信息")
+    title("3/6  基本信息")
     name = ask("项目名称（可用中文）", default=project_id)
     owner = ask("负责人", default=os.environ.get("USER") or "lotop")
 
-    title("4/7  主项目类型")
+    title("4/6  主项目类型")
     primary_type = choose_one("选择序号", list(config["primary_types"]))
 
-    title("5/7  分类标签 overlay（可选）")
-    warn("overlay 目前只做取值校验并记入 project.toml 与 .paos-init.json，")
-    warn("不会改变生成的任何文件内容。差异化模板尚未实现。")
-    info("多选用逗号分隔（如 1,3），直接回车表示不选。")
-    overlays = choose_many("选择序号", list(config["allowed_overlays"]))
-
-    title("6/7  目标路径")
+    title("5/6  目标路径")
     info("请输入绝对路径（可用 ~ 开头）。")
     default_target = str(Path.home() / "Projects" / project_id)
     while True:
@@ -264,7 +235,7 @@ def collect() -> dict:
             break
         fail(message)
 
-    title("7/7  可选步骤")
+    title("6/6  可选步骤")
     init_git = ask_yes_no("初始化 Git 仓库（git init -b main）？", default=True)
     first_commit = ask_yes_no("创建后自动做首次提交？", default=True) if init_git else False
     deploy = ask_yes_no("为新项目注入 Codex 与 Antigravity 适配器？", default=True)
@@ -286,7 +257,6 @@ def collect() -> dict:
         "name": name,
         "owner": owner,
         "primary_type": primary_type,
-        "overlays": overlays,
         "target": target,
         "init_git": init_git,
         "first_commit": first_commit,
@@ -312,8 +282,6 @@ def build_create_command(answers: dict, apply: bool) -> list[str]:
         "--primary-type",
         answers["primary_type"],
     ]
-    for overlay in answers["overlays"]:
-        command += ["--overlay", overlay]
     if answers["init_git"]:
         command.append("--git")
     if apply:
@@ -329,7 +297,6 @@ def summarize(answers: dict) -> None:
         ("项目名称", answers["name"]),
         ("负责人", answers["owner"]),
         ("主项目类型", answers["primary_type"]),
-        ("overlay", ", ".join(answers["overlays"]) or "（无）"),
         ("目标路径", str(answers["target"].expanduser())),
         ("Git 初始化", "是" if answers["init_git"] else "否"),
         ("首次提交", "是" if answers["first_commit"] else "否"),

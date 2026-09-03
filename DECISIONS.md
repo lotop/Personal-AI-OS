@@ -397,6 +397,21 @@
 - Evidence：四种类型各完成一次真实 `--apply --git` 创建；各自只产出匹配的类型框架；随附校验器在新项目默认模式 `ERRORS=0`，`--require-active` 正确拒绝未填写项，填写后通过，并能检出状态漂移。
 - Founder Approval：用户明确指示保留四类项目类型、为每类编写独立约定框架、为新项目提供校验与自我迭代能力、目录采用数字编号。
 
+### PAOS-TMPL-005｜Project Base Pack 1.3.0 批准
+
+- 状态：`APPROVED`
+- 日期：`2026-09-03`
+- Owner：Founder / `paos-26-project-template-v3`
+- Decision：批准 `01_templates/project-base-pack` 升级至 `1.3.0`，取代 `1.2.0`（`PAOS-TMPL-004`）。
+- Overlay Boundary：**移除 overlay 概念**。它不改变任何生成内容，也没有任何消费方（`02_registry/projects.toml` 不含该字段），保留只会让使用者误以为选择有效果。`--overlay` 参数、`factory.toml` 的 `allowed_overlays`、`project.toml` 的 `overlays_csv` 与 `.paos-init.json` 的 `overlays` 一并移除；项目类型框架已经承担了差异化职责。
+- Log Boundary：`HANDOFF.md` 与 `SESSION_CLOSE.md` 改为纯追加式日志，规则正文上移至 `AGENTS.md` 的「交接与会话收尾」一节。规则与记录载体分离，避免记录增长后规则被淹没。
+- Release Boundary：新增 `CHANGELOG.md`（追加式，含 `Unreleased` 段）与 `AGENTS.md` 的「版本与发布」一节。项目自己的版本节奏由 Owner 定义，但发布必须绑定 40 位 Commit SHA、校验器退出码为 `0`、工作树干净，且**须经 Owner 明确授权，Agent 不得自行 tag、push 或对外发布**。
+- Schema Boundary：`.paos-init.json` 结构变化，`schema_version` 由 `0.2.0` 升至 `0.3.0`；`release_audit.py` 的 M3 断言与 Factory 测试同步更新。
+- Validator Boundary：项目校验器的必需文件加入 `CHANGELOG.md`。
+- Migration Boundary：不迁移既有项目。`demo-test` 由 `1.1.0` 生成且类型取值已废弃，按 Founder 指示删除。
+- Evidence：四种类型各完成一次 `--apply --git` 创建并通过随附校验器；22 项 Factory 测试通过；`validate_repository` `ERRORS=0`。
+- Founder Approval：用户明确指示按既有评估建议全部执行。
+
 ## Candidate Decisions
 
 - 当前无待确认 Candidate Decision。

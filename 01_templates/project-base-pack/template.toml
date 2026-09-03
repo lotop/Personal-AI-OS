@@ -1,9 +1,9 @@
 pack_id = "paos-project-base"
-version = "1.2.0"
+version = "1.3.0"
 artifact_state = "APPROVED"
 owner = "paos-04-factory"
 canonical_authority = "FOUNDER_APPROVAL"
-approval_reference = "PAOS-TMPL-004"
+approval_reference = "PAOS-TMPL-005"
 
 # primary_types 为可选过滤器：仅当项目类型匹配时才产出该文件。
 # 未声明该字段的记录对所有类型产出。
@@ -41,6 +41,11 @@ render = true
 [[files]]
 source = "DECISIONS.md.tmpl"
 destination = "DECISIONS.md"
+render = true
+
+[[files]]
+source = "CHANGELOG.md.tmpl"
+destination = "CHANGELOG.md"
 render = true
 
 [[files]]

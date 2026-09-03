@@ -217,7 +217,7 @@ def build_manifest(
 ) -> dict:
     template_state = pack_manifest.get("artifact_state")
     return {
-        "schema_version": "0.2.0",
+        "schema_version": "0.3.0",
         "generator": GENERATOR_ID,
         "factory_version": factory_version,
         "paos_version": paos_version,
@@ -225,7 +225,6 @@ def build_manifest(
         "project_name": variables["PROJECT_NAME"],
         "owner": variables["OWNER"],
         "primary_type": variables["PRIMARY_TYPE"],
-        "overlays": variables["OVERLAYS"].split(",") if variables["OVERLAYS"] else [],
         "project_status": "PROVISIONAL",
         "creation_mode": (
             "WORKING_TEMPLATE_DRY_RUN" if template_state == "WORKING" else "APPROVED_TEMPLATE"
@@ -295,7 +294,6 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--name", required=True)
     parser.add_argument("--owner", required=True)
     parser.add_argument("--primary-type", required=True)
-    parser.add_argument("--overlay", action="append", default=[])
     parser.add_argument("--apply", action="store_true", help="实际创建；默认只输出 Dry Run")
     parser.add_argument("--provisional", action="store_true", help="允许 Working Pack 进行临时演练")
     parser.add_argument("--git", action="store_true", help="创建后初始化 Git main 分支")
@@ -313,16 +311,12 @@ def main() -> int:
         config = tomllib.loads((Path(__file__).with_name("factory.toml")).read_text())
         if args.primary_type not in config["primary_types"]:
             raise ValueError("未知 primary-type")
-        unknown_overlays = sorted(set(args.overlay) - set(config["allowed_overlays"]))
-        if unknown_overlays:
-            raise ValueError(f"未知 overlay: {', '.join(unknown_overlays)}")
 
         variables = {
             "PROJECT_ID": args.project_id,
             "PROJECT_NAME": args.name,
             "OWNER": args.owner,
             "PRIMARY_TYPE": args.primary_type,
-            "OVERLAYS": ",".join(sorted(set(args.overlay))),
         }
         pack_manifest, files = load_plan(
             args.template_pack.resolve(),

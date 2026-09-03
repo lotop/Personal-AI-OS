@@ -2,13 +2,13 @@
 name: create-paos-project
 description: >-
   一键创建符合 Personal AI OS 规范的独立业务项目。
-  通过 Approved Template Pack 初始化 Git 仓库、生成项目治理文件和任务模板，并部署 Codex 与 Gemini Adapter。
+  通过 Approved Template Pack 初始化 Git 仓库、生成项目治理文件与类型约定框架，并部署 Codex 与 Antigravity Adapter。
   当用户想要新建项目、脚手架初始化或提到“创建项目”时使用。
 ---
 
 # Create PAOS Project (项目工厂创建技能)
 
-本 Skill 用于通过 Personal AI OS 的 Project Factory 自动化创建符合规范的独立业务项目，并自动部署 Codex 与 Gemini 适配器。
+本 Skill 用于通过 Personal AI OS 的 Project Factory 自动化创建符合规范的独立业务项目，并自动部署 Codex 与 Antigravity 适配器。
 
 ---
 
@@ -27,15 +27,9 @@ description: >-
    每个类型会产出一份专属约定框架到目标项目的 `00_governance/PROJECT_TYPE_FRAMEWORK.md`，
    内容包括该类型的工作循环、完成标准、质量红线与目录落位。类型一旦选定即决定该文件内容，
    权威取值来源为 `04_project_factory/factory.toml` 的 `primary_types`。
-4. **分类标签 (`overlays`)**（可选多选）：
-   - 允许取值：`software`、`data`、`ai`、`security`、`compliance`、`content`、`finance`、`vendor`
-     （权威来源为 `04_project_factory/factory.toml` 的 `allowed_overlays`）。
-   - **当前语义**：overlay 只做取值校验，并记录到 `project.toml` 的 `overlays_csv` 与
-     `.paos-init.json`。它**不会改变生成的任何文件内容**。不要向用户描述为"功能叠加包"或
-     "扩展包"；差异化模板内容尚未实现。
-5. **目标路径 (`target`)**：
+4. **目标路径 (`target`)**：
    - 默认推荐：`/Users/lotop/Projects/<project-id>`（严禁创建在 `Personal-AI-OS` 仓库内）。
-6. **负责人 (`owner`)**：默认为当前用户（`lotop`）。
+5. **负责人 (`owner`)**：默认为当前用户（`lotop`）。
 
 ---
 
@@ -61,7 +55,6 @@ python3 /Users/lotop/Personal-AI-OS/04_project_factory/create_project.py \
   --name "<PROJECT_NAME>" \
   --owner <OWNER> \
   --primary-type <PRIMARY_TYPE> \
-  --overlay <OVERLAY_1> \
   --git
 ```
 
@@ -79,7 +72,6 @@ python3 /Users/lotop/Personal-AI-OS/04_project_factory/create_project.py \
   --name "<PROJECT_NAME>" \
   --owner <OWNER> \
   --primary-type <PRIMARY_TYPE> \
-  --overlay <OVERLAY_1> \
   --git \
   --apply
 ```
