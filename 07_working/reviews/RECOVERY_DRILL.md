@@ -1,49 +1,44 @@
-# Recovery Drill｜V1.2.2 Approved Local Release
+# Recovery Drill｜V1.3.0
 
-> 状态：`APPROVED`
+> 状态：`WORKING`
 >
-> 执行日期：`2026-09-02`
+> 执行日期：`2026-09-03`
 >
-> Source Commit：`3a08232e78138f77a7106d9abbeec9cd46dd5939`
+> Source Commit：`d80043f2dbc52e839f4287652902b6f93878439e`
 >
 > Machine Evidence：`07_working/reviews/recovery_evidence.toml`
 
-## 场景
+## 方法
 
-从固定的 V1.2.2 Release Candidate Commit 创建不使用本地对象捷径的冷克隆，并创建只包含本地 `main` 的离线 Git Bundle。两个恢复副本都必须精确恢复同一 Commit、通过本地 CI、通过 Adapter Check，并具有相同的 Tree Digest V0.2。
+双路径：本地冷克隆（`git clone --no-local`）与离线 Bundle 克隆。两条路径都在隔离目录中重新运行完整 CI，不复用原仓库的任何缓存或配置。
 
 ## 冷克隆结果
 
 - 命令：`git clone --no-local /Users/lotop/Personal-AI-OS`。
-- 恢复 Commit：`3a08232e78138f77a7106d9abbeec9cd46dd5939`。
-- Local Offline CI：`PASS`（9 项检查无 FAIL）。
+- 恢复 Commit：`d80043f2dbc52e839f4287652902b6f93878439e`。
+- Local Offline CI：`PASS`（9 项检查中 8 项 PASS，`release-state` 如实报告克隆体的 M1/M6 状态，不计为失败）。
 - Adapter Generator `--check`：`ADAPTERS_OK`。
 - `git fsck --full`：退出码 `0`。
 
 ## 离线 Bundle 结果
 
-- Bundle Path：`06_deployment/recovery_artifacts/v1.2.2-3a08232e.bundle`（本地、Git Ignored）。文件名内嵌 Tested Commit 前缀，V1.2.1 的 `v1.2.1-c8e3ecc0.bundle` 原样保留，未被覆盖。
-- Bundle Head：`3a08232e78138f77a7106d9abbeec9cd46dd5939`。
-- Bundle SHA-256：`66f079f8c8f8b21d1debd7d2181928a62a0ac97970afafe8598774a089b75e5a`。
-- `git bundle verify`：退出码 `0`，`The bundle records a complete history`。
-- Bundle 恢复 Commit：`3a08232e78138f77a7106d9abbeec9cd46dd5939`。
-- Local Offline CI：`PASS`（9 项检查无 FAIL）。
+- Bundle Path：`06_deployment/recovery_artifacts/v1.3.0-d80043f2.bundle`（本地、Git Ignored）。文件名内嵌 Tested Commit 前缀，避免重复演练原地覆盖上一次物证。
+- Bundle Head：`d80043f2dbc52e839f4287652902b6f93878439e`。
+- Bundle SHA-256：`4d5e49994f8dffd4620512f5633b4ece4372c9a4c6b405f632b9e16624bc45be`。
+- `git bundle verify`：`The bundle records a complete history.`，退出码 `0`。
+- Bundle 恢复 Commit：`d80043f2dbc52e839f4287652902b6f93878439e`。
+- Local Offline CI：`PASS`（同上，8/9 PASS）。
 - Adapter Generator `--check`：`ADAPTERS_OK`。
 - `git fsck --full`：退出码 `0`。
 
-## 内容一致性
+## Tree Digest
 
-- Source/Cold Clone/Bundle Clone Commit：精确一致。
-- Tree Digest Algorithm：`0.2`。
-- Tree SHA-256：`9aae51fd5614f6f637294321f8f605bcbc0e32d0c3adc4576b01ce9bca31cc8f`（tracked files 210，两个恢复副本一致）。
-- Machine Evidence 与本报告 Commit、Bundle SHA、Tree SHA：一致。
+- 算法版本：`0.2`
+- `tree_sha256`：`05b126e79660a927904a5c6ccdd68039cf135be23d2665e4bdec7800e7d2c2f7`
+
+## 未覆盖范围
+
+- Private Remote 恢复：`NOT_TESTED`。
+- 全新设备恢复、大型资产与 Secret 重绑定：未演练。
 
 结论：`PASS`
-
-## 说明：两个恢复副本中的 `release-state`
-
-本次 CI 新增的 `release-state` 检查在两个恢复副本中均显示 `BLOCKED`。这是预期结果：克隆不携带 annotated tag，M6 因此无法把 `v1.2.2` 绑定到 HEAD。该项不使 profile 失败，且如实反映"恢复副本本身不是已发布制品"这一事实。
-
-## 边界
-
-本次证明本地 Git 历史和本机保留的离线 Git Bundle 能够恢复；M5 已能直接读取 Artifact、重算 SHA-256、执行 `git bundle verify`、核对 Head 与 Tree Digest V0.2，并强制 Bundle 文件名内嵌 Tested Commit 前缀。尚未证明私有远端、异地 Bundle、全新设备、Secret 重新绑定或大型资产 Object Storage 的恢复。远端 `origin` 只同步 `main`，不含 `v1.1.3` 之后的任何 tag。
